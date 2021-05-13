@@ -1,0 +1,18 @@
+function login () {
+  if [[ ${container_registry} == *".amazonaws.com"* ]]; then
+    echo "(login): Logging in to AWS ECR..."
+    eval $(aws ecr --no-include-email get-login  --region ${aws_region})
+  elif [ -s /home/ec2-user/cyral/container_registry_key.json ]; then
+      echo "(login): Logging in to GCR..."
+      cat /home/ec2-user/cyral/container_registry_key.json | docker login -u ${container_registry_username} --password-stdin https://gcr.io
+  else
+      echo "(login): Won't log in automatically to any image registry. Image registry set to: ${container_registry}"
+  fi
+}
+
+function launch () { cd /home/ec2-user && docker-compose -f sidecar.compose.yaml up -d; }
+retry login
+retry launch
+INSTANCE_ID=`wget -q -O - http://169.254.169.254/latest/meta-data/instance-id`
+ASG_NAME=`aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID"  --region ${aws_region} | jq -r '.Tags[] | select(.["Key"] | contains("aws:autoscaling:groupName")) | .Value'`
+aws autoscaling complete-lifecycle-action --lifecycle-action-result CONTINUE --instance-id $INSTANCE_ID --lifecycle-hook-name ${name_prefix}-InitLifeCycleHook --auto-scaling-group-name $ASG_NAME --region ${aws_region}

@@ -1,0 +1,132 @@
+#!/bin/bash
+
+# for the moment, acknowledge early
+# aws autoscaling complete-lifecycle-action --lifecycle-action-result CONTINUE --instance-id $INSTANCE_ID --lifecycle-hook-name ${name_prefix}-InitLifeCycleHook --auto-scaling-group-name $ASG_NAME --region ${aws_region}
+
+yum update -y
+yum install -y aws-cfn-bootstrap bind-utils bc screen epel-release python-pip wget ec2-instance-connect docker
+function retry() {
+  RETRIES=15
+  while [ $RETRIES -gt 0 ]; do
+    set +e
+    $@
+    RESULT=$?
+    set -e
+    if [ $RESULT -eq 0 ]; then
+      echo "Success"
+      return 0
+    fi
+    echo "Failed"
+    sleep 5
+    let RETRIES-=1
+  done
+  echo "Retries exceeded"
+  exit 3
+}
+# Start docker
+sudo service docker start
+# Add ec2-user to docker group
+sudo usermod -a -G docker ec2-user
+# Install docker-compose
+wget -q -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-`uname -s`-`uname -m`
+sudo mv docker-compose-`uname -s`-`uname -m` /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+docker-compose --version
+# Configure fd limit for ec2 instance and containers
+sudo bash -c 'cat > /etc/security/limits.d/fdlimit.conf' << EOF
+*       soft  nofile  65535
+*       hard  nofile  65535
+EOF
+sudo bash -c 'cat > /etc/sysconfig/docker' << EOF
+DAEMON_MAXFILES=65535
+OPTIONS="--default-ulimit nofile=65535:65535"
+DAEMON_PIDFILE_TIMEOUT=10
+EOF
+sudo systemctl restart docker
+# Install JQ
+wget -q https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+sudo mv jq-linux64 /usr/local/bin/jq
+sudo chmod a+x /usr/local/bin/jq
+sudo ln -s /usr/local/bin/jq /usr/bin/jq
+export PATH=$PATH:/usr/local/bin
+ln -s /usr/bin/pip-2.6 /usr/bin/pip
+pip install --upgrade pip &> /dev/null
+pip install awscli --ignore-installed six &> /dev/null
+wget -q https://raw.githubusercontent.com/cyralinc/quickstart-linux-bastion/master/scripts/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
+chmod a+x /home/ec2-user/bootstrap.sh
+
+/home/ec2-user/bootstrap.sh --tcp-forwarding true
+service sshd restart
+
+# Configure cloudwatch
+cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d/bastion.json << EOF
+{
+  "logs": {
+    "force_flush_interval": 5,
+    "logs_collected": {
+      "files": {
+        "collect_list": [{
+          "file_path": "/var/log/cloud-init.log",
+          "log_group_name": "${name_prefix}",
+          "log_stream_name": "${name_prefix}/{instance_id}/cloud-init.log",
+          "timestamp_format": "%Y-%m-%d %H:%M:%S",
+          "timezone": "UTC"
+        }, {
+          "file_path": "/var/log/cloud-init-output.log",
+          "log_group_name": "${name_prefix}",
+          "log_stream_name": "${name_prefix}/{instance_id}/cloud-init-output.log",
+          "timestamp_format": "%Y-%m-%d %H:%M:%S",
+          "timezone": "UTC"
+        }]
+      }
+    }
+  }
+}
+EOF
+rm /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+systemctl restart amazon-cloudwatch-agent
+
+echo "Fetching public hostname..."
+export STATUS_CODE=$(curl -o instance-id.txt -w "%%{http_code}\n" -s http://169.254.169.254/latest/meta-data/instance-id -m 10)
+if [ $STATUS_CODE -eq 200 ]; then
+  export INSTANCE_ID=$(cat instance-id.txt)
+else
+  export INSTANCE_ID=$HOSTNAME
+fi
+echo "Setting INSTANCE_ID to '$INSTANCE_ID'"
+
+echo "Fetching secrets..."
+mkdir -p /home/ec2-user/cyral/
+
+echo "Initializing environment variables..."
+cat > /home/ec2-user/.env << EOF
+SIDECAR_ID=${sidecar_id}
+CONTROLPLANE_HOST=${controlplane_host}
+CONTROLPLANE_PORT=8020
+CONTAINER_REGISTRY=${container_registry}
+SECRETS_LOCATION=${secrets_location}
+ELK_ADDRESS=${elk_address}
+ELK_USERNAME=${elk_username}
+ELK_PASSWORD=${elk_password}
+SIDECAR_ENDPOINT=${sidecar_endpoint}
+AWS_REGION=${aws_region}
+INSTANCE_ID=$INSTANCE_ID
+DD_API_KEY=${dd_api_key}
+LOG_GROUP_NAME=${log_group_name}
+
+LOG_INTEGRATION=${log_integration}
+METRICS_INTEGRATION=${metrics_integration}
+
+SSO_LOGIN_URL=${idp_sso_login_url}
+IDP_CERTIFICATE=${idp_certificate}
+
+SPLUNK_INDEX=${splunk_index}
+SPLUNK_HOST=${splunk_host}
+SPLUNK_PORT=${splunk_port}
+SPLUNK_TLS=${splunk_tls}
+SPLUNK_TOKEN=${splunk_token}
+
+SUMOLOGIC_HOST=${sumologic_host}
+SUMOLOGIC_URI=${sumologic_uri}
+EOF
