@@ -73,14 +73,16 @@ EOT
 
 resource "aws_autoscaling_group" "cyral-sidecar-asg" {
   # Autoscaling group of immutable sidecar instances
-  count                = var.asg_count
-  name                 = "${var.name_prefix}-asg"
-  launch_configuration = aws_launch_configuration.cyral-sidecar-lc.id
-  vpc_zone_identifier  = var.subnets
-  min_size             = var.asg_min
-  desired_capacity     = var.asg_desired
-  max_size             = var.asg_max
-  target_group_arns    = [for tg in aws_lb_target_group.cyral-sidecar-tg : tg.id]
+  count                     = var.asg_count
+  name                      = "${var.name_prefix}-asg"
+  launch_configuration      = aws_launch_configuration.cyral-sidecar-lc.id
+  vpc_zone_identifier       = var.subnets
+  min_size                  = var.asg_min
+  desired_capacity          = var.asg_desired
+  max_size                  = var.asg_max
+  health_check_grace_period = var.health_check_grace_period
+  health_check_type         = "ELB"
+  target_group_arns         = [for tg in aws_lb_target_group.cyral-sidecar-tg : tg.id]
 
   tag {
     key                 = "Name"
@@ -92,13 +94,6 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
     key                 = "SidecarVersion"
     value               = var.sidecar_version
     propagate_at_launch = true
-  }
-
-  initial_lifecycle_hook {
-    name                 = "${var.name_prefix}-InitLifeCycleHook"
-    default_result       = "ABANDON"
-    heartbeat_timeout    = 600
-    lifecycle_transition = "autoscaling:EC2_INSTANCE_LAUNCHING"
   }
 
   # Delete existing hosts before starting a new one
