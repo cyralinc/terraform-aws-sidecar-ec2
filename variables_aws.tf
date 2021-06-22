@@ -31,6 +31,12 @@ variable "asg_max" {
   default     = 2
 }
 
+variable "health_check_grace_period" {
+  description = "The grace period in seconds before the health check will terminate the instance"
+  type        = number
+  default     = 600
+}
+
 variable "instance_type" {
   description = "Amazon EC2 instance type for the sidecar instances"
   type        = string
