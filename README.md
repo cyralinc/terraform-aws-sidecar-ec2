@@ -25,6 +25,9 @@ module "cyral_sidecar" {
     client_secret      = ""
 }
 ```
+## Upgrade Notes
+
+Check the [upgrade notes](docs/upgrade-notes.md) section if you are upgrading an existing sidecar.
 
 ## Requirements
 
