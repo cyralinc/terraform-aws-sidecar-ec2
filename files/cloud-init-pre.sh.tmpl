@@ -119,9 +119,10 @@ LOG_INTEGRATION=${log_integration}
 METRICS_INTEGRATION=${metrics_integration}
 
 SSO_LOGIN_URL=${idp_sso_login_url}
-IDP_CERTIFICATE=${idp_certificate}
-SIDECAR_IDP_PUBLIC_CERT=${sidecar_public_idp_certificate}
-SIDECAR_IDP_PRIVATE_KEY=${sidecar_private_idp_key}
+IDP_CERTIFICATE=${idp_certificate//$'\n'/\\n}
+
+SIDECAR_IDP_PUBLIC_CERT=${idp_public_certificate//$'\n'/\\n}
+SIDECAR_IDP_PRIVATE_KEY=${idp_private_key//$'\n'/\\n}
 
 SPLUNK_INDEX=${splunk_index}
 SPLUNK_HOST=${splunk_host}
