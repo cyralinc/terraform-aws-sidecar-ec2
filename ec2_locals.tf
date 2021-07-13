@@ -33,8 +33,8 @@ locals {
     sumologic_uri                   = var.sumologic_uri
     idp_sso_login_url               = var.idp_sso_login_url
     idp_certificate                 = var.idp_certificate
-    idp_public_certificate          = var.idp_public_certificate
-    idp_private_key                 = var.idp_private_key
+    sidecar_public_idp_certificate  = var.sidecar_public_idp_certificate
+    sidecar_private_idp_key         = var.sidecar_private_idp_key
   }
 
   cloud_init_pre  = templatefile("${path.module}/files/cloud-init-pre.sh.tmpl", local.templatevars)
