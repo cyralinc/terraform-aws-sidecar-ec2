@@ -151,3 +151,9 @@ variable "repositories_supported" {
   type        = list(string)
   default     = ["dremio", "mongodb", "mysql", "oracle", "postgresql", "snowflake", "sqlserver", "s3"]
 }
+
+variable "node_exporter_port" {
+  description = "Port of the node exporter container"
+  type = number
+  default = 9001
+}

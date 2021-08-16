@@ -47,7 +47,8 @@ locals {
     contains(var.repositories_supported, "postgresql") ? var.sidecar_postgresql_ports : [],
     contains(var.repositories_supported, "snowflake") && var.load_balancer_certificate_arn != "" ? var.sidecar_snowflake_ports : [],
     contains(var.repositories_supported, "sqlserver") ? var.sidecar_sqlserver_ports : [],
-    contains(var.repositories_supported, "s3") ? var.sidecar_s3_ports : []
+    contains(var.repositories_supported, "s3") ? var.sidecar_s3_ports : [],
+    [var.node_exporter_port]
   )
 
   # List of pairs of min/max ports per db allowed to connect to the sidecar
