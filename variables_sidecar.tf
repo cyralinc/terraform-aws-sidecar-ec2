@@ -91,6 +91,12 @@ variable "sidecar_dns_overwrite" {
   type        = bool
   default     = false
 }
+
+variable "node_exporter_port" {
+  description = "Port of the node exporter container"
+  type = number
+  default = 9001
+}
 ##########################################################################################################
 
 variable "sidecar_dremio_ports" {
@@ -152,8 +158,3 @@ variable "repositories_supported" {
   default     = ["dremio", "mongodb", "mysql", "oracle", "postgresql", "snowflake", "sqlserver", "s3"]
 }
 
-variable "node_exporter_port" {
-  description = "Port of the node exporter container"
-  type = number
-  default = 9001
-}
