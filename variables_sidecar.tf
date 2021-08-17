@@ -124,7 +124,7 @@ variable "sidecar_postgresql_ports" {
 }
 
 variable "sidecar_rest_ports" {
-  description = "List of ports allowed to connect to PostgreSQL in sidecar"
+  description = "List of ports allowed to connect to Rest Services in sidecar"
   type        = list(number)
   default     = [80, 81, 82, 83, 84]
 }
