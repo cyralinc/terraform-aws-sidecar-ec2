@@ -45,6 +45,7 @@ locals {
     contains(var.repositories_supported, "mysql") ? var.sidecar_mysql_ports : [],
     contains(var.repositories_supported, "oracle") ? var.sidecar_oracle_ports : [],
     contains(var.repositories_supported, "postgresql") ? var.sidecar_postgresql_ports : [],
+    contains(var.repositories_supported, "rest") ? var.sidecar_rest_ports : [],
     contains(var.repositories_supported, "snowflake") && var.load_balancer_certificate_arn != "" ? var.sidecar_snowflake_ports : [],
     contains(var.repositories_supported, "sqlserver") ? var.sidecar_sqlserver_ports : [],
     contains(var.repositories_supported, "s3") ? var.sidecar_s3_ports : []
@@ -59,6 +60,7 @@ locals {
       contains(var.repositories_supported, "mysql") ? [min(var.sidecar_mysql_ports...), max(var.sidecar_mysql_ports...)] : [],
       contains(var.repositories_supported, "oracle") ? [min(var.sidecar_oracle_ports...), max(var.sidecar_oracle_ports...)] : [],
       contains(var.repositories_supported, "postgresql") ? [min(var.sidecar_postgresql_ports...), max(var.sidecar_postgresql_ports...)] : [],
+      contains(var.repositories_supported, "rest") ? [min(var.sidecar_rest_ports...), max(var.sidecar_rest_ports...)] : [],
       contains(var.repositories_supported, "snowflake") ? [min(var.sidecar_snowflake_ports...), max(var.sidecar_snowflake_ports...)] : [],
       contains(var.repositories_supported, "sqlserver") ? [min(var.sidecar_sqlserver_ports...), max(var.sidecar_sqlserver_ports...)] : [],
       contains(var.repositories_supported, "s3") ? [min(var.sidecar_s3_ports...), max(var.sidecar_s3_ports...)] : []

@@ -123,6 +123,12 @@ variable "sidecar_postgresql_ports" {
   default     = [5432, 5433, 5434, 5435, 5436]
 }
 
+variable "sidecar_rest_ports" {
+  description = "List of ports allowed to connect to PostgreSQL in sidecar"
+  type        = list(number)
+  default     = [80, 81, 82, 83, 84]
+}
+
 variable "sidecar_snowflake_ports" {
   description = "List of ports allowed to connect to Snowflake in sidecar"
   type        = list(number)
@@ -149,5 +155,5 @@ variable "sidecar_version" {
 variable "repositories_supported" {
   description = "List of all repositories that will be supported by the sidecar (lower case only)"
   type        = list(string)
-  default     = ["dremio", "mongodb", "mysql", "oracle", "postgresql", "snowflake", "sqlserver", "s3"]
+  default     = ["dremio", "mongodb", "mysql", "oracle", "postgresql", "rest", "snowflake", "sqlserver", "s3"]
 }
