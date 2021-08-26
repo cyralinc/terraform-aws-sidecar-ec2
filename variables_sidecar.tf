@@ -130,7 +130,7 @@ variable "sidecar_rest_ports" {
 }
 
 variable "sidecar_snowflake_ports" {
-  description = "List of ports allowed to connect to Snowflake in sidecar"
+  description = "(Deprecated - use sidecar_http_ports and load_balancer_tls_ports instead) List of ports allowed to connect to Snowflake in sidecar"
   type        = list(number)
   default     = [443, 444, 445, 446, 447]
 }
@@ -145,6 +145,12 @@ variable "sidecar_s3_ports" {
   description = "List of ports allowed to connect to S3 in sidecar"
   type        = list(number)
   default     = [453]
+}
+
+variable "sidecar_http_ports" {
+  description = "List of ports allowed to connect to HTTP-based repositories (Snowflake and REST)"
+  type = list(number)
+  default = [80, 81, 82, 83, 84, 443, 444, 445, 446, 447]
 }
 
 variable "sidecar_version" {
