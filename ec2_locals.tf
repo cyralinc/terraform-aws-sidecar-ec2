@@ -56,8 +56,7 @@ locals {
 
   sidecar_tls_ports = toset(
     concat(
-      contains(var.repositories_supported, "snowflake") && var.load_balancer_certificate_arn != "" ? var.sidecar_snowflake_ports : [],
-      var.load_balancer_tls_ports
+      contains(var.repositories_supported, "snowflake") && var.load_balancer_certificate_arn != "" ? concat(var.sidecar_snowflake_ports, var.load_balancer_tls_ports) : [],
     )
   )
 
