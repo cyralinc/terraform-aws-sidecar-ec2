@@ -178,8 +178,8 @@ resource "aws_lb_listener" "cyral-sidecar-lb-ls" {
   port              = each.value
 
   # Snowflake listeners use TLS and the provided certificate
-  protocol          = contains(var.sidecar_snowflake_ports, tonumber(each.value)) ? "TLS" : "TCP"
-  certificate_arn   = contains(var.sidecar_snowflake_ports, tonumber(each.value)) ? var.load_balancer_certificate_arn : null
+  protocol          = contains(local.sidecar_tls_ports, tonumber(each.value)) ? "TLS" : "TCP"
+  certificate_arn   = contains(local.sidecar_tls_ports, tonumber(each.value)) ? var.load_balancer_certificate_arn : null
 
   default_action {
     type             = "forward"
