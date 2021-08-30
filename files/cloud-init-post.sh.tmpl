@@ -10,6 +10,9 @@ function login () {
   fi
 }
 
+mkdir -p /home/ec2-user/cyral/conf.d
+chown -R 65534 /home/ec2-user/cyral
+
 function launch () { cd /home/ec2-user && docker-compose -f sidecar.compose.yaml up -d; }
 retry login
 retry launch
