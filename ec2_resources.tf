@@ -119,7 +119,7 @@ resource "aws_security_group" "instance" {
 
   # Allow DB inbound
   dynamic "ingress" {
-    for_each = local.sidecar_tls_ports
+    for_each = local.sidecar_tcp_ports
     # iterator = "sidecar_ports"
     content {
       description     = "DB"
