@@ -39,39 +39,11 @@ locals {
   cloud_init_post = templatefile("${path.module}/files/cloud-init-post.sh.tmpl", local.templatevars)
 
   # Flat list of all ports allowed to connect to the sidecar
-  sidecar_ports = toset(
-    concat(
-      contains(var.repositories_supported, "dremio") ? var.sidecar_dremio_ports : [],
-      contains(var.repositories_supported, "mongodb") ? var.sidecar_mongodb_ports : [],
-      contains(var.repositories_supported, "mysql") ? var.sidecar_mysql_ports : [],
-      contains(var.repositories_supported, "oracle") ? var.sidecar_oracle_ports : [],
-      contains(var.repositories_supported, "postgresql") ? var.sidecar_postgresql_ports : [],
-      contains(var.repositories_supported, "rest") ? var.sidecar_rest_ports : [],
-      contains(var.repositories_supported, "snowflake") && var.load_balancer_certificate_arn != "" ? var.sidecar_snowflake_ports : [],
-      contains(var.repositories_supported, "sqlserver") ? var.sidecar_sqlserver_ports : [],
-      contains(var.repositories_supported, "s3") ? var.sidecar_s3_ports : [],
-      contains(var.repositories_supported, "snowflake") || contains(var.repositories_supported, "rest") ? var.sidecar_http_ports : []
-    )
-  )
+  sidecar_tcp_ports = toset(var.sidecar_db_ports)
 
   sidecar_tls_ports = toset(
     concat(
       contains(var.repositories_supported, "snowflake") && var.load_balancer_certificate_arn != "" ? concat(var.sidecar_snowflake_ports, var.load_balancer_tls_ports) : [],
     )
   )
-
-  # List of pairs of min/max ports per db allowed to connect to the sidecar
-  sidecar_ports_range = [
-    # Loop through the list and remove ports from disabled wires
-    for v in [
-      contains(var.repositories_supported, "dremio") ? [min(var.sidecar_dremio_ports...), max(var.sidecar_dremio_ports...)] : [],
-      contains(var.repositories_supported, "mongodb") ? [min(var.sidecar_mongodb_ports...), max(var.sidecar_mongodb_ports...)] : [],
-      contains(var.repositories_supported, "mysql") ? [min(var.sidecar_mysql_ports...), max(var.sidecar_mysql_ports...)] : [],
-      contains(var.repositories_supported, "oracle") ? [min(var.sidecar_oracle_ports...), max(var.sidecar_oracle_ports...)] : [],
-      contains(var.repositories_supported, "postgresql") ? [min(var.sidecar_postgresql_ports...), max(var.sidecar_postgresql_ports...)] : [],
-      contains(var.repositories_supported, "rest") ? [min(var.sidecar_rest_ports...), max(var.sidecar_rest_ports...)] : [],
-      contains(var.repositories_supported, "snowflake") ? [min(var.sidecar_snowflake_ports...), max(var.sidecar_snowflake_ports...)] : [],
-      contains(var.repositories_supported, "sqlserver") ? [min(var.sidecar_sqlserver_ports...), max(var.sidecar_sqlserver_ports...)] : [],
-      contains(var.repositories_supported, "s3") ? [min(var.sidecar_s3_ports...), max(var.sidecar_s3_ports...)] : []
-    ] : v if length(v) > 0 ]
 }

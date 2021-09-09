@@ -119,12 +119,12 @@ resource "aws_security_group" "instance" {
 
   # Allow DB inbound
   dynamic "ingress" {
-    for_each = local.sidecar_ports_range
+    for_each = local.sidecar_tls_ports
     # iterator = "sidecar_ports"
     content {
       description     = "DB"
-      from_port       = ingress.value[0]
-      to_port         = ingress.value[1]
+      from_port       = ingress.value
+      to_port         = ingress.value
       protocol        = "tcp"
       cidr_blocks     = var.db_inbound_cidr
       security_groups = var.db_inbound_security_group
@@ -160,7 +160,7 @@ resource "aws_lb" "cyral-lb" {
 }
 
 resource "aws_lb_target_group" "cyral-sidecar-tg" {
-  for_each = {for port in local.sidecar_ports: tostring(port) => port}
+  for_each = {for port in local.sidecar_tcp_ports: tostring(port) => port}
   name     = "${var.name_prefix}-tg${each.value}"
   port     = each.value
   protocol = "TCP"
@@ -173,7 +173,7 @@ resource "aws_lb_target_group" "cyral-sidecar-tg" {
 
 resource "aws_lb_listener" "cyral-sidecar-lb-ls" {
   # Listener for load balancer - all existing sidecar ports
-  for_each = {for port in local.sidecar_ports: tostring(port) => port}
+  for_each = {for port in local.sidecar_tcp_ports: tostring(port) => port}
   load_balancer_arn = aws_lb.cyral-lb.arn
   port              = each.value
 
