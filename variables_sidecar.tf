@@ -109,12 +109,6 @@ variable "sidecar_db_ports" {
   ]
 }
 
-variable "sidecar_http_ports" {
-  description = "List of ports allowed to connect to HTTP-based repositories (Snowflake and REST)"
-  type = list(number)
-  default = [80, 81, 82, 83, 84, 443, 444, 445, 446, 447]
-}
-
 variable "sidecar_version" {
   description = "Version of the sidecar"
   type        = string
