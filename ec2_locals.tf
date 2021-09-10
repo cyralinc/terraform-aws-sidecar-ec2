@@ -38,12 +38,17 @@ locals {
   cloud_init_pre  = templatefile("${path.module}/files/cloud-init-pre.sh.tmpl", local.templatevars)
   cloud_init_post = templatefile("${path.module}/files/cloud-init-post.sh.tmpl", local.templatevars)
 
+  security_groups = concat(
+    [aws_security_group.instance.id],
+    var.additional_security_groups
+  )
+
   # Flat list of all ports allowed to connect to the sidecar
-  sidecar_tcp_ports = toset(var.sidecar_db_ports)
+  sidecar_ports = toset(concat(var.sidecar_tcp_ports, var.sidecar_tls_ports))
 
   sidecar_tls_ports = toset(
     concat(
-      contains(var.repositories_supported, "snowflake") && var.load_balancer_certificate_arn != "" ? [var.load_balancer_tls_ports] : [],
+      contains(var.repositories_supported, "snowflake") && var.load_balancer_certificate_arn != "" ? [var.sidecar_tls_ports] : [],
     )
   )
 }

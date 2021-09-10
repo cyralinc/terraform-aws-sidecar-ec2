@@ -121,12 +121,6 @@ variable "load_balancer_scheme" {
   default     = "internal"
 }
 
-variable "load_balancer_tls_ports" {
-  description = "List of ports to enable TLS termination on."
-  type = list(number)
-  default = [443, 444, 445, 446, 447]
-}
-
 variable "associate_public_ip_address" {
   description = "Associates a public IP to sidecar EC2 instances"
   type        = bool
