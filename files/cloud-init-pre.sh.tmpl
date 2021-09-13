@@ -96,6 +96,9 @@ else
 fi
 echo "Setting INSTANCE_ID to '$INSTANCE_ID'"
 
+export NGINX_RESOLVER=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
+echo "Setting NGINX_RESOLVER to '$NGINX_RESOLVER'"
+
 echo "Fetching secrets..."
 mkdir -p /home/ec2-user/cyral/
 
@@ -118,6 +121,7 @@ LOG_GROUP_NAME=${log_group_name}
 LOG_INTEGRATION=${log_integration}
 METRICS_INTEGRATION=${metrics_integration}
 
+NGINX_RESOLVER=$NGINX_RESOLVER
 SSO_LOGIN_URL=${idp_sso_login_url}
 IDP_CERTIFICATE=${idp_certificate}
 
