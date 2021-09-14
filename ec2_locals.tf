@@ -33,6 +33,7 @@ locals {
     sumologic_uri               = var.sumologic_uri
     idp_sso_login_url           = var.idp_sso_login_url
     idp_certificate             = var.idp_certificate
+    hc_vault_integration_id     = var.hc_vault_integration_id
   }
 
   cloud_init_pre  = templatefile("${path.module}/files/cloud-init-pre.sh.tmpl", local.templatevars)
