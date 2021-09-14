@@ -65,6 +65,12 @@ variable "load_balancer_subnets" {
   default     = []
 }
 
+variable "load_balancer_tls_ports" {
+  description = "List of ports that will have TLS terminated at load balancer level. See also 'sidecar_ports'."
+  type        = list(number)
+  default     = [443]
+}
+
 variable "volume_size" {
   description = "Size of the sidecar disk"
   type        = number
