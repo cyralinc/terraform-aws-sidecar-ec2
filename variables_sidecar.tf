@@ -93,14 +93,14 @@ variable "sidecar_dns_overwrite" {
 }
 ##########################################################################################################
 
-variable "sidecar_tcp_ports" {
-  description = "List of ports allowed to connect to the sidecar using TCP"
+variable "sidecar_ports" {
+  description = "List of ports allowed to connect to the sidecar"
   type        = list(number)
-  default     = [80,453,1433,1521,3306,3307,5432,27017,31010]
+  default     = [80,443,453,1433,1521,3306,3307,5432,27017,31010]
 }
 
-variable "sidecar_tls_ports" {
-  description = "List of ports allowed to connect to the sidecar using TLS"
+variable "load_balancer_tls_ports" {
+  description = "List of ports that will have TLS terminated at load balancer level"
   type        = list(number)
   default     = [443]
 }

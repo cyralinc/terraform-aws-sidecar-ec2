@@ -17,7 +17,10 @@ resource "aws_launch_configuration" "cyral-sidecar-lc" {
   iam_instance_profile        = aws_iam_instance_profile.sidecar_profile.name
   key_name                    = var.key_name
   associate_public_ip_address = var.associate_public_ip_address
-  security_groups             = local.security_groups
+  security_groups             = concat(
+                                  [aws_security_group.instance.id],
+                                  var.additional_security_groups
+                                )
   metadata_options {
     # So docker can access ec2 metadata
     # see https://github.com/aws/aws-sdk-go/issues/2972
@@ -116,7 +119,7 @@ resource "aws_security_group" "instance" {
 
   # Allow DB inbound
   dynamic "ingress" {
-    for_each = local.sidecar_ports
+    for_each = var.sidecar_ports
     # iterator = "sidecar_ports"
     content {
       description     = "DB"
@@ -157,7 +160,7 @@ resource "aws_lb" "cyral-lb" {
 }
 
 resource "aws_lb_target_group" "cyral-sidecar-tg" {
-  for_each = {for port in local.sidecar_ports: tostring(port) => port}
+  for_each = {for port in var.sidecar_ports: tostring(port) => port}
   name     = "${var.name_prefix}-tg${each.value}"
   port     = each.value
   protocol = "TCP"
@@ -170,13 +173,13 @@ resource "aws_lb_target_group" "cyral-sidecar-tg" {
 
 resource "aws_lb_listener" "cyral-sidecar-lb-ls" {
   # Listener for load balancer - all existing sidecar ports
-  for_each = {for port in local.sidecar_ports: tostring(port) => port}
+  for_each = {for port in var.sidecar_ports: tostring(port) => port}
   load_balancer_arn = aws_lb.cyral-lb.arn
   port              = each.value
 
   # Snowflake listeners use TLS and the provided certificate
-  protocol          = contains(local.sidecar_tls_ports, tonumber(each.value)) ? "TLS" : "TCP"
-  certificate_arn   = contains(local.sidecar_tls_ports, tonumber(each.value)) ? var.load_balancer_certificate_arn : null
+  protocol          = contains(var.load_balancer_tls_ports, tonumber(each.value)) ? "TLS" : "TCP"
+  certificate_arn   = contains(var.load_balancer_tls_ports, tonumber(each.value)) ? var.load_balancer_certificate_arn : null
 
   default_action {
     type             = "forward"
