@@ -105,3 +105,13 @@ variable "sumologic_uri" {
   type        = string
   default     = ""
 }
+
+################################
+#       HashiCorp Vault
+################################
+
+variable "hc_vault_integration_id" {
+  description = "HashiCorp Vault integration ID"
+  type        = string
+  default     = ""
+}

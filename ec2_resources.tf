@@ -39,7 +39,7 @@ resource "aws_launch_configuration" "cyral-sidecar-lc" {
 
   echo "Downloading sidecar.compose.yaml..."
   function download_sidecar () {
-    local url="https://${var.control_plane}/deploy/sidecar.compose.yaml?TemplateVersion=${var.sidecar_version}&TemplateType=terraform&LogIntegration=${var.log_integration}&MetricsIntegration=${var.metrics_integration}&WiresEnabled=${join(",", var.repositories_supported)}"
+    local url="https://${var.control_plane}/deploy/sidecar.compose.yaml?TemplateVersion=${var.sidecar_version}&TemplateType=terraform&LogIntegration=${var.log_integration}&MetricsIntegration=${var.metrics_integration}&HCVaultIntegrationID=${var.hc_vault_integration_id}&WiresEnabled=${join(",", var.repositories_supported)}"
     echo "Trying to download the sidecar template from: $url"
     if [[ $(curl -s -o /dev/null -w "%%{http_code}" -L "$url") = 200 ]]; then
       curl -L "$url" > /home/ec2-user/sidecar.compose.yaml;
