@@ -93,64 +93,10 @@ variable "sidecar_dns_overwrite" {
 }
 ##########################################################################################################
 
-variable "sidecar_dremio_ports" {
-  description = "List of ports allowed to connect to Dremio in sidecar"
+variable "sidecar_ports" {
+  description = "List of ports allowed to connect to the sidecar. See also 'load_balancer_tls_ports'."
   type        = list(number)
-  default     = [31010, 31011, 31012, 31013, 31014]
-}
-
-variable "sidecar_mongodb_ports" {
-  description = "List of ports allowed to connect to MongoDB in sidecar"
-  type        = list(number)
-  default     = [27017, 27018, 27019, 27020, 27021, 27022, 27023, 27024, 27025, 27026, 27027, 27028]
-}
-
-variable "sidecar_mysql_ports" {
-  description = "List of ports allowed to connect to MySQL in sidecar"
-  type        = list(number)
-  default     = [3306, 3307, 3308, 3309, 3310]
-}
-
-variable "sidecar_oracle_ports" {
-  description = "List of ports allowed to connect to OracleDB in sidecar"
-  type        = list(number)
-  default     = [1521, 1522, 1523, 1524, 1525]
-}
-
-variable "sidecar_postgresql_ports" {
-  description = "List of ports allowed to connect to PostgreSQL in sidecar"
-  type        = list(number)
-  default     = [5432, 5433, 5434, 5435, 5436]
-}
-
-variable "sidecar_rest_ports" {
-  description = "List of ports allowed to connect to Rest Services in sidecar"
-  type        = list(number)
-  default     = [80, 81, 82, 83, 84]
-}
-
-variable "sidecar_snowflake_ports" {
-  description = "(Deprecated - use sidecar_http_ports and load_balancer_tls_ports instead) List of ports allowed to connect to Snowflake in sidecar"
-  type        = list(number)
-  default     = [443, 444, 445, 446, 447]
-}
-
-variable "sidecar_sqlserver_ports" {
-  description = "List of ports allowed to connect to SQLServer in sidecar"
-  type        = list(number)
-  default     = [1433, 1434, 1435, 1436, 1437]
-}
-
-variable "sidecar_s3_ports" {
-  description = "List of ports allowed to connect to S3 in sidecar"
-  type        = list(number)
-  default     = [453]
-}
-
-variable "sidecar_http_ports" {
-  description = "List of ports allowed to connect to HTTP-based repositories (Snowflake and REST)"
-  type = list(number)
-  default = [80, 81, 82, 83, 84, 443, 444, 445, 446, 447]
+  default     = [80,443,453,1433,1521,3306,3307,5432,27017,31010]
 }
 
 variable "sidecar_version" {

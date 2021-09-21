@@ -65,6 +65,18 @@ variable "load_balancer_subnets" {
   default     = []
 }
 
+variable "load_balancer_scheme" {
+  description = "EC2 network load balancer scheme ('internal' or 'internet-facing')"
+  type        = string
+  default     = "internal"
+}
+
+variable "load_balancer_tls_ports" {
+  description = "List of ports that will have TLS terminated at load balancer level. See also 'sidecar_ports'."
+  type        = list(number)
+  default     = [443]
+}
+
 variable "volume_size" {
   description = "Size of the sidecar disk"
   type        = number
@@ -113,18 +125,6 @@ variable "deploy_secrets" {
 variable "secrets_location" {
   description = "Location in AWS Secrets Manager to store client_id, client_secret and container_registry_key"
   type        = string
-}
-
-variable "load_balancer_scheme" {
-  description = "EC2 network load balancer scheme ('internal' or 'internet-facing')"
-  type        = string
-  default     = "internal"
-}
-
-variable "load_balancer_tls_ports" {
-  description = "List of ports to enable TLS termination on."
-  type = list(number)
-  default = [443, 444, 445, 446, 447]
 }
 
 variable "associate_public_ip_address" {
