@@ -52,6 +52,18 @@ variable "metrics_integration" {
   default     = ""
 }
 
+variable "mongodb_port_alloc_range_low" {
+  description = "Initial value for MongoDB port allocation range. This value must be the lowest MongoDB port declared in 'sidecar_ports' variable."
+  type        = number
+  default     = 27017
+}
+
+variable "mongodb_port_alloc_range_high" {
+  description = "Final value for MongoDB port allocation range. This value must be the highest MongoDB port declared in 'sidecar_ports' variable."
+  type        = number
+  default     = 27019
+}
+
 variable "name_prefix" {
   description = "Prefix for names of created resources in AWS"
   type        = string
