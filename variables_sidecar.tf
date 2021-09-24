@@ -53,13 +53,23 @@ variable "metrics_integration" {
 }
 
 variable "mongodb_port_alloc_range_low" {
-  description = "Initial value for MongoDB port allocation range. This value must be the lowest MongoDB port declared in 'sidecar_ports' variable."
+  description = <<EOF
+Initial value for MongoDB port allocation range. The consecutive ports in the
+range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used
+for mongodb cluster monitoring. All the ports in this range must be listed in
+`sidecar_ports`.
+EOF
   type        = number
   default     = 27017
 }
 
 variable "mongodb_port_alloc_range_high" {
-  description = "Final value for MongoDB port allocation range. This value must be the highest MongoDB port declared in 'sidecar_ports' variable."
+  description = <<EOF
+Final value for MongoDB port allocation range. The consecutive ports in the
+range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used
+for mongodb cluster monitoring. All the ports in this range must be listed in
+`sidecar_ports`.
+EOF
   type        = number
   default     = 27019
 }
