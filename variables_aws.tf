@@ -72,9 +72,13 @@ variable "load_balancer_scheme" {
 }
 
 variable "load_balancer_tls_ports" {
-  description = "List of ports that will have TLS terminated at load balancer level. See also 'sidecar_ports'."
+  description = <<EOF
+List of ports that will have TLS terminated at load balancer level
+(snowflake support, for example). If assigned, 'load_balancer_certificate_arn' 
+must also be provided. This parameter must be a subset of 'sidecar_ports'.
+EOF
   type        = list(number)
-  default     = [443]
+  default     = []
 }
 
 variable "volume_size" {
