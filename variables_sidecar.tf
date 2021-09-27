@@ -118,7 +118,7 @@ variable "sidecar_dns_overwrite" {
 variable "sidecar_ports" {
   description = "List of ports allowed to connect to the sidecar. See also 'load_balancer_tls_ports'."
   type        = list(number)
-  default     = [80,443,453,1433,1521,3306,3307,5432,27017,31010]
+  default     = [80,443,453,1433,1521,3306,3307,5432,5439,9996,9999,27017,31010]
 }
 
 variable "sidecar_version" {
@@ -129,5 +129,5 @@ variable "sidecar_version" {
 variable "repositories_supported" {
   description = "List of all repositories that will be supported by the sidecar (lower case only)"
   type        = list(string)
-  default     = ["dremio", "mongodb", "mysql", "oracle", "postgresql", "rest", "snowflake", "sqlserver", "s3"]
+  default     = ["denodo", "dremio", "mongodb", "mysql", "oracle", "postgresql", "redshift", "rest", "snowflake", "sqlserver", "s3"]
 }
