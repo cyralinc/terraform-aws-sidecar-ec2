@@ -5,7 +5,7 @@
 ```hcl
 module "cyral_sidecar" {
     source  = "cyralinc/sidecar-aws/cyral"  
-    version = "1.0.0" # terraform module version
+    version = "2.1.0" # terraform module version
 
     sidecar_version = ""
     sidecar_id      = ""
@@ -112,8 +112,8 @@ No modules.
 | <a name="input_load_balancer_tls_ports"></a> [load\_balancer\_tls\_ports](#input\_load\_balancer\_tls\_ports) | List of ports that will have TLS terminated at load balancer level<br>(snowflake support, for example). If assigned, 'load\_balancer\_certificate\_arn' <br>must also be provided. This parameter must be a subset of 'sidecar\_ports'. | `list(number)` | `[]` | no |
 | <a name="input_log_integration"></a> [log\_integration](#input\_log\_integration) | Logs destination | `string` | `"cloudwatch"` | no |
 | <a name="input_metrics_integration"></a> [metrics\_integration](#input\_metrics\_integration) | Metrics destination | `string` | `""` | no |
-| <a name="input_mongodb_port_alloc_range_high"></a> [mongodb\_port\_alloc\_range\_high](#input\_mongodb\_port\_alloc\_range\_high) | Final value for MongoDB port allocation range. The consecutive ports in the<br>range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used<br>for mongodb cluster monitoring. All the ports in this range must be listed in<br>`sidecar_ports`. | `number` | `27019` | no |
-| <a name="input_mongodb_port_alloc_range_low"></a> [mongodb\_port\_alloc\_range\_low](#input\_mongodb\_port\_alloc\_range\_low) | Initial value for MongoDB port allocation range. The consecutive ports in the<br>range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used<br>for mongodb cluster monitoring. All the ports in this range must be listed in<br>`sidecar_ports`. | `number` | `27017` | no |
+| <a name="input_mongodb_port_alloc_range_high"></a> [mongodb\_port\_alloc\_range\_high](#input\_mongodb\_port\_alloc\_range\_high) | Final value for MongoDB port allocation range. The consecutive ports in the<br>range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used<br>for mongodb cluster monitoring. All the ports in this range must be listed in<br>`sidecar_ports`. | `number` | n/a | yes |
+| <a name="input_mongodb_port_alloc_range_low"></a> [mongodb\_port\_alloc\_range\_low](#input\_mongodb\_port\_alloc\_range\_low) | Initial value for MongoDB port allocation range. The consecutive ports in the<br>range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used<br>for mongodb cluster monitoring. All the ports in this range must be listed in<br>`sidecar_ports`. | `number` | n/a | yes |
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Prefix for names of created resources in AWS | `string` | n/a | yes |
 | <a name="input_repositories_supported"></a> [repositories\_supported](#input\_repositories\_supported) | List of all repositories that will be supported by the sidecar (lower case only) | `list(string)` | <pre>[<br>  "dremio",<br>  "mongodb",<br>  "mysql",<br>  "oracle",<br>  "postgresql",<br>  "rest",<br>  "snowflake",<br>  "sqlserver",<br>  "s3"<br>]</pre> | no |
 | <a name="input_secrets_location"></a> [secrets\_location](#input\_secrets\_location) | Location in AWS Secrets Manager to store client\_id, client\_secret and container\_registry\_key | `string` | n/a | yes |
@@ -121,7 +121,7 @@ No modules.
 | <a name="input_sidecar_dns_name"></a> [sidecar\_dns\_name](#input\_sidecar\_dns\_name) | (Optional) Fully qualified domain name that will be automatically created/updated to reference the sidecar LB | `string` | `""` | no |
 | <a name="input_sidecar_dns_overwrite"></a> [sidecar\_dns\_overwrite](#input\_sidecar\_dns\_overwrite) | (Optional) Update an existing DNS name informed in 'sidecar\_dns\_name' variable | `bool` | `false` | no |
 | <a name="input_sidecar_id"></a> [sidecar\_id](#input\_sidecar\_id) | Sidecar identifier | `string` | n/a | yes |
-| <a name="input_sidecar_ports"></a> [sidecar\_ports](#input\_sidecar\_ports) | List of ports allowed to connect to the sidecar. See also 'load\_balancer\_tls\_ports'. | `list(number)` | <pre>[<br>  80,<br>  443,<br>  453,<br>  1433,<br>  1521,<br>  3306,<br>  3307,<br>  5432,<br>  27017,<br>  31010<br>]</pre> | no |
+| <a name="input_sidecar_ports"></a> [sidecar\_ports](#input\_sidecar\_ports) | List of ports allowed to connect to the sidecar. See also 'load\_balancer\_tls\_ports'. | `list(number)` | n/a | yes |
 | <a name="input_sidecar_version"></a> [sidecar\_version](#input\_sidecar\_version) | Version of the sidecar | `string` | n/a | yes |
 | <a name="input_splunk_host"></a> [splunk\_host](#input\_splunk\_host) | Splunk host | `string` | `""` | no |
 | <a name="input_splunk_index"></a> [splunk\_index](#input\_splunk\_index) | Splunk index | `string` | `""` | no |
