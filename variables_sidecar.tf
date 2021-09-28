@@ -60,7 +60,6 @@ for mongodb cluster monitoring. All the ports in this range must be listed in
 `sidecar_ports`.
 EOF
   type        = number
-  default     = 27017
 }
 
 variable "mongodb_port_alloc_range_high" {
@@ -71,7 +70,6 @@ for mongodb cluster monitoring. All the ports in this range must be listed in
 `sidecar_ports`.
 EOF
   type        = number
-  default     = 27019
 }
 
 variable "name_prefix" {
@@ -118,7 +116,6 @@ variable "sidecar_dns_overwrite" {
 variable "sidecar_ports" {
   description = "List of ports allowed to connect to the sidecar. See also 'load_balancer_tls_ports'."
   type        = list(number)
-  default     = [80,443,453,1433,1521,3306,3307,5432,5439,9996,9999,27017,31010]
 }
 
 variable "sidecar_version" {
