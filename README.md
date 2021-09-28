@@ -5,7 +5,7 @@
 ```hcl
 module "cyral_sidecar" {
     source  = "cyralinc/sidecar-aws/cyral"  
-    version = "2.1.0" # terraform module version
+    version = "2.2.0" # terraform module version
 
     sidecar_version = ""
     sidecar_id      = ""
@@ -115,7 +115,7 @@ No modules.
 | <a name="input_mongodb_port_alloc_range_high"></a> [mongodb\_port\_alloc\_range\_high](#input\_mongodb\_port\_alloc\_range\_high) | Final value for MongoDB port allocation range. The consecutive ports in the<br>range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used<br>for mongodb cluster monitoring. All the ports in this range must be listed in<br>`sidecar_ports`. | `number` | n/a | yes |
 | <a name="input_mongodb_port_alloc_range_low"></a> [mongodb\_port\_alloc\_range\_low](#input\_mongodb\_port\_alloc\_range\_low) | Initial value for MongoDB port allocation range. The consecutive ports in the<br>range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used<br>for mongodb cluster monitoring. All the ports in this range must be listed in<br>`sidecar_ports`. | `number` | n/a | yes |
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Prefix for names of created resources in AWS | `string` | n/a | yes |
-| <a name="input_repositories_supported"></a> [repositories\_supported](#input\_repositories\_supported) | List of all repositories that will be supported by the sidecar (lower case only) | `list(string)` | <pre>[<br>  "dremio",<br>  "mongodb",<br>  "mysql",<br>  "oracle",<br>  "postgresql",<br>  "rest",<br>  "snowflake",<br>  "sqlserver",<br>  "s3"<br>]</pre> | no |
+| <a name="input_repositories_supported"></a> [repositories\_supported](#input\_repositories\_supported) | List of all repositories that will be supported by the sidecar (lower case only) | `list(string)` | <pre>[<br>  "denodo",<br>  "dremio",<br>  "mongodb",<br>  "mysql",<br>  "oracle",<br>  "postgresql",<br>  "redshift",<br>  "rest",<br>  "snowflake",<br>  "sqlserver",<br>  "s3"<br>]</pre> | no |
 | <a name="input_secrets_location"></a> [secrets\_location](#input\_secrets\_location) | Location in AWS Secrets Manager to store client\_id, client\_secret and container\_registry\_key | `string` | n/a | yes |
 | <a name="input_sidecar_dns_hosted_zone_id"></a> [sidecar\_dns\_hosted\_zone\_id](#input\_sidecar\_dns\_hosted\_zone\_id) | (Optional) Route53 hosted zone ID for the corresponding 'sidecar\_dns\_name' provided | `string` | `""` | no |
 | <a name="input_sidecar_dns_name"></a> [sidecar\_dns\_name](#input\_sidecar\_dns\_name) | (Optional) Fully qualified domain name that will be automatically created/updated to reference the sidecar LB | `string` | `""` | no |

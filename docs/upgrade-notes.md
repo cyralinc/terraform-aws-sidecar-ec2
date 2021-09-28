@@ -1,6 +1,6 @@
 # Upgrade Notes
 
-## Upgrading from module 1.x.y to 2.x.y
+## Upgrading from module 1.x.y to 2.2.0 or later
 
 ### New variables
 
@@ -18,13 +18,13 @@ This variable replaces all the following previous variables:
 * `sidecar_sqlserver_ports`
 * `sidecar_s3_ports`
 
-`sidecar_ports` defines a reduced range of ports and assumes the following default: `[80, 443, 453, 1433, 1521, 3306, 3307, 5432, 27017, 27018, 27019, 31010]`. Adjust it accordingly if your sidecar requires ports that are not covered by the defaults or if you don't want to expose all those ports.
+`sidecar_ports` does not define a range of ports as previous variables, so you need to provide those ports that you will use to expose your repositories. For example: if you have 2 SQL Server database and 4 PostgreSQL databases that you want to expose using a single sidecar and assuming you are starting with the default ports for each database vendor, they you could assign `[1433, 1434, 5432, 5433, 5434, 5435]`. In this example, you would expose the two SQL Server instances in ports `1433` and `1434` and the four PostgreSQL instances in the remaining ports, meaning that users would connect to the database using, for example, `mysidecardns.mycompany.com:1433`, `mysidecardns.mycompany.com:1434`, etc.
 
 The maximum number of ports that can be assigned to a sidecar depends on the maximum number of listeners per load balancer as defined by AWS (currently set to `50` - [see also](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-limits.html)).
 
 #### mongodb_port_alloc_range_low and mongodb_port_alloc_range_high
 
-Defines the lower and upper limit values for the port allocation range reserved for MongoDB. This range must correspond to the range of ports declared in `sidecar_ports` that will be used for MongoDB. The default value assigned to `sidecar_ports` contains the consecutive ports `27017`, `27018` and `27019` for MongoDB utilization. It means that the corresponding `mongodb_port_alloc_range_low` is `27017` and `mongodb_port_alloc_range_high` is `27019`. If you want to use a range of `10` ports for MongoDB, add all consecutive ports to `sidecar_ports` (ex: `27017, 27018, 27019, 27020, 27021, 27022, 27023, 27024, 27025, 27026`) and define the first and last values in `mongodb_port_alloc_range_low` (`27017` in the example) and `mongodb_port_alloc_range_high` (`27026` in the example).
+Defines the lower and upper limit values for the port allocation range reserved for MongoDB. This range must correspond to the range of ports declared in `sidecar_ports` that will be used for MongoDB. If you assign to `sidecar_ports` the consecutive ports `27017`, `27018` and `27019` for MongoDB utilization, it means that the corresponding `mongodb_port_alloc_range_low` is `27017` and `mongodb_port_alloc_range_high` is `27019`. If you want to use a range of `10` ports for MongoDB, then you need to add all consecutive ports to `sidecar_ports` (ex: `27017, 27018, 27019, 27020, 27021, 27022, 27023, 27024, 27025, 27026`) and define `mongodb_port_alloc_range_low = 27017` and `mongodb_port_alloc_range_high = 27026`.
 
 
 ## Upgrading from module 1.0.0 to any later version
