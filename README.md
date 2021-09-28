@@ -5,13 +5,17 @@
 ```hcl
 module "cyral_sidecar" {
     source  = "cyralinc/sidecar-aws/cyral"  
-    version = "2.2.0" # terraform module version
+    version = "2.2.1" # terraform module version
 
     sidecar_version = ""
     sidecar_id      = ""
 
     name_prefix   = ""
     control_plane = ""
+
+    sidecar_ports = [443, 3306, 5432, 27017, 27018, 27019]
+    mongodb_port_alloc_range_low  = 27017
+    mongodb_port_alloc_range_high = 27019
 
     vpc_id  = ""
     subnets = [""]
