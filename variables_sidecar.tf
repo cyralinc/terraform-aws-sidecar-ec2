@@ -126,5 +126,5 @@ variable "sidecar_version" {
 variable "repositories_supported" {
   description = "List of all repositories that will be supported by the sidecar (lower case only)"
   type        = list(string)
-  default     = ["dremio", "mongodb", "mysql", "oracle", "postgresql", "rest", "snowflake", "sqlserver", "s3"]
+  default     = ["denodo", "dremio", "mongodb", "mysql", "oracle", "postgresql", "redshift", "rest", "snowflake", "sqlserver", "s3"]
 }
