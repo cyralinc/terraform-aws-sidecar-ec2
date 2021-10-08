@@ -28,7 +28,7 @@ sudo service docker start
 # Add ec2-user to docker group
 sudo usermod -a -G docker ec2-user
 # Install docker-compose
-wget -q -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-`uname -s`-`uname -m`
+wget -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-`uname -s`-`uname -m`
 sudo mv docker-compose-`uname -s`-`uname -m` /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
@@ -45,15 +45,15 @@ DAEMON_PIDFILE_TIMEOUT=10
 EOF
 sudo systemctl restart docker
 # Install JQ
-wget -q https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
 sudo mv jq-linux64 /usr/local/bin/jq
 sudo chmod a+x /usr/local/bin/jq
 sudo ln -s /usr/local/bin/jq /usr/bin/jq
 export PATH=$PATH:/usr/local/bin
 ln -s /usr/bin/pip-2.6 /usr/bin/pip
-pip install --upgrade pip &> /dev/null
-pip install awscli --ignore-installed six &> /dev/null
-wget -q https://raw.githubusercontent.com/cyralinc/quickstart-linux-bastion/master/scripts/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
+pip install --upgrade pip
+pip install awscli --ignore-installed six
+wget https://raw.githubusercontent.com/cyralinc/quickstart-linux-bastion/master/scripts/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
 chmod a+x /home/ec2-user/bootstrap.sh
 
 /home/ec2-user/bootstrap.sh --tcp-forwarding true
