@@ -62,7 +62,9 @@ export PATH=$PATH:/usr/local/bin
 wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
 chmod a+x /home/ec2-user/bootstrap.sh
 
-/home/ec2-user/bootstrap.sh --tcp-forwarding true
+
+function bootstrap () { /home/ec2-user/bootstrap.sh  --tcp-forwarding true --public-gcp-repo $PUBLIC_REPO --gcs-api-endpoint $GCS_API_ENDPOINT; }
+retry bootstrap
 service sshd restart
 
 # Configure cloudwatch
