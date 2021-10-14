@@ -30,8 +30,11 @@ sudo service docker start
 # Add ec2-user to docker group
 sudo usermod -a -G docker ec2-user
 
+export PUBLIC_REPO=artifacts.cyralpublic.appspot.com
+export GCS_API_ENDPOINT=https://storage.googleapis.com
+
 # Install docker-compose
-wget -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m`
+wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/docker-compose/1.29.2/docker-compose-Linux-x86_64
 sudo mv docker-compose-`uname -s`-`uname -m` /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
@@ -50,13 +53,13 @@ EOF
 sudo systemctl restart docker
 
 # Install JQ
-wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/jq-linux64
 sudo mv jq-linux64 /usr/local/bin/jq
 sudo chmod a+x /usr/local/bin/jq
 sudo ln -s /usr/local/bin/jq /usr/bin/jq
 export PATH=$PATH:/usr/local/bin
 
-wget https://raw.githubusercontent.com/cyralinc/quickstart-linux-bastion/master/scripts/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
+wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
 chmod a+x /home/ec2-user/bootstrap.sh
 
 /home/ec2-user/bootstrap.sh --tcp-forwarding true
