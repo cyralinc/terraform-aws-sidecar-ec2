@@ -34,6 +34,7 @@ export PUBLIC_REPO=artifacts.cyralpublic.appspot.com
 export GCS_API_ENDPOINT=https://storage.googleapis.com
 export DOCKER_COMPOSE_VERSION=1.29.2
 export JQ_VERSION=1.6
+export BASTION_BOOTSTRAP_VERSION=0.1.0
 
 # Install docker-compose
 wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/docker-compose/$DOCKER_COMPOSE_VERSION/docker-compose-Linux-x86_64
@@ -61,7 +62,7 @@ sudo chmod a+x /usr/local/bin/jq
 sudo ln -s /usr/local/bin/jq /usr/bin/jq
 export PATH=$PATH:/usr/local/bin
 
-wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/scripts/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
+wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/quickstart-linux-bastion/$BASTION_BOOTSTRAP_VERSION/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
 chmod a+x /home/ec2-user/bootstrap.sh
 
 
