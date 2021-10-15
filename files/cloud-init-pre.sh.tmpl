@@ -4,7 +4,7 @@
 # aws autoscaling complete-lifecycle-action --lifecycle-action-result CONTINUE --instance-id $INSTANCE_ID --lifecycle-hook-name ${name_prefix}-InitLifeCycleHook --auto-scaling-group-name $ASG_NAME --region ${aws_region}
 
 yum update -y
-yum install -y aws-cfn-bootstrap bind-utils bc screen epel-release python-pip wget ec2-instance-connect docker
+yum install -y aws-cfn-bootstrap wget ec2-instance-connect docker
 function retry() {
   RETRIES=15
   while [ $RETRIES -gt 0 ]; do
@@ -23,16 +23,26 @@ function retry() {
   echo "Retries exceeded"
   exit 3
 }
+
 # Start docker
 sudo service docker start
+
 # Add ec2-user to docker group
 sudo usermod -a -G docker ec2-user
+
+export PUBLIC_REPO=artifacts.cyralpublic.appspot.com
+export GCS_API_ENDPOINT=https://storage.googleapis.com
+export DOCKER_COMPOSE_VERSION=1.29.2
+export JQ_VERSION=1.6
+export BASTION_BOOTSTRAP_VERSION=0.1.0
+
 # Install docker-compose
-wget -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-`uname -s`-`uname -m`
+wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/docker-compose/$DOCKER_COMPOSE_VERSION/docker-compose-Linux-x86_64
 sudo mv docker-compose-`uname -s`-`uname -m` /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 docker-compose --version
+
 # Configure fd limit for ec2 instance and containers
 sudo bash -c 'cat > /etc/security/limits.d/fdlimit.conf' << EOF
 *       soft  nofile  65535
@@ -44,19 +54,20 @@ OPTIONS="--default-ulimit nofile=65535:65535"
 DAEMON_PIDFILE_TIMEOUT=10
 EOF
 sudo systemctl restart docker
+
 # Install JQ
-wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+wget -q $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/jq/$JQ_VERSION/jq-linux64
 sudo mv jq-linux64 /usr/local/bin/jq
 sudo chmod a+x /usr/local/bin/jq
 sudo ln -s /usr/local/bin/jq /usr/bin/jq
 export PATH=$PATH:/usr/local/bin
-ln -s /usr/bin/pip-2.6 /usr/bin/pip
-pip install --upgrade pip
-pip install awscli --ignore-installed six
-wget https://raw.githubusercontent.com/cyralinc/quickstart-linux-bastion/master/scripts/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
+
+wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/quickstart-linux-bastion/$BASTION_BOOTSTRAP_VERSION/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
 chmod a+x /home/ec2-user/bootstrap.sh
 
-/home/ec2-user/bootstrap.sh --tcp-forwarding true
+
+function bootstrap () { /home/ec2-user/bootstrap.sh  --tcp-forwarding true --public-gcp-repo $PUBLIC_REPO --gcs-api-endpoint $GCS_API_ENDPOINT; }
+retry bootstrap
 service sshd restart
 
 # Configure cloudwatch
