@@ -34,6 +34,12 @@ variable "control_plane" {
   type        = string
 }
 
+variable "tls_type" {
+  description = "TLS mode for the control plane - tls, tls-skip-verify, no-tls"
+  type        = string
+  default     = "tls"
+}
+
 variable "iam_policies" {
   description = "(Optional) List of IAM policies ARNs that will be attached to the sidecar IAM role"
   type        = list(string)
