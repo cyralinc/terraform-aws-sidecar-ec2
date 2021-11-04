@@ -34,7 +34,7 @@ variable "control_plane" {
   type        = string
 }
 
-variable "tls_type" {
+variable "external_tls_type" {
   description = "TLS mode for the control plane - tls, tls-skip-verify, no-tls"
   type        = string
   default     = "tls"

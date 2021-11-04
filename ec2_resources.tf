@@ -10,8 +10,8 @@ data "aws_ami" "amazon_linux_2" {
 }
 
 locals {
-  protocol = ${var.tls_type == "no-tls" ? "http" : "https"}
-  curl = ${var.tls_type == "tls-skip-verify" ? "curl -k" : "curl"}
+  protocol = ${var.external_tls_type == "no-tls" ? "http" : "https"}
+  curl = ${var.external_tls_type == "tls-skip-verify" ? "curl -k" : "curl"}
 }
 
 resource "aws_launch_configuration" "cyral-sidecar-lc" {
