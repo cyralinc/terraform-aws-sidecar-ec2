@@ -9,11 +9,6 @@ data "aws_ami" "amazon_linux_2" {
   owners = ["amazon"]
 }
 
-locals {
-  protocol = ${var.external_tls_type == "no-tls" ? "http" : "https"}
-  curl = ${var.external_tls_type == "tls-skip-verify" ? "curl -k" : "curl"}
-}
-
 resource "aws_launch_configuration" "cyral-sidecar-lc" {
   # Launch configuration for sidecar instances that will run containers
   name_prefix                 = "${var.name_prefix}-autoscaling-"
@@ -46,7 +41,7 @@ resource "aws_launch_configuration" "cyral-sidecar-lc" {
   function download_sidecar () {
     local url="${local.protocol}://${var.control_plane}/deploy/sidecar.compose.yaml?TemplateVersion=${var.sidecar_version}&TemplateType=terraform&LogIntegration=${var.log_integration}&MetricsIntegration=${var.metrics_integration}&HCVaultIntegrationID=${var.hc_vault_integration_id}&WiresEnabled=${join(",", var.repositories_supported)}"
     echo "Trying to download the sidecar template from: $url"
-    if [[ $(${local.curl} -s -o /home/ec2-user/sidecar.compose.yaml -w "%{http_code}" -L "$url") = 200 ]]; then
+    if [[ $(${local.curl} -s -o /home/ec2-user/sidecar.compose.yaml -w "%%{http_code}" -L "$url") = 200 ]]; then
       return 0
     fi
     return 1
