@@ -38,6 +38,7 @@ locals {
     hc_vault_integration_id       = var.hc_vault_integration_id
     mongodb_port_alloc_range_low  = var.mongodb_port_alloc_range_low
     mongodb_port_alloc_range_high = var.mongodb_port_alloc_range_high
+    mysql_multiplexed_port        = var.mysql_multiplexed_port
   }
 
   cloud_init_pre  = templatefile("${path.module}/files/cloud-init-pre.sh.tmpl", local.templatevars)

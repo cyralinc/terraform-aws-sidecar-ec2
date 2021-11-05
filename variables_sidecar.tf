@@ -78,6 +78,12 @@ EOF
   type        = number
 }
 
+variable "mysql_multiplexed_port" {
+  description = "Port that will be used by the sidecar to multiplex connections to MySQL"
+  type        = number
+  default     = 0
+}
+
 variable "name_prefix" {
   description = "Prefix for names of created resources in AWS"
   type        = string
