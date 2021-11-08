@@ -24,11 +24,22 @@ function retry() {
   exit 3
 }
 
+function exit_upon_failure {
+  RESULT=$?
+  if [ $RESULT -ne 0 ]; then
+    echo Initialization failed with code $RESULT. Exiting...
+    exit $RESULT
+  fi
+  return 0
+}
+
 # Start docker
 sudo service docker start
+exit_upon_failure
 
 # Add ec2-user to docker group
 sudo usermod -a -G docker ec2-user
+exit_upon_failure
 
 export PUBLIC_REPO=artifacts.cyralpublic.appspot.com
 export GCS_API_ENDPOINT=https://storage.googleapis.com
@@ -42,6 +53,7 @@ sudo mv docker-compose-`uname -s`-`uname -m` /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 docker-compose --version
+exit_upon_failure
 
 # Configure fd limit for ec2 instance and containers
 sudo bash -c 'cat > /etc/security/limits.d/fdlimit.conf' << EOF
@@ -54,6 +66,7 @@ OPTIONS="--default-ulimit nofile=65535:65535"
 DAEMON_PIDFILE_TIMEOUT=10
 EOF
 sudo systemctl restart docker
+exit_upon_failure
 
 # Install JQ
 wget -q $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/jq/$JQ_VERSION/jq-linux64
@@ -61,14 +74,17 @@ sudo mv jq-linux64 /usr/local/bin/jq
 sudo chmod a+x /usr/local/bin/jq
 sudo ln -s /usr/local/bin/jq /usr/bin/jq
 export PATH=$PATH:/usr/local/bin
+jq --version
+exit_upon_failure
 
 wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/quickstart-linux-bastion/$BASTION_BOOTSTRAP_VERSION/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
 chmod a+x /home/ec2-user/bootstrap.sh
-
+exit_upon_failure
 
 function bootstrap () { /home/ec2-user/bootstrap.sh  --tcp-forwarding true --public-gcp-repo $PUBLIC_REPO --gcs-api-endpoint $GCS_API_ENDPOINT; }
 retry bootstrap
 service sshd restart
+exit_upon_failure
 
 # Configure cloudwatch
 cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d/bastion.json << EOF
@@ -97,6 +113,7 @@ cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d/bastion.jso
 EOF
 rm /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
 systemctl restart amazon-cloudwatch-agent
+exit_upon_failure
 
 echo "Fetching public hostname..."
 export STATUS_CODE=$(curl -o instance-id.txt -w "%%{http_code}\n" -s http://169.254.169.254/latest/meta-data/instance-id -m 10)
@@ -152,3 +169,4 @@ MONGODB_PORT_ALLOC_RANGE_HIGH=${mongodb_port_alloc_range_high}
 
 MYSQL_MULTIPLEXED_PORT=${mysql_multiplexed_port}
 EOF
+exit_upon_failure
