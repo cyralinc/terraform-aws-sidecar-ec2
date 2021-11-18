@@ -28,6 +28,8 @@ function exit_upon_failure {
   RESULT=$?
   if [ $RESULT -ne 0 ]; then
     echo Initialization failed with code $RESULT. Exiting...
+    # sleep 120
+    # aws autoscaling set-instance-health --instance-id $INSTANCE_ID --no-should-respect-grace-period --region ${aws_region} --health-status Unhealthy
     exit $RESULT
   fi
   return 0
