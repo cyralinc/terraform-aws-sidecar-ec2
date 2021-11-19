@@ -14,7 +14,7 @@ variable "asg_count" {
 }
 
 variable "asg_min" {
-  description = "The minimum number of hosts to create in the auto autoscaling group"
+  description = "The minimum number of hosts to create in the auto scaling group"
   type        = number
   default     = 1
 }
