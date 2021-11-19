@@ -14,21 +14,27 @@ variable "asg_count" {
 }
 
 variable "asg_min" {
-  description = "The minimum number of hosts to create in the autoscale group"
+  description = "The minimum number of hosts to create in the auto autoscaling group"
   type        = number
   default     = 1
 }
 
 variable "asg_desired" {
-  description = "The desired number of hosts to create in the autoscale group"
+  description = "The desired number of hosts to create in the auto scaling group"
   type        = number
   default     = 1
 }
 
 variable "asg_max" {
-  description = "The maximum number of hosts to create in the autoscale group."
+  description = "The maximum number of hosts to create in the auto scaling group"
   type        = number
   default     = 2
+}
+
+variable "enable_cross_zone_load_balancing" {
+  description = "Enable cross zone load balancing"
+  type        = bool
+  default     = true
 }
 
 variable "health_check_grace_period" {
