@@ -156,6 +156,7 @@ resource "aws_lb" "cyral-lb" {
   internal           = var.load_balancer_scheme == "internet-facing" ? false : true
   load_balancer_type = "network"
   subnets            = length(var.load_balancer_subnets) > 0 ? var.load_balancer_subnets : var.subnets
+  enable_cross_zone_load_balancing = var.enable_cross_zone_load_balancing
 }
 
 resource "aws_lb_target_group" "cyral-sidecar-tg" {
