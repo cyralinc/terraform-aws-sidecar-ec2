@@ -51,7 +51,6 @@ resource "aws_launch_configuration" "cyral-sidecar-lc" {
   echo "Fetching secrets..."
   aws secretsmanager get-secret-value --secret-id ${var.secrets_location} --query SecretString --output text \
     --region ${data.aws_region.current.name} | jq -r 'select(.containerRegistryKey != null) | .containerRegistryKey' | base64 --decode > /home/ec2-user/cyral/container_registry_key.json
-  exit_upon_failure
   until [ -f /home/ec2-user/cyral/container_registry_key.json ]; do echo "wait"; sleep 1; done
   cat >> /home/ec2-user/.bash_profile << EOF
   if [[ ${var.container_registry} == *".amazonaws.com"* ]]; then
