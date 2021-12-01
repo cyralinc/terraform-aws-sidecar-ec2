@@ -1,4 +1,10 @@
-data "aws_caller_identity" "current" {}
+# Gets the ARN from a resource that is deployed by this module in order to
+# get the proper partition, region and account number for the aws account
+# where the resources are actually deployed. This prevents issues with
+# deployment pipelines that runs on AWS and deploys to different accounts.
+data "aws_arn" "cw_lg" {
+  arn = aws_cloudwatch_log_group.cyral-sidecar-lg.arn
+}
 
 data "aws_iam_policy_document" "init_script_policy" {
   # Policy doc to allow sidecar to function inside an ASG
@@ -29,8 +35,8 @@ data "aws_iam_policy_document" "init_script_policy" {
       "secretsmanager:GetSecretValue"
     ]
     resources = compact([
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:/cyral/*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.secrets_location}*"
+      "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:/cyral/*",
+      "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:${var.secrets_location}*"
     ])
   }
 }
