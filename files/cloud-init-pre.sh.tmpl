@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 # for the moment, acknowledge early
 # aws autoscaling complete-lifecycle-action --lifecycle-action-result CONTINUE --instance-id $INSTANCE_ID --lifecycle-hook-name ${name_prefix}-InitLifeCycleHook --auto-scaling-group-name $ASG_NAME --region ${aws_region}
@@ -61,10 +61,10 @@ sudo mv jq-linux64 /usr/local/bin/jq
 sudo chmod a+x /usr/local/bin/jq
 sudo ln -s /usr/local/bin/jq /usr/bin/jq
 export PATH=$PATH:/usr/local/bin
+jq --version
 
 wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/quickstart-linux-bastion/$BASTION_BOOTSTRAP_VERSION/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
 chmod a+x /home/ec2-user/bootstrap.sh
-
 
 function bootstrap () { /home/ec2-user/bootstrap.sh  --tcp-forwarding true --public-gcp-repo $PUBLIC_REPO --gcs-api-endpoint $GCS_API_ENDPOINT; }
 retry bootstrap
