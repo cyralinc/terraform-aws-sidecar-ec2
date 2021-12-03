@@ -12,20 +12,6 @@ data "aws_iam_policy_document" "init_script_policy" {
     ]
   }
 
-  # statement {
-  #   actions = [
-  #     "autoscaling:SetInstanceHealth"
-  #   ]
-  #   resources = [
-  #     "*" 
-  #   ]
-  #   condition {
-  #     test     = "StringEquals"
-  #     variable = "autoscaling:ResourceTag/Name"
-  #     values   = ["${var.name_prefix}-instance"]
-  #   }
-  # }
-
   # Cloudwatch permissions
   statement {
     actions = [
