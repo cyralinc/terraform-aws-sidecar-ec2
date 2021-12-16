@@ -106,13 +106,17 @@ resource "aws_security_group" "instance" {
   vpc_id = var.vpc_id
 
   # Allow SSH inbound
-  ingress {
-    description     = "SSH"
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
-    cidr_blocks     = var.ssh_inbound_cidr
-    security_groups = var.ssh_inbound_security_group
+  dynamic "ingress" {
+    for_each = var.ssh_inbound_cidr
+
+    content {
+      description     = "SSH"
+      from_port       = 22
+      to_port         = 22
+      protocol        = "tcp"
+      cidr_blocks     = var.ssh_inbound_cidr
+      security_groups = var.ssh_inbound_security_group
+    }
   }
 
 
