@@ -140,7 +140,7 @@ No modules.
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | Subnets to add sidecar to (list of string) | `list(string)` | n/a | yes |
 | <a name="input_sumologic_host"></a> [sumologic\_host](#input\_sumologic\_host) | Sumologic host | `string` | `""` | no |
 | <a name="input_sumologic_uri"></a> [sumologic\_uri](#input\_sumologic\_uri) | Sumologic uri | `string` | `""` | no |
-| <a name="input_volume_size"></a> [volume\_size](#input\_volume\_size) | Size of the sidecar disk | `number` | `30` | no |
+| <a name="input_volume_size"></a> [volume\_size](#input\_volume\_size) | Size of the sidecar disk | `number` | `15` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | AWS VPC ID to deploy sidecar to | `string` | n/a | yes |
 
 ## Outputs
