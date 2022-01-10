@@ -90,7 +90,7 @@ EOF
 variable "volume_size" {
   description = "Size of the sidecar disk"
   type        = number
-  default     = 30
+  default     = 15
 }
 
 variable "ssh_inbound_cidr" {
