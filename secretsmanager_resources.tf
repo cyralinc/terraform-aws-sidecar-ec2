@@ -7,8 +7,8 @@ locals {
 }
 
 resource "aws_secretsmanager_secret" "cyral-sidecar-secret" {
-  count = var.deploy_secrets ? 1 : 0
-  name  = var.secrets_location
+  count                   = var.deploy_secrets ? 1 : 0
+  name                    = var.secrets_location
   recovery_window_in_days = 0
 }
 

@@ -9,11 +9,11 @@ output "sidecar_load_balancer_dns" {
 }
 
 output "aws_iam_role_arn" {
-	value = aws_iam_role.sidecar_role.arn
-	description = "Sidecar IAM role ARN"
+  value       = aws_iam_role.sidecar_role.arn
+  description = "Sidecar IAM role ARN"
 }
 
 output "aws_security_group_id" {
-	value = aws_security_group.instance.id
-	description = "Sidecar security group id"
+  value       = aws_security_group.instance.id
+  description = "Sidecar security group id"
 }

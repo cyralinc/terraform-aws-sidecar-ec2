@@ -12,15 +12,15 @@ data "aws_ami" "amazon_linux_2" {
 resource "aws_launch_configuration" "cyral-sidecar-lc" {
   # Launch configuration for sidecar instances that will run containers
   name_prefix                 = "${var.name_prefix}-autoscaling-"
-  image_id                    = var.ami_id != "" ? var.ami_id: data.aws_ami.amazon_linux_2.id
+  image_id                    = var.ami_id != "" ? var.ami_id : data.aws_ami.amazon_linux_2.id
   instance_type               = var.instance_type
   iam_instance_profile        = aws_iam_instance_profile.sidecar_profile.name
   key_name                    = var.key_name
   associate_public_ip_address = var.associate_public_ip_address
-  security_groups             = concat(
-                                  [aws_security_group.instance.id],
-                                  var.additional_security_groups
-                                )
+  security_groups = concat(
+    [aws_security_group.instance.id],
+    var.additional_security_groups
+  )
   metadata_options {
     # So docker can access ec2 metadata
     # see https://github.com/aws/aws-sdk-go/issues/2972
@@ -152,15 +152,15 @@ resource "aws_security_group" "instance" {
 
 resource "aws_lb" "cyral-lb" {
   # Core load balancer
-  name               = "${var.name_prefix}-lb"
-  internal           = var.load_balancer_scheme == "internet-facing" ? false : true
-  load_balancer_type = "network"
-  subnets            = length(var.load_balancer_subnets) > 0 ? var.load_balancer_subnets : var.subnets
+  name                             = "${var.name_prefix}-lb"
+  internal                         = var.load_balancer_scheme == "internet-facing" ? false : true
+  load_balancer_type               = "network"
+  subnets                          = length(var.load_balancer_subnets) > 0 ? var.load_balancer_subnets : var.subnets
   enable_cross_zone_load_balancing = var.enable_cross_zone_load_balancing
 }
 
 resource "aws_lb_target_group" "cyral-sidecar-tg" {
-  for_each = {for port in var.sidecar_ports: tostring(port) => port}
+  for_each = { for port in var.sidecar_ports : tostring(port) => port }
   name     = "${var.name_prefix}-tg${each.value}"
   port     = each.value
   protocol = "TCP"
@@ -173,13 +173,13 @@ resource "aws_lb_target_group" "cyral-sidecar-tg" {
 
 resource "aws_lb_listener" "cyral-sidecar-lb-ls" {
   # Listener for load balancer - all existing sidecar ports
-  for_each = {for port in var.sidecar_ports: tostring(port) => port}
+  for_each          = { for port in var.sidecar_ports : tostring(port) => port }
   load_balancer_arn = aws_lb.cyral-lb.arn
   port              = each.value
 
   # Snowflake listeners use TLS and the provided certificate
-  protocol          = contains(var.load_balancer_tls_ports, tonumber(each.value)) ? "TLS" : "TCP"
-  certificate_arn   = contains(var.load_balancer_tls_ports, tonumber(each.value)) ? var.load_balancer_certificate_arn : null
+  protocol        = contains(var.load_balancer_tls_ports, tonumber(each.value)) ? "TLS" : "TCP"
+  certificate_arn = contains(var.load_balancer_tls_ports, tonumber(each.value)) ? var.load_balancer_certificate_arn : null
 
   default_action {
     type             = "forward"
