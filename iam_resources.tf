@@ -79,3 +79,60 @@ resource "aws_iam_role_policy_attachment" "user_policies" {
   role       = aws_iam_role.sidecar_role.name
   policy_arn = each.value
 }
+
+data "aws_iam_policy_document" "self_signed_certificate_lambda_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "self_signed_certificate_lambda_execution" {
+  # Cloudwatch permissions
+  statement {
+    actions = [
+      "logs:PutLogEvents",
+      "logs:CreateLogStream",
+      "logs:CreateLogGroup",
+      "logs:DescribeLogStreams"
+    ]
+    resources = [
+      "arn:${data.aws_arn.cw_lg.partition}:logs:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:*"
+    ]
+  }
+  statement {
+    actions   = ["cloudwatch:PutMetricData"]
+    resources = ["*"]
+  }
+
+  # Secrets Manager permissions
+  statement {
+    actions = [
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:UpdateSecret"
+    ]
+    resources = [
+      "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:/cyral/sidecars/${var.sidecar_id}/self-signed-certificate*"
+    ]
+  }
+}
+
+resource "aws_iam_role" "self_signed_certificate_lambda_execution" {
+  name               = "${var.name_prefix}-self_signed_certificate_lambda_execution"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.self_signed_certificate_lambda_assume_role.json
+}
+
+resource "aws_iam_policy" "self_signed_certificate_lambda_execution" {
+  name   = "${var.name_prefix}-self_signed_certificate_lambda_execution"
+  path   = "/"
+  policy = data.aws_iam_policy_document.self_signed_certificate_lambda_execution.json
+}
+
+resource "aws_iam_role_policy_attachment" "self_signed_certificate_lambda_execution" {
+  role       = aws_iam_role.self_signed_certificate_lambda_execution.name
+  policy_arn = aws_iam_policy.self_signed_certificate_lambda_execution.arn
+}

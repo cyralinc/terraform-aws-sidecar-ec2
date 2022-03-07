@@ -17,3 +17,8 @@ resource "aws_secretsmanager_secret_version" "cyral-sidecar-secret-version" {
   secret_id     = aws_secretsmanager_secret.cyral-sidecar-secret[0].id
   secret_string = jsonencode(local.sidecar_secrets)
 }
+
+resource "aws_secretsmanager_secret" "self_signed_certificate_secret" {
+  name        = "/cyral/sidecars/${var.sidecar_id}/self-signed-certificate"
+  description = "Self-signed TLS certificate used by sidecar in case CA-signed is not found."
+}

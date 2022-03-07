@@ -1,0 +1,7 @@
+# Terraform ephemeral files
+.terraform*
+terraform.tfstate*
+
+# Emacs ephemeral files
+*~
+*#
