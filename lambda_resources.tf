@@ -7,8 +7,8 @@ locals {
   )
 }
 
-resource "aws_lambda_function" "self_signed_certificate" {
-  function_name = "${var.name_prefix}-self_signed_certificate"
+resource "aws_lambda_function" "self_signed_certificate_generator" {
+  function_name = "${var.name_prefix}-self_signed_certificate_generator"
   role          = aws_iam_role.self_signed_certificate_lambda_execution.arn
   runtime       = "go1.x"
   handler       = "selfsigned-lambda"
@@ -25,7 +25,7 @@ resource "aws_lambda_function" "self_signed_certificate" {
   }
 }
 
-resource "aws_lambda_invocation" "self_signed_certificate" {
-  function_name = aws_lambda_function.self_signed_certificate.function_name
+resource "aws_lambda_invocation" "self_signed_certificate_generator" {
+  function_name = aws_lambda_function.self_signed_certificate_generator.function_name
   input         = jsonencode({})
 }
