@@ -19,6 +19,7 @@ resource "aws_secretsmanager_secret_version" "cyral-sidecar-secret-version" {
 }
 
 resource "aws_secretsmanager_secret" "self_signed_certificate_secret" {
-  name        = "/cyral/sidecars/${var.sidecar_id}/self-signed-certificate"
-  description = "Self-signed TLS certificate used by sidecar in case CA-signed is not found."
+  name                    = "/cyral/sidecars/${var.sidecar_id}/self-signed-certificate"
+  description             = "Self-signed TLS certificate used by sidecar in case CA-signed is not found."
+  recovery_window_in_days = 0
 }
