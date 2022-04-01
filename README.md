@@ -5,7 +5,7 @@
 ```hcl
 module "cyral_sidecar" {
     source  = "cyralinc/sidecar-aws/cyral"  
-    version = "2.5.4" # terraform module version
+    version = "2.6.4" # terraform module version
 
     sidecar_version = ""
     sidecar_id      = ""
@@ -140,6 +140,7 @@ No modules.
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | Subnets to add sidecar to (list of string) | `list(string)` | n/a | yes |
 | <a name="input_sumologic_host"></a> [sumologic\_host](#input\_sumologic\_host) | Sumologic host | `string` | `""` | no |
 | <a name="input_sumologic_uri"></a> [sumologic\_uri](#input\_sumologic\_uri) | Sumologic uri | `string` | `""` | no |
+| <a name="input_use_inbound_port_range"></a> [use\_inbound\_port\_range](#input\_use\_inbound\_port\_range) | If set to true, a port range (between the smallest and the biggest sidecar port) will be used to configure the inbound rules for the sidecar security group. This can be useful if you need to use multiple sidecar ports and different CIDRs for DB inbound (db\_inbound\_cidr) since it will significantly reduce the number of inbound rules. On the other hand, all the ports between min(sidecar\_ports) and max(sidecar\_ports) will be open in the security group. | `bool` | `false` | no |
 | <a name="input_volume_size"></a> [volume\_size](#input\_volume\_size) | Size of the sidecar disk | `number` | `15` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | AWS VPC ID to deploy sidecar to | `string` | n/a | yes |
 

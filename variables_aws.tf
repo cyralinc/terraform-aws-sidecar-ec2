@@ -109,6 +109,12 @@ variable "db_inbound_cidr" {
   type        = list(string)
 }
 
+variable "use_inbound_port_range" {
+  description = "If set to true, a port range (between the smallest and the biggest sidecar port) will be used to configure the inbound rules for the sidecar security group. This can be useful if you need to use multiple sidecar ports and different CIDRs for DB inbound (db_inbound_cidr) since it will significantly reduce the number of inbound rules. On the other hand, all the ports between min(sidecar_ports) and max(sidecar_ports) will be open in the security group."
+  type = bool
+  default = false
+}
+
 variable "db_inbound_security_group" {
   description = "Pre-existing security group IDs allowed to connect to db in the EC2 host. Can't be combined with 'db_inbound_cidr'."
   type        = list(string)

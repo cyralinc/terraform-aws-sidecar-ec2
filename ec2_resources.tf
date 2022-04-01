@@ -115,15 +115,18 @@ resource "aws_security_group" "instance" {
     security_groups = var.ssh_inbound_security_group
   }
 
-
-  # Allow DB inbound
+  # If use_inbound_port_range is true, it will create DB Inbound Rules per CIDR using
+  # a port range (between the smallest and the biggest sidecar port). Otherwise, it will
+  # create DB Inbound Rules per sidecar port and CIDR (Cartesian Product between Ports x CIDRs).
+  # Notice that the ingress block accepts a list of CIDRs (cidr_blocks), which internally will
+  # create one ingress rule per CIDR. This is an AWS limitation, which doesnt allow creating a
+  # single ingress rule for a list of CIDRs.
   dynamic "ingress" {
-    for_each = var.sidecar_ports
-    # iterator = "sidecar_ports"
+    for_each = var.use_inbound_port_range ? [1] : var.sidecar_ports
     content {
       description     = "DB"
-      from_port       = ingress.value
-      to_port         = ingress.value
+      from_port       = var.use_inbound_port_range ? min(var.sidecar_ports...) : ingress.value
+      to_port         = var.use_inbound_port_range ? max(var.sidecar_ports...) : ingress.value
       protocol        = "tcp"
       cidr_blocks     = var.db_inbound_cidr
       security_groups = var.db_inbound_security_group
