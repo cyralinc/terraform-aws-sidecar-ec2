@@ -109,8 +109,8 @@ variable "db_inbound_cidr" {
   type        = list(string)
 }
 
-variable "use_inbound_port_range" {
-  description = "If set to true, a port range (between the smallest and the biggest sidecar port) will be used to configure the inbound rules for the sidecar security group. This can be useful if you need to use multiple sidecar ports and different CIDRs for DB inbound (db_inbound_cidr) since it will significantly reduce the number of inbound rules. On the other hand, all the ports between min(sidecar_ports) and max(sidecar_ports) will be open in the security group."
+variable "reduce_security_group_rules_count" {
+  description = "If set to `false`, each port in `sidecar_ports` will be used individually for each CIDR in `db_inbound_cidr` to create inbound rules in the sidecar security group, resulting in a number of inbound rules that is equal to the number of `sidecar_ports` * `db_inbound_cidr`. If set to `true`, the entire sidecar port range from `min(sidecar_ports)` to `max(sidecar_ports)` will be used to configure each inbound rule for each CIDR in `db_inbound_cidr` for the sidecar security group. Setting it to `true` can be useful if you need to use multiple sequential sidecar ports and different CIDRs for DB inbound (`db_inbound_cidr`) since it will significantly reduce the number of inbound rules and avoid hitting AWS quotas. As a side effect, it will open all the ports between `min(sidecar_ports)` and `max(sidecar_ports)` in the security group created by this module."
   type = bool
   default = false
 }
