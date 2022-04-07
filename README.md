@@ -38,13 +38,13 @@ Check the [upgrade notes](docs/upgrade-notes.md) section if you are upgrading an
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 3.74.3 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.22.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.74.3 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.22.0 |
 
 ## Modules
 
@@ -54,35 +54,35 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_autoscaling_group.cyral-sidecar-asg](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/autoscaling_group) | resource |
-| [aws_cloudwatch_log_group.cyral-sidecar-lg](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/cloudwatch_log_group) | resource |
-| [aws_iam_instance_profile.sidecar_profile](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/iam_instance_profile) | resource |
-| [aws_iam_policy.init_script_policy](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.self_signed_certificate_lambda_execution](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/iam_policy) | resource |
-| [aws_iam_role.self_signed_certificate_lambda_execution](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/iam_role) | resource |
-| [aws_iam_role.sidecar_role](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy_attachment.init_script_policy](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.self_signed_certificate_lambda_execution](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.user_policies](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_lambda_function.self_signed_certificate_generator](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/lambda_function) | resource |
-| [aws_lambda_invocation.self_signed_certificate_generator](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/lambda_invocation) | resource |
-| [aws_launch_configuration.cyral-sidecar-lc](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/launch_configuration) | resource |
-| [aws_lb.cyral-lb](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/lb) | resource |
-| [aws_lb_listener.cyral-sidecar-lb-ls](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/lb_listener) | resource |
-| [aws_lb_target_group.cyral-sidecar-tg](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/lb_target_group) | resource |
-| [aws_route53_record.cyral-sidecar-dns-record](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/route53_record) | resource |
-| [aws_secretsmanager_secret.cyral-sidecar-secret](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/secretsmanager_secret) | resource |
-| [aws_secretsmanager_secret.self_signed_certificate](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/secretsmanager_secret) | resource |
-| [aws_secretsmanager_secret_version.cyral-sidecar-secret-version](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/secretsmanager_secret_version) | resource |
-| [aws_security_group.instance](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/resources/security_group) | resource |
-| [aws_ami.amazon_linux_2](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/data-sources/ami) | data source |
-| [aws_arn.cw_lg](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/data-sources/arn) | data source |
-| [aws_availability_zones.all](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/data-sources/availability_zones) | data source |
-| [aws_iam_policy_document.init_script_policy](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.self_signed_certificate_lambda_assume_role](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.self_signed_certificate_lambda_execution](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.sidecar](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/data-sources/iam_policy_document) | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/3.74.3/docs/data-sources/region) | data source |
+| [aws_autoscaling_group.cyral-sidecar-asg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group) | resource |
+| [aws_cloudwatch_log_group.cyral-sidecar-lg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
+| [aws_iam_instance_profile.sidecar_profile](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
+| [aws_iam_policy.init_script_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.self_signed_certificate_lambda_execution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role.self_signed_certificate_lambda_execution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role.sidecar_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.init_script_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.self_signed_certificate_lambda_execution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.user_policies](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_lambda_function.self_signed_certificate_generator](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function) | resource |
+| [aws_lambda_invocation.self_signed_certificate_generator](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_invocation) | resource |
+| [aws_launch_configuration.cyral-sidecar-lc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_configuration) | resource |
+| [aws_lb.cyral-lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb) | resource |
+| [aws_lb_listener.cyral-sidecar-lb-ls](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener) | resource |
+| [aws_lb_target_group.cyral-sidecar-tg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) | resource |
+| [aws_route53_record.cyral-sidecar-dns-record](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
+| [aws_secretsmanager_secret.cyral-sidecar-secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
+| [aws_secretsmanager_secret.self_signed_certificate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
+| [aws_secretsmanager_secret_version.cyral-sidecar-secret-version](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
+| [aws_security_group.instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [aws_ami.amazon_linux_2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
+| [aws_arn.cw_lg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/arn) | data source |
+| [aws_availability_zones.all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
+| [aws_iam_policy_document.init_script_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.self_signed_certificate_lambda_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.self_signed_certificate_lambda_execution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.sidecar](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
