@@ -172,6 +172,11 @@ resource "aws_lb_target_group" "cyral-sidecar-tg" {
     port     = var.healthcheck_port
     protocol = "TCP"
   }
+  deregistration_delay = 0
+  stickiness {
+    enabled = true
+    type    = "source_ip"
+  }
 }
 
 resource "aws_lb_listener" "cyral-sidecar-lb-ls" {

@@ -39,6 +39,7 @@ locals {
     mongodb_port_alloc_range_low  = var.mongodb_port_alloc_range_low
     mongodb_port_alloc_range_high = var.mongodb_port_alloc_range_high
     mysql_multiplexed_port        = var.mysql_multiplexed_port
+    load_balancer_tls_ports       = var.load_balancer_tls_ports
   }
 
   cloud_init_pre  = templatefile("${path.module}/files/cloud-init-pre.sh.tmpl", local.templatevars)
