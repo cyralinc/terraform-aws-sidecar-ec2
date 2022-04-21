@@ -112,6 +112,7 @@ data "aws_iam_policy_document" "self_signed_certificate_lambda_execution" {
   statement {
     actions = [
       "secretsmanager:DescribeSecret",
+      "secretsmanager:GetSecretValue",
       "secretsmanager:UpdateSecret"
     ]
     resources = [
