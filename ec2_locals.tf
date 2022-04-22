@@ -40,6 +40,7 @@ locals {
     mongodb_port_alloc_range_high    = var.mongodb_port_alloc_range_high
     mysql_multiplexed_port           = var.mysql_multiplexed_port
     selfsigned_certificate_secret_id = aws_secretsmanager_secret.self_signed_certificate.arn
+    load_balancer_tls_ports          = var.load_balancer_tls_ports
   }
 
   cloud_init_pre  = templatefile("${path.module}/files/cloud-init-pre.sh.tmpl", local.templatevars)
