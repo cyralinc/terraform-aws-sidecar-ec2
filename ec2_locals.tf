@@ -5,10 +5,10 @@ locals {
   sidecar_endpoint = (length(aws_route53_record.cyral-sidecar-dns-record) == 0 && length(var.sidecar_dns_name) > 0) ? (
     var.sidecar_dns_name
     ) : (
-      length(aws_route53_record.cyral-sidecar-dns-record) == 1 ? aws_route53_record.cyral-sidecar-dns-record[0].fqdn : aws_lb.cyral-lb.dns_name
-    )
+    length(aws_route53_record.cyral-sidecar-dns-record) == 1 ? aws_route53_record.cyral-sidecar-dns-record[0].fqdn : aws_lb.cyral-lb.dns_name
+  )
   protocol = var.external_tls_type == "no-tls" ? "http" : "https"
-  curl = var.external_tls_type == "tls-skip-verify" ? "curl -k" : "curl"
+  curl     = var.external_tls_type == "tls-skip-verify" ? "curl -k" : "curl"
 
   templatevars = {
     sidecar_id                    = var.sidecar_id
@@ -39,6 +39,7 @@ locals {
     mongodb_port_alloc_range_low  = var.mongodb_port_alloc_range_low
     mongodb_port_alloc_range_high = var.mongodb_port_alloc_range_high
     mysql_multiplexed_port        = var.mysql_multiplexed_port
+    load_balancer_tls_ports       = var.load_balancer_tls_ports
   }
 
   cloud_init_pre  = templatefile("${path.module}/files/cloud-init-pre.sh.tmpl", local.templatevars)

@@ -1,0 +1,8 @@
+# Terraform
+.terraform*
+terraform.tfstate*
+*.tfvars
+
+# Emacs
+*~
+*#
