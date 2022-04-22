@@ -84,24 +84,16 @@ resource "aws_iam_role_policy_attachment" "user_policies" {
   policy_arn = each.value
 }
 
+##################################
+# Sidecar certificate self-signed
+##################################
+
 data "aws_iam_policy_document" "self_signed_certificate_lambda_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "Service"
       identifiers = ["lambda.amazonaws.com"]
-
-################################
-# Sidecar certificate CA-signed
-################################
-
-data "aws_iam_policy_document" "casigned_certificate_assume_role" {
-  count = local.create_casigned_role ? 1 : 0
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "AWS"
-      identifiers = [var.sidecar_certficate_casigned_account_id]
     }
   }
 }
@@ -152,6 +144,21 @@ resource "aws_iam_policy" "self_signed_certificate_lambda_execution" {
 resource "aws_iam_role_policy_attachment" "self_signed_certificate_lambda_execution" {
   role       = aws_iam_role.self_signed_certificate_lambda_execution.name
   policy_arn = aws_iam_policy.self_signed_certificate_lambda_execution.arn
+}
+
+################################
+# Sidecar certificate CA-signed
+################################
+
+data "aws_iam_policy_document" "casigned_certificate_assume_role" {
+  count = local.create_casigned_role ? 1 : 0
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "AWS"
+      identifiers = [var.sidecar_certficate_casigned_account_id]
+    }
+  }
 }
 
 data "aws_iam_policy_document" "casigned_certificate_secrets_manager" {
