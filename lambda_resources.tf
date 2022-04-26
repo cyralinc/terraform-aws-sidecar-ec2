@@ -13,7 +13,7 @@ resource "aws_lambda_function" "sidecar_created_certificate" {
   handler       = "certmgr-lambda"
   timeout       = 180
   s3_bucket     = "cyral-public-assets-${data.aws_arn.cw_lg.region}"
-  s3_key        = "cyral-sidecar-created-certificate/${var.sidecar_certificate_lambda_version}/cyral-sidecar-created-certificate-lambda-${var.sidecar_certificate_lambda_version}.zip"
+  s3_key        = "sidecar-created-certificate/${var.sidecar_certificate_lambda_version}/sidecar-created-certificate-lambda-${var.sidecar_certificate_lambda_version}.zip"
 
   environment {
     variables = {
