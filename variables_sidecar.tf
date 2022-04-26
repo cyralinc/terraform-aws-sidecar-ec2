@@ -141,6 +141,12 @@ variable "sidecar_version" {
   type        = string
 }
 
+variable "sidecar_certificate_lambda_version" {
+  description = "Version of the lambda used to create the sidecar certificate."
+  type        = string
+  default     = "v0.1.0"
+}
+
 variable "repositories_supported" {
   description = "List of all repositories that will be supported by the sidecar (lower case only)"
   type        = list(string)

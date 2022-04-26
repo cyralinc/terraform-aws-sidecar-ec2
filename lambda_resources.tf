@@ -1,9 +1,8 @@
 locals {
-  sidecar_created_certificate_lambda_code_version = "v0.1.0"
   sidecar_created_certificate_sidecar_hosts = "${var.sidecar_dns_name}" != "" ? (
     "${var.sidecar_dns_name}"
     ) : (
-    "poc.cyral.com"
+    "sidecar.cyral.com"
   )
 }
 
@@ -14,7 +13,7 @@ resource "aws_lambda_function" "sidecar_created_certificate" {
   handler       = "certmgr-lambda"
   timeout       = 180
   s3_bucket     = "cyral-public-assets-${data.aws_arn.cw_lg.region}"
-  s3_key        = "sidecar-created-certificate/${local.sidecar_created_certificate_lambda_code_version}/sidecar-created-certificate-lambda-${local.sidecar_created_certificate_lambda_code_version}.zip"
+  s3_key        = "cyral-sidecar-created-certificate/${var.sidecar_certificate_lambda_version}/cyral-sidecar-created-certificate-lambda-${var.sidecar_certificate_lambda_version}.zip"
 
   environment {
     variables = {
