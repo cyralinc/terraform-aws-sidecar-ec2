@@ -88,7 +88,7 @@ resource "aws_iam_role_policy_attachment" "user_policies" {
 # Sidecar certificate self-signed
 ##################################
 
-data "aws_iam_policy_document" "self_signed_certificate_lambda_assume_role" {
+data "aws_iam_policy_document" "sidecar_created_certificate_lambda_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -98,7 +98,7 @@ data "aws_iam_policy_document" "self_signed_certificate_lambda_assume_role" {
   }
 }
 
-data "aws_iam_policy_document" "self_signed_certificate_lambda_execution" {
+data "aws_iam_policy_document" "sidecar_created_certificate_lambda_execution" {
   # Cloudwatch permissions
   statement {
     actions = [
@@ -129,21 +129,21 @@ data "aws_iam_policy_document" "self_signed_certificate_lambda_execution" {
   }
 }
 
-resource "aws_iam_role" "self_signed_certificate_lambda_execution" {
-  name               = "${var.name_prefix}-self_signed_certificate_lambda_execution"
+resource "aws_iam_role" "sidecar_created_certificate_lambda_execution" {
+  name               = "${var.name_prefix}-sidecar_created_certificate_lambda_execution"
   path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.self_signed_certificate_lambda_assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.sidecar_created_certificate_lambda_assume_role.json
 }
 
-resource "aws_iam_policy" "self_signed_certificate_lambda_execution" {
-  name   = "${var.name_prefix}-self_signed_certificate_lambda_execution"
+resource "aws_iam_policy" "sidecar_created_certificate_lambda_execution" {
+  name   = "${var.name_prefix}-sidecar_created_certificate_lambda_execution"
   path   = "/"
-  policy = data.aws_iam_policy_document.self_signed_certificate_lambda_execution.json
+  policy = data.aws_iam_policy_document.sidecar_created_certificate_lambda_execution.json
 }
 
-resource "aws_iam_role_policy_attachment" "self_signed_certificate_lambda_execution" {
-  role       = aws_iam_role.self_signed_certificate_lambda_execution.name
-  policy_arn = aws_iam_policy.self_signed_certificate_lambda_execution.arn
+resource "aws_iam_role_policy_attachment" "sidecar_created_certificate_lambda_execution" {
+  role       = aws_iam_role.sidecar_created_certificate_lambda_execution.name
+  policy_arn = aws_iam_policy.sidecar_created_certificate_lambda_execution.arn
 }
 
 ################################
