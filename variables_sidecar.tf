@@ -94,8 +94,8 @@ variable "sidecar_id" {
   type        = string
 }
 
-variable "sidecar_certficate_casigned_account_id" {
-  description = "(Optional) AWS Account ID where the certificate CA-signed stack will be deployed."
+variable "sidecar_custom_certificate_account_id" {
+  description = "(Optional) AWS Account ID where the custom certificate module will be deployed."
   type        = string
   default     = ""
 }
@@ -139,6 +139,12 @@ variable "sidecar_ports" {
 variable "sidecar_version" {
   description = "Version of the sidecar"
   type        = string
+}
+
+variable "sidecar_certificate_lambda_version" {
+  description = "Version of the lambda used to create the sidecar certificate."
+  type        = string
+  default     = "v0.1.0"
 }
 
 variable "repositories_supported" {
