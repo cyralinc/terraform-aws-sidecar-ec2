@@ -94,8 +94,8 @@ variable "sidecar_id" {
   type        = string
 }
 
-variable "sidecar_certficate_casigned_account_id" {
-  description = "(Optional) AWS Account ID where the certificate CA-signed stack will be deployed."
+variable "sidecar_custom_certificate_account_id" {
+  description = "(Optional) AWS Account ID where the custom certificate module will be deployed."
   type        = string
   default     = ""
 }

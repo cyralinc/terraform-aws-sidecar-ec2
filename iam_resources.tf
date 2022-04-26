@@ -1,5 +1,5 @@
 locals {
-  create_casigned_role = var.sidecar_certficate_casigned_account_id != ""
+  create_custom_certificate_role = var.sidecar_custom_certificate_account_id != ""
 }
 
 # Gets the ARN from a resource that is deployed by this module in order to
@@ -84,9 +84,9 @@ resource "aws_iam_role_policy_attachment" "user_policies" {
   policy_arn = each.value
 }
 
-##################################
-# Sidecar certificate self-signed
-##################################
+##############################
+# Sidecar created certificate
+##############################
 
 data "aws_iam_policy_document" "sidecar_created_certificate_lambda_assume_role" {
   statement {
@@ -146,48 +146,48 @@ resource "aws_iam_role_policy_attachment" "sidecar_created_certificate_lambda_ex
   policy_arn = aws_iam_policy.sidecar_created_certificate_lambda_execution.arn
 }
 
-################################
-# Sidecar certificate CA-signed
-################################
+#############################
+# Sidecar custom certificate
+#############################
 
-data "aws_iam_policy_document" "casigned_certificate_assume_role" {
-  count = local.create_casigned_role ? 1 : 0
+data "aws_iam_policy_document" "sidecar_custom_certificate_assume_role" {
+  count = local.create_custom_certificate_role ? 1 : 0
   statement {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
-      identifiers = [var.sidecar_certficate_casigned_account_id]
+      identifiers = [var.sidecar_custom_certificate_account_id]
     }
   }
 }
 
-data "aws_iam_policy_document" "casigned_certificate_secrets_manager" {
-  count = local.create_casigned_role ? 1 : 0
+data "aws_iam_policy_document" "sidecar_custom_certificate_secrets_manager" {
+  count = local.create_custom_certificate_role ? 1 : 0
   statement {
     actions = [
       "secretsmanager:GetSecretValue",
       "secretsmanager:UpdateSecret"
     ]
-    resources = [aws_secretsmanager_secret.casigned_certificate[0].id]
+    resources = [aws_secretsmanager_secret.sidecar_custom_certificate[0].id]
   }
 }
 
-resource "aws_iam_role" "casigned_certificate" {
-  count              = local.create_casigned_role ? 1 : 0
-  name               = "${var.name_prefix}-casigned_certificate_lambda_role"
+resource "aws_iam_role" "sidecar_custom_certificate" {
+  count              = local.create_custom_certificate_role ? 1 : 0
+  name               = "${var.name_prefix}-sidecar_custom_certificate_lambda_role"
   path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.casigned_certificate_assume_role[0].json
+  assume_role_policy = data.aws_iam_policy_document.sidecar_custom_certificate_assume_role[0].json
 }
 
-resource "aws_iam_policy" "casigned_certificate_secrets_manager" {
-  count  = local.create_casigned_role ? 1 : 0
-  name   = "${var.name_prefix}-casigned_certificate_secrets_manager"
+resource "aws_iam_policy" "sidecar_custom_certificate_secrets_manager" {
+  count  = local.create_custom_certificate_role ? 1 : 0
+  name   = "${var.name_prefix}-sidecar_custom_certificate_secrets_manager"
   path   = "/"
-  policy = data.aws_iam_policy_document.casigned_certificate_secrets_manager[0].json
+  policy = data.aws_iam_policy_document.sidecar_custom_certificate_secrets_manager[0].json
 }
 
-resource "aws_iam_role_policy_attachment" "casigned_certificate" {
-  count      = local.create_casigned_role ? 1 : 0
-  role       = aws_iam_role.casigned_certificate[0].name
-  policy_arn = aws_iam_policy.casigned_certificate_secrets_manager[0].arn
+resource "aws_iam_role_policy_attachment" "sidecar_custom_certificate" {
+  count      = local.create_custom_certificate_role ? 1 : 0
+  role       = aws_iam_role.sidecar_custom_certificate[0].name
+  policy_arn = aws_iam_policy.sidecar_custom_certificate_secrets_manager[0].arn
 }

@@ -1,6 +1,6 @@
 locals {
-  output_certificate_casigned_secret_arn = var.sidecar_certficate_casigned_account_id != ""
-  output_certificate_casigned_role_arn   = local.output_certificate_casigned_secret_arn
+  output_sidecar_custom_certificate_secret_arn = var.sidecar_custom_certificate_account_id != ""
+  output_sidecar_custom_certificate_role_arn   = local.output_sidecar_custom_certificate_secret_arn
 }
 
 output "sidecar_dns" {
@@ -23,20 +23,20 @@ output "aws_security_group_id" {
   description = "Sidecar security group id"
 }
 
-output "sidecar_certificate_casigned_secret_arn" {
-  value = local.output_certificate_casigned_secret_arn ? (
-    aws_secretsmanager_secret.casigned_certificate[0].id
+output "sidecar_custom_certificate_secret_arn" {
+  value = local.output_sidecar_custom_certificate_secret_arn ? (
+    aws_secretsmanager_secret.sidecar_custom_certificate[0].id
     ) : (
     null
   )
-  description = "Secret ARN to use in the Sidecar Certificate CA-signed module"
+  description = "Secret ARN to use in the Sidecar Custom Certificate modules."
 }
 
-output "sidecar_certificate_casigned_role_arn" {
-  value = local.output_certificate_casigned_role_arn ? (
-    aws_iam_role.casigned_certificate[0].arn
+output "sidecar_custom_certificate_role_arn" {
+  value = local.output_sidecar_custom_certificate_role_arn ? (
+    aws_iam_role.sidecar_custom_certificate[0].arn
     ) : (
     null
   )
-  description = "IAM role ARN to use in the Sidecar Certificate CA-signed module"
+  description = "IAM role ARN to use in the Sidecar Custom Certificate modules."
 }
