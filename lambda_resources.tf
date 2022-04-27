@@ -11,7 +11,11 @@ resource "aws_lambda_function" "sidecar_created_certificate" {
     variables = {
       SIDECAR_CREATED_CERTIFICATE_AWS_REGION    = data.aws_arn.cw_lg.region
       SIDECAR_CREATED_CERTIFICATE_SIDECAR_ID    = var.sidecar_id
-      SIDECAR_CREATED_CERTIFICATE_SIDECAR_HOSTS = var.sidecar_dns_name
+      SIDECAR_CREATED_CERTIFICATE_SIDECAR_HOSTS = "${var.sidecar_dns_name}" != "" ? (
+        "${var.sidecar_dns_name}"
+      ) : (
+        "sidecar.app.cyral.com"
+      )
     }
   }
 }
