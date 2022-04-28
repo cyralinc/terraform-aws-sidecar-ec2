@@ -1,3 +1,8 @@
+## 2.7.0 (April 28, 2022)
+Minimum required sidecar version: `v2.31`.
+### Features
+*  ENG-7369: Custom and sidecar-created certificate support ([#33](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/33))
+
 ## 2.6.0 (April 5, 2022)
 Minimum required sidecar version: `v2.23`.
 ### Features
