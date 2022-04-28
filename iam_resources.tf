@@ -1,3 +1,7 @@
+locals {
+  create_custom_certificate_role = var.sidecar_custom_certificate_account_id != ""
+}
+
 # Gets the ARN from a resource that is deployed by this module in order to
 # get the proper partition, region and account number for the aws account
 # where the resources are actually deployed. This prevents issues with
@@ -78,4 +82,112 @@ resource "aws_iam_role_policy_attachment" "user_policies" {
   for_each   = toset(var.iam_policies)
   role       = aws_iam_role.sidecar_role.name
   policy_arn = each.value
+}
+
+##############################
+# Sidecar created certificate
+##############################
+
+data "aws_iam_policy_document" "sidecar_created_certificate_lambda_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "sidecar_created_certificate_lambda_execution" {
+  # Cloudwatch permissions
+  statement {
+    actions = [
+      "logs:PutLogEvents",
+      "logs:CreateLogStream",
+      "logs:CreateLogGroup",
+      "logs:DescribeLogStreams"
+    ]
+    resources = [
+      "arn:${data.aws_arn.cw_lg.partition}:logs:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:*"
+    ]
+  }
+  statement {
+    actions   = ["cloudwatch:PutMetricData"]
+    resources = ["*"]
+  }
+
+  # Secrets Manager permissions
+  statement {
+    actions = [
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:UpdateSecret"
+    ]
+    resources = [
+      "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:/cyral/sidecars/${var.sidecar_id}/self-signed-certificate*"
+    ]
+  }
+}
+
+resource "aws_iam_role" "sidecar_created_certificate_lambda_execution" {
+  name               = "${var.name_prefix}-sidecar_created_certificate_lambda_execution"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.sidecar_created_certificate_lambda_assume_role.json
+}
+
+resource "aws_iam_policy" "sidecar_created_certificate_lambda_execution" {
+  name   = "${var.name_prefix}-sidecar_created_certificate_lambda_execution"
+  path   = "/"
+  policy = data.aws_iam_policy_document.sidecar_created_certificate_lambda_execution.json
+}
+
+resource "aws_iam_role_policy_attachment" "sidecar_created_certificate_lambda_execution" {
+  role       = aws_iam_role.sidecar_created_certificate_lambda_execution.name
+  policy_arn = aws_iam_policy.sidecar_created_certificate_lambda_execution.arn
+}
+
+#############################
+# Sidecar custom certificate
+#############################
+
+data "aws_iam_policy_document" "sidecar_custom_certificate_assume_role" {
+  count = local.create_custom_certificate_role ? 1 : 0
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "AWS"
+      identifiers = [var.sidecar_custom_certificate_account_id]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "sidecar_custom_certificate_secrets_manager" {
+  count = local.create_custom_certificate_role ? 1 : 0
+  statement {
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:UpdateSecret"
+    ]
+    resources = [aws_secretsmanager_secret.sidecar_custom_certificate[0].id]
+  }
+}
+
+resource "aws_iam_role" "sidecar_custom_certificate" {
+  count              = local.create_custom_certificate_role ? 1 : 0
+  name               = "${var.name_prefix}-sidecar_custom_certificate_lambda_role"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.sidecar_custom_certificate_assume_role[0].json
+}
+
+resource "aws_iam_policy" "sidecar_custom_certificate_secrets_manager" {
+  count  = local.create_custom_certificate_role ? 1 : 0
+  name   = "${var.name_prefix}-sidecar_custom_certificate_secrets_manager"
+  path   = "/"
+  policy = data.aws_iam_policy_document.sidecar_custom_certificate_secrets_manager[0].json
+}
+
+resource "aws_iam_role_policy_attachment" "sidecar_custom_certificate" {
+  count      = local.create_custom_certificate_role ? 1 : 0
+  role       = aws_iam_role.sidecar_custom_certificate[0].name
+  policy_arn = aws_iam_policy.sidecar_custom_certificate_secrets_manager[0].arn
 }
