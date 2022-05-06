@@ -87,6 +87,15 @@ EOF
   default     = []
 }
 
+variable "load_balancer_sticky_ports" {
+  description = <<EOF
+List of ports that will have session stickiness enabled.
+This parameter must be a subset of 'sidecar_ports'.
+EOF
+  type        = list(number)
+  default     = []
+}
+
 variable "volume_size" {
   description = "Size of the sidecar disk"
   type        = number
