@@ -174,7 +174,7 @@ resource "aws_lb_target_group" "cyral-sidecar-tg" {
   }
   deregistration_delay = 0
   stickiness {
-    enabled = true
+    enabled = contains(var.load_balancer_sticky_ports, each.value) ? true : false
     type    = "source_ip"
   }
 }
