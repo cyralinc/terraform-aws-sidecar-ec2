@@ -1,3 +1,8 @@
+## 2.7.1 (May 6, 2022)
+Minimum required sidecar version: `v2.31`.
+### Features
+* ENG-8553: Enable stickiness conditionally for specified ports in Terraform ([#35](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/35))
+
 ## 2.7.0 (April 28, 2022)
 Minimum required sidecar version: `v2.31`.
 ### Features
