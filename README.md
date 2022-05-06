@@ -5,7 +5,7 @@
 ```hcl
 module "cyral_sidecar" {
     source  = "cyralinc/sidecar-aws/cyral"  
-    version = "2.6.0" # terraform module version
+    version = "2.7.1" # terraform module version
 
     sidecar_version = ""
     sidecar_id      = ""
