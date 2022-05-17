@@ -55,7 +55,8 @@ data "aws_iam_policy_document" "kms" {
     for_each = var.secrets_kms_key_id != "" ? [1] : []
     content {
       actions = [
-        "kms:DescribeKey"
+        "kms:Decrypt",
+        "kms:Encrypt"
       ]
       resources = [
         "${var.secrets_kms_key_id}"
