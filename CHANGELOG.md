@@ -1,3 +1,8 @@
+## 2.8.0 (May 18, 2022)
+Minimum required sidecar version: `v2.31`.
+### Features
+* ENG-8601: Add new parameter to define kms key for secrets ([#36](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/36))
+
 ## 2.7.1 (May 6, 2022)
 Minimum required sidecar version: `v2.31`.
 ### Features
