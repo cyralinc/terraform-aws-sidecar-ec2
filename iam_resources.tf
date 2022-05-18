@@ -57,7 +57,7 @@ data "aws_iam_policy_document" "kms" {
       actions = [
         "kms:Decrypt",
         "kms:Encrypt",
-        "kms:GetPublicKey"
+        "kms:GenerateDataKey"
       ]
       resources = [
         "${var.secrets_kms_key_id}"
