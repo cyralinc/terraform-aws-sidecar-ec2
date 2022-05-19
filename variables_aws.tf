@@ -153,7 +153,7 @@ variable "secrets_location" {
 }
 
 variable "secrets_kms_key_id" {
-  description = "ARN of the KMS key key used to encrypt secrets. If not set, secrets will use the default KMS key."
+  description = "ARN of the KMS key used to encrypt secrets. If not set, secrets will use the default KMS key."
   type        = string
   default     = ""
 }
