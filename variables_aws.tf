@@ -152,6 +152,12 @@ variable "secrets_location" {
   type        = string
 }
 
+variable "secrets_kms_key_id" {
+  description = "ARN of the KMS key used to encrypt secrets. If not set, secrets will use the default KMS key."
+  type        = string
+  default     = ""
+}
+
 variable "associate_public_ip_address" {
   description = "Associates a public IP to sidecar EC2 instances"
   type        = bool

@@ -43,6 +43,27 @@ data "aws_iam_policy_document" "init_script_policy" {
       "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:${var.secrets_location}*"
     ])
   }
+
+  source_policy_documents = [
+    data.aws_iam_policy_document.kms.json
+  ]
+}
+
+data "aws_iam_policy_document" "kms" {
+  # KMS permissions
+  dynamic "statement" {
+    for_each = var.secrets_kms_key_id != "" ? [1] : []
+    content {
+      actions = [
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:GenerateDataKey"
+      ]
+      resources = [
+        "${var.secrets_kms_key_id}"
+      ]
+    }
+  }
 }
 
 data "aws_iam_policy_document" "sidecar" {
@@ -127,6 +148,10 @@ data "aws_iam_policy_document" "sidecar_created_certificate_lambda_execution" {
       "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:/cyral/sidecars/${var.sidecar_id}/self-signed-certificate*"
     ]
   }
+
+  source_policy_documents = [
+    data.aws_iam_policy_document.kms.json
+  ]
 }
 
 resource "aws_iam_role" "sidecar_created_certificate_lambda_execution" {
