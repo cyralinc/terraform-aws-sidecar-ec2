@@ -1,3 +1,8 @@
+## 2.8.1 (June 8, 2022)
+Minimum required sidecar version: `v2.31`.
+### Bug fix
+* ENG-8679: Fix bug that did not allow disabling ssh access ([#37](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/37))
+
 ## 2.8.0 (May 18, 2022)
 Minimum required sidecar version: `v2.31`.
 ### Features
