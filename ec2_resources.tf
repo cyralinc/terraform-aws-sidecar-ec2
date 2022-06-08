@@ -106,13 +106,16 @@ resource "aws_security_group" "instance" {
   vpc_id = var.vpc_id
 
   # Allow SSH inbound
-  ingress {
-    description     = "SSH"
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
-    cidr_blocks     = var.ssh_inbound_cidr
-    security_groups = var.ssh_inbound_security_group
+  dynamic "ingress" {
+    for_each        = (length(var.ssh_inbound_cidr) > 0 || length(var.ssh_inbound_security_group) > 0) ? [1] : []
+    content {
+      description     = "SSH"
+      from_port       = 22
+      to_port         = 22
+      protocol        = "tcp"
+      cidr_blocks     = var.ssh_inbound_cidr
+      security_groups = var.ssh_inbound_security_group
+    }
   }
 
   # If reduce_security_group_rules_count is true, it will create DB Inbound Rules per CIDR using
