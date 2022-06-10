@@ -100,6 +100,12 @@ variable "sidecar_custom_certificate_account_id" {
   default     = ""
 }
 
+variable "sidecar_custom_certificate_role_arn" {
+  description = "(Optional) ARN of IAM role that allows access to the sidecar custom certificate."
+  type        = string
+  default     = ""
+}
+
 ##########################################################################################################
 # Sidecar endpoint possibilities:
 #

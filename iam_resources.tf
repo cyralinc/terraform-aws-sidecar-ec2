@@ -1,5 +1,6 @@
 locals {
-  create_custom_certificate_role = var.sidecar_custom_certificate_account_id != ""
+  consume_custom_certificate_role = var.sidecar_custom_certificate_role_arn != ""
+  produce_custom_certificate_role  = var.sidecar_custom_certificate_account_id != ""
 }
 
 # Gets the ARN from a resource that is deployed by this module in order to
@@ -8,6 +9,20 @@ locals {
 # deployment pipelines that runs on AWS and deploys to different accounts.
 data "aws_arn" "cw_lg" {
   arn = aws_cloudwatch_log_group.cyral-sidecar-lg.arn
+}
+
+##################
+# Sidecar profile
+##################
+
+data "aws_iam_policy_document" "sidecar_trust_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
 }
 
 data "aws_iam_policy_document" "init_script_policy" {
@@ -66,13 +81,11 @@ data "aws_iam_policy_document" "kms" {
   }
 }
 
-data "aws_iam_policy_document" "sidecar" {
+data "aws_iam_policy_document" "assume_sidecar_custom_certificate_role" {
+  count = local.consume_custom_certificate_role ? 1 : 0
   statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
+    actions   = ["sts:AssumeRole"]
+    resources = [var.sidecar_custom_certificate_role_arn]
   }
 }
 
@@ -84,7 +97,7 @@ resource "aws_iam_instance_profile" "sidecar_profile" {
 resource "aws_iam_role" "sidecar_role" {
   name               = "${var.name_prefix}-sidecar_role"
   path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.sidecar.json
+  assume_role_policy = data.aws_iam_policy_document.sidecar_trust_policy.json
 }
 
 resource "aws_iam_policy" "init_script_policy" {
@@ -97,6 +110,19 @@ resource "aws_iam_policy" "init_script_policy" {
 resource "aws_iam_role_policy_attachment" "init_script_policy" {
   role       = aws_iam_role.sidecar_role.name
   policy_arn = aws_iam_policy.init_script_policy.arn
+}
+
+resource "aws_iam_policy" "assume_sidecar_custom_certificate_role" {
+  count       = local.consume_custom_certificate_role ? 1 : 0
+  name        = "${var.name_prefix}-assume_sidecar_custom_certificate_role"
+  description = "Allow sidecar to assume sidecar custom certificate role. This is usually needed for cross-account cases."
+  policy      = data.aws_iam_policy_document.assume_sidecar_custom_certificate_role[0]
+}
+
+resource "aws_iam_role_policy_attachment" "assume_sidecar_custom_certificate_role" {
+  count      = local.consume_custom_certificate_role ? 1 : 0
+  role       = aws_iam_role.sidecar_role.name
+  policy_arn = aws_iam_policy.assume_sidecar_custom_certificate_role[0].arn
 }
 
 resource "aws_iam_role_policy_attachment" "user_policies" {
@@ -176,7 +202,7 @@ resource "aws_iam_role_policy_attachment" "sidecar_created_certificate_lambda_ex
 #############################
 
 data "aws_iam_policy_document" "sidecar_custom_certificate_assume_role" {
-  count = local.create_custom_certificate_role ? 1 : 0
+  count = local.produce_custom_certificate_role ? 1 : 0
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -187,7 +213,7 @@ data "aws_iam_policy_document" "sidecar_custom_certificate_assume_role" {
 }
 
 data "aws_iam_policy_document" "sidecar_custom_certificate_secrets_manager" {
-  count = local.create_custom_certificate_role ? 1 : 0
+  count = local.produce_custom_certificate_role ? 1 : 0
   statement {
     actions = [
       "secretsmanager:GetSecretValue",
@@ -198,21 +224,21 @@ data "aws_iam_policy_document" "sidecar_custom_certificate_secrets_manager" {
 }
 
 resource "aws_iam_role" "sidecar_custom_certificate" {
-  count              = local.create_custom_certificate_role ? 1 : 0
+  count              = local.produce_custom_certificate_role ? 1 : 0
   name               = "${var.name_prefix}-sidecar_custom_certificate_lambda_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar_custom_certificate_assume_role[0].json
 }
 
 resource "aws_iam_policy" "sidecar_custom_certificate_secrets_manager" {
-  count  = local.create_custom_certificate_role ? 1 : 0
+  count  = local.produce_custom_certificate_role ? 1 : 0
   name   = "${var.name_prefix}-sidecar_custom_certificate_secrets_manager"
   path   = "/"
   policy = data.aws_iam_policy_document.sidecar_custom_certificate_secrets_manager[0].json
 }
 
 resource "aws_iam_role_policy_attachment" "sidecar_custom_certificate" {
-  count      = local.create_custom_certificate_role ? 1 : 0
+  count      = local.produce_custom_certificate_role ? 1 : 0
   role       = aws_iam_role.sidecar_custom_certificate[0].name
   policy_arn = aws_iam_policy.sidecar_custom_certificate_secrets_manager[0].arn
 }

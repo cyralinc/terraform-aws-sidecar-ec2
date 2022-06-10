@@ -58,12 +58,14 @@ No modules.
 | [aws_autoscaling_group.cyral-sidecar-asg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group) | resource |
 | [aws_cloudwatch_log_group.cyral-sidecar-lg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_iam_instance_profile.sidecar_profile](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
+| [aws_iam_policy.assume_sidecar_custom_certificate_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.init_script_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.sidecar_created_certificate_lambda_execution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.sidecar_custom_certificate_secrets_manager](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.sidecar_created_certificate_lambda_execution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.sidecar_custom_certificate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.sidecar_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.assume_sidecar_custom_certificate_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.init_script_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.sidecar_created_certificate_lambda_execution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.sidecar_custom_certificate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
@@ -83,13 +85,14 @@ No modules.
 | [aws_ami.amazon_linux_2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_arn.cw_lg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/arn) | data source |
 | [aws_availability_zones.all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
+| [aws_iam_policy_document.assume_sidecar_custom_certificate_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.init_script_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.kms](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.sidecar](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.sidecar_created_certificate_lambda_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.sidecar_created_certificate_lambda_execution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.sidecar_custom_certificate_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.sidecar_custom_certificate_secrets_manager](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.sidecar_trust_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
@@ -145,6 +148,7 @@ No modules.
 | <a name="input_secrets_location"></a> [secrets\_location](#input\_secrets\_location) | Location in AWS Secrets Manager to store client\_id, client\_secret and container\_registry\_key | `string` | n/a | yes |
 | <a name="input_sidecar_certificate_lambda_version"></a> [sidecar\_certificate\_lambda\_version](#input\_sidecar\_certificate\_lambda\_version) | Version of the lambda used to create the sidecar certificate. | `string` | `"v0.1.0"` | no |
 | <a name="input_sidecar_custom_certificate_account_id"></a> [sidecar\_custom\_certificate\_account\_id](#input\_sidecar\_custom\_certificate\_account\_id) | (Optional) AWS Account ID where the custom certificate module will be deployed. | `string` | `""` | no |
+| <a name="input_sidecar_custom_certificate_role_arn"></a> [sidecar\_custom\_certificate\_role\_arn](#input\_sidecar\_custom\_certificate\_role\_arn) | (Optional) ARN of IAM role that allows access to the sidecar custom certificate. | `string` | `""` | no |
 | <a name="input_sidecar_dns_hosted_zone_id"></a> [sidecar\_dns\_hosted\_zone\_id](#input\_sidecar\_dns\_hosted\_zone\_id) | (Optional) Route53 hosted zone ID for the corresponding 'sidecar\_dns\_name' provided | `string` | `""` | no |
 | <a name="input_sidecar_dns_name"></a> [sidecar\_dns\_name](#input\_sidecar\_dns\_name) | (Optional) Fully qualified domain name that will be automatically created/updated to reference the sidecar LB | `string` | `""` | no |
 | <a name="input_sidecar_dns_overwrite"></a> [sidecar\_dns\_overwrite](#input\_sidecar\_dns\_overwrite) | (Optional) Update an existing DNS name informed in 'sidecar\_dns\_name' variable | `bool` | `false` | no |
