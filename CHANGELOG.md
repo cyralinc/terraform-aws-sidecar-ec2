@@ -1,3 +1,8 @@
+## 2.9.0 (July 7, 2022)
+Minimum required sidecar version: `v2.31`.
+### Features
+* Addition of custom user-data script Input ([#38](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/38))
+
 ## 2.8.1 (June 8, 2022)
 Minimum required sidecar version: `v2.31`.
 ### Bug fix
