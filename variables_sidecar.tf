@@ -152,3 +152,9 @@ variable "repositories_supported" {
   type        = list(string)
   default     = ["denodo", "dremio", "mongodb", "mysql", "oracle", "postgresql", "redshift", "rest", "snowflake", "sqlserver", "s3"]
 }
+
+variable "custom_user_data" {
+  description = "Acillary consumer supplied user-data script. Appended to existing user-data sidecar bootstrapping scripts (Approx Input Size = 19KB)"
+  type        = string
+  default     = ""
+}
