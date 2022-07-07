@@ -64,6 +64,7 @@ resource "aws_launch_configuration" "cyral-sidecar-lc" {
   fi
   EOF
   ${local.cloud_init_post}
+  ${var.custom_user_data}
 EOT
   lifecycle {
     create_before_destroy = true
