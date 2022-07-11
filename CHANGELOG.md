@@ -1,3 +1,8 @@
+## 2.9.1 (July 11, 2022)
+Minimum required sidecar version: `v2.31`.
+### Bug fix
+* ENG-8879: Change upper limit for name_prefix variable ([#39](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/39))
+
 ## 2.9.0 (July 7, 2022)
 Minimum required sidecar version: `v2.31`.
 ### Features
