@@ -199,7 +199,7 @@ data "aws_iam_policy_document" "sidecar_custom_certificate_secrets_manager" {
 
 resource "aws_iam_role" "sidecar_custom_certificate" {
   count              = local.create_custom_certificate_role ? 1 : 0
-  name               = "${var.name_prefix}-sidecar_custom_certificate_lambda"
+  name               = "${var.name_prefix}-sidecar_custom_certificate_lambda_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar_custom_certificate_assume_role[0].json
 }
