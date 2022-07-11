@@ -30,6 +30,12 @@ module "cyral_sidecar" {
 }
 ```
 
+**Note:**
+
+- `name_prefix` is filled automatically when you download the Terraform sidecar
+  template from the Cyral control plane. If you wish to define a custom name,
+  please keep in mind that its length must be **at most 24 characters**.
+
 ## Upgrade Notes
 
 Check the [upgrade notes](docs/upgrade-notes.md) section if you are upgrading an existing sidecar.
