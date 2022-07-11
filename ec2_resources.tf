@@ -108,7 +108,7 @@ resource "aws_security_group" "instance" {
 
   # Allow SSH inbound
   dynamic "ingress" {
-    for_each        = (length(var.ssh_inbound_cidr) > 0 || length(var.ssh_inbound_security_group) > 0) ? [1] : []
+    for_each = (length(var.ssh_inbound_cidr) > 0 || length(var.ssh_inbound_security_group) > 0) ? [1] : []
     content {
       description     = "SSH"
       from_port       = 22

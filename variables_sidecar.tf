@@ -85,7 +85,7 @@ variable "mysql_multiplexed_port" {
 }
 
 variable "name_prefix" {
-  description = "Prefix for names of created resources in AWS"
+  description = "Prefix for names of created resources in AWS. Maximum length is 24 characters."
   type        = string
 }
 
@@ -154,7 +154,7 @@ variable "repositories_supported" {
 }
 
 variable "custom_user_data" {
-  description = "Acillary consumer supplied user-data script. Appended to existing user-data sidecar bootstrapping scripts (Approx Input Size = 19KB)"
+  description = "Auxiliary user-data script. Appended to existing user-data sidecar bootstrapping scripts (Approx Input Size = 19KB)"
   type        = string
   default     = ""
 }
