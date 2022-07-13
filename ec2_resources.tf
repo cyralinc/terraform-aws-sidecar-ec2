@@ -35,6 +35,8 @@ resource "aws_launch_configuration" "cyral-sidecar-lc" {
     volume_type           = "gp2"
   }
   user_data = <<-EOT
+  #!/bin/bash -xe
+  ${lookup(var.custom_user_data, "pre")}
   ${local.cloud_init_pre}
 
   echo "Downloading sidecar.compose.yaml..."
@@ -64,7 +66,7 @@ resource "aws_launch_configuration" "cyral-sidecar-lc" {
   fi
   EOF
   ${local.cloud_init_post}
-  ${var.custom_user_data}
+  ${lookup(var.custom_user_data, "post")}
 EOT
   lifecycle {
     create_before_destroy = true
