@@ -1,7 +1,22 @@
+## 2.9.2 (July 11, 2022)
+Minimum required sidecar version: `v2.31`.
+### Bug fix
+* Update the bootstrap script version that uses `rpm --force` ([#40](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/40))
+
+## 2.9.1 (July 11, 2022)
+Minimum required sidecar version: `v2.31`.
+### Bug fix
+* ENG-8879: Change upper limit for name_prefix variable ([#39](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/39))
+
 ## 2.9.0 (July 7, 2022)
 Minimum required sidecar version: `v2.31`.
 ### Features
 * Addition of custom user-data script Input ([#38](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/38))
+
+## 2.8.2 (July 11, 2022)
+Minimum required sidecar version: `v2.31`.
+### Bug fix
+* Update the bootstrap script version that uses `rpm --force` ([#40](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/40))
 
 ## 2.8.1 (June 8, 2022)
 Minimum required sidecar version: `v2.31`.
@@ -13,6 +28,11 @@ Minimum required sidecar version: `v2.31`.
 ### Features
 * ENG-8601: Add new parameter to define kms key for secrets ([#36](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/36))
 
+## 2.7.2 (July 11, 2022)
+Minimum required sidecar version: `v2.31`.
+### Bug fix
+* Update the bootstrap script version that uses `rpm --force` ([#40](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/40))
+
 ## 2.7.1 (May 6, 2022)
 Minimum required sidecar version: `v2.31`.
 ### Features
@@ -23,10 +43,20 @@ Minimum required sidecar version: `v2.31`.
 ### Features
 *  ENG-7369: Custom and sidecar-created certificate support ([#33](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/33))
 
+## 2.6.1 (July 11, 2022)
+Minimum required sidecar version: `v2.23`.
+### Bug fix
+* Update the bootstrap script version that uses `rpm --force` ([#40](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/40))
+
 ## 2.6.0 (April 5, 2022)
 Minimum required sidecar version: `v2.23`.
 ### Features
 *  ENG-8228: Add reduce_security_group_rules_count variable to avoid cartesian product in security group rules ([#28](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/28))
+
+## 2.5.5 (July 11, 2022)
+Minimum required sidecar version: `v2.23`.
+### Bug fix
+* Update the bootstrap script version that uses `rpm --force` ([#40](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/40))
 
 ## 2.5.4 (January 10, 2022)
 Minimum required sidecar version: `v2.23`.
