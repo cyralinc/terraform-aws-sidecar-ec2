@@ -154,7 +154,7 @@ variable "repositories_supported" {
 }
 
 variable "custom_user_data" {
-  description = "Acillary consumer supplied user-data script. Appended to existing user-data sidecar bootstrapping scripts (Approx Input Size = 19KB)"
-  type        = string
-  default     = ""
+  description = "Acillary consumer supplied user-data script. Bash scripts must be added to a map as a value of the key `pre` and/or `post` denoting execution order with respect to sidecar installation. (Approx Input Size = 19KB)"
+  type        = map
+  default     = {"pre" = "" , "post" = ""}
 }

@@ -163,7 +163,7 @@ No modules.
 | <a name="input_sumologic_uri"></a> [sumologic\_uri](#input\_sumologic\_uri) | Sumologic uri | `string` | `""` | no |
 | <a name="input_volume_size"></a> [volume\_size](#input\_volume\_size) | Size of the sidecar disk | `number` | `15` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | AWS VPC ID to deploy sidecar to | `string` | n/a | yes |
-| <a name="input_custom_user_data"></a> [custom\_user\_data](#input\_custom\_user\_data) | Acillary consumer supplied user-data script. Appended to existing user-data sidecar bootstrapping scripts (Approx Input Size = 19KB) | `string` | `""` | no |
+| <a name="input_custom_user_data"></a> [custom\_user\_data](#input\_custom\_user\_data) | Acillary consumer supplied user-data script. Bash scripts must be added to a map as a value of the key `pre` and/or `post` denoting execution order with respect to sidecar installation. (Approx Input Size = 19KB) | `map` | `{"pre" = "", "post" = ""}` | no |
 
 ## Outputs
 
