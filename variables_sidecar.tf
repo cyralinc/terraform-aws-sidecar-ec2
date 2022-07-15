@@ -148,7 +148,7 @@ variable "sidecar_certificate_lambda_bucket" {
 }
 
 variable "sidecar_certificate_lambda_key" {
-  description = "Object key for the Sidecar-created Certificate lambda code. See 'SidecarCertificateLambdaBucket'. LEAVE EMPTY UNLESS YOU WANT TO OVERRIDE THE DEFAULT."
+  description = "Object key for the Sidecar-created Certificate lambda code. See 'sidecar_certificate_lambda_bucket'. LEAVE EMPTY UNLESS YOU WANT TO OVERRIDE THE DEFAULT."
   type        = string
   default     = ""
 }
