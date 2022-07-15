@@ -1,11 +1,20 @@
+locals {
+  sidecar_created_certificate_s3bucket = var.sidecar_certificate_lambda_bucket != "" ? (
+    var.sidecar_certificate_lambda_bucket
+  ) : "cyral-public-assets-${data.aws_arn.cw_lg.region}"
+  sidecar_created_certificate_s3key = var.sidecar_certificate_lambda_bucket != "" ? (
+    var.sidecar_certificate_lambda_key
+  ) : "sidecar-created-certificate/v0.1.0/sidecar-created-certificate-lambda-v0.1.0.zip"
+}
+
 resource "aws_lambda_function" "sidecar_created_certificate" {
   function_name = "${var.name_prefix}-sidecar_created_certificate"
   role          = aws_iam_role.sidecar_created_certificate_lambda_execution.arn
   runtime       = "go1.x"
   handler       = "certmgr-lambda"
   timeout       = 180
-  s3_bucket     = "cyral-public-assets-${data.aws_arn.cw_lg.region}"
-  s3_key        = "sidecar-created-certificate/${var.sidecar_certificate_lambda_version}/sidecar-created-certificate-lambda-${var.sidecar_certificate_lambda_version}.zip"
+  s3_bucket     = local.sidecar_created_certificate_s3bucket
+  s3_key        = local.sidecar_created_certificate_s3key
 
   environment {
     variables = {

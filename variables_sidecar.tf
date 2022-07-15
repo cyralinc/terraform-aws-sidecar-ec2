@@ -141,10 +141,16 @@ variable "sidecar_version" {
   type        = string
 }
 
-variable "sidecar_certificate_lambda_version" {
-  description = "Version of the lambda used to create the sidecar certificate."
+variable "sidecar_certificate_lambda_bucket" {
+  description = "S3 bucket that contains the Sidecar-created Certificate lambda code. LEAVE EMPTY UNLESS YOU WANT TO OVERRIDE THE DEFAULT."
   type        = string
-  default     = "v0.1.0"
+  default     = ""
+}
+
+variable "sidecar_certificate_lambda_key" {
+  description = "Object key for the Sidecar-created Certificate lambda code. See 'SidecarCertificateLambdaBucket'. LEAVE EMPTY UNLESS YOU WANT TO OVERRIDE THE DEFAULT."
+  type        = string
+  default     = ""
 }
 
 variable "repositories_supported" {
@@ -155,6 +161,6 @@ variable "repositories_supported" {
 
 variable "custom_user_data" {
   description = "Ancillary consumer supplied user-data script. Bash scripts must be added to a map as a value of the key `pre` and/or `post` denoting execution order with respect to sidecar installation. (Approx Input Size = 19KB)"
-  type        = map
-  default     = {"pre" = "" , "post" = ""}
+  type        = map(any)
+  default     = { "pre" = "", "post" = "" }
 }
