@@ -1,3 +1,8 @@
+## 2.10.1 (July 15, 2022)
+Minimum required sidecar version: `v2.31`.
+### Features
+* Improve README
+
 ## 2.10.0 (July 15, 2022)
 Minimum required sidecar version: `v2.31`.
 ### Features
