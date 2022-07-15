@@ -4,7 +4,7 @@ locals {
   ) : "cyral-public-assets-${data.aws_arn.cw_lg.region}"
   sidecar_created_certificate_s3key = var.sidecar_certificate_lambda_bucket != "" ? (
     var.sidecar_certificate_lambda_key
-  ) : "sidecar-created-certificate/v0.1.0/sidecar-created-certificate-lambda-v0.1.0.zip"
+  ) : "sidecar-created-certificate/${var.sidecar_certificate_lambda_version}/sidecar-created-certificate-lambda-${var.sidecar_certificate_lambda_version}.zip"
 }
 
 resource "aws_lambda_function" "sidecar_created_certificate" {
