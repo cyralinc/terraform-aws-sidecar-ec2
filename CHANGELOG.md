@@ -1,3 +1,14 @@
+## 2.10.1 (July 15, 2022)
+Minimum required sidecar version: `v2.31`.
+### Features
+* Improve README
+
+## 2.10.0 (July 15, 2022)
+Minimum required sidecar version: `v2.31`.
+### Features
+* ENG-8943: Allow custom S3 location for sidecar-created cert lambda ([#42](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/42))
+* Added Optional Runtime Ordering for User Supplied Bash Scripts ([#41](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/41))
+
 ## 2.9.2 (July 11, 2022)
 Minimum required sidecar version: `v2.31`.
 ### Bug fix
