@@ -162,7 +162,7 @@ resource "aws_iam_role" "sidecar_created_certificate_lambda_execution" {
 
 resource "aws_iam_role_policy" "sidecar_created_certificate_lambda_execution" {
   name   = "${var.name_prefix}-sidecar_created_certificate_lambda"
-  role   = aws_iam_role.sidecar_created_certificate_lambda_execution
+  role   = aws_iam_role.sidecar_created_certificate_lambda_execution.id
   policy = data.aws_iam_policy_document.sidecar_created_certificate_lambda_execution.json
 }
 
