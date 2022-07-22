@@ -1,3 +1,8 @@
+## 2.10.2 (July 22, 2022)
+Minimum required sidecar version: `v2.31`.
+### Bug fix
+* Fix for_each dependency issue ([#43](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/43))
+
 ## 2.10.1 (July 15, 2022)
 Minimum required sidecar version: `v2.31`.
 ### Features
