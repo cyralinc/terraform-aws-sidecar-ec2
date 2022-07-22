@@ -100,9 +100,9 @@ resource "aws_iam_role_policy_attachment" "init_script_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "user_policies" {
-  for_each   = toset(var.iam_policies)
+  count   = length(var.iam_policies)
   role       = aws_iam_role.sidecar_role.name
-  policy_arn = each.value
+  policy_arn = var.iam_policies[count.index]
 }
 
 ##############################
