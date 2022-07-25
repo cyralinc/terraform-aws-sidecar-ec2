@@ -38,4 +38,7 @@ resource "aws_lambda_function" "sidecar_created_certificate" {
 resource "aws_lambda_invocation" "sidecar_created_certificate" {
   function_name = aws_lambda_function.sidecar_created_certificate.function_name
   input         = jsonencode({})
+  depends_on = [
+    aws_iam_role_policy.sidecar_created_certificate_lambda_execution
+  ]
 }
