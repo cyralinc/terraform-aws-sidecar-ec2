@@ -160,10 +160,15 @@ resource "aws_iam_role" "sidecar_created_certificate_lambda_execution" {
   assume_role_policy = data.aws_iam_policy_document.sidecar_created_certificate_lambda_assume_role.json
 }
 
-resource "aws_iam_role_policy" "sidecar_created_certificate_lambda_execution" {
+resource "aws_iam_policy" "sidecar_created_certificate_lambda_execution" {
   name   = "${var.name_prefix}-sidecar_created_certificate_lambda"
-  role   = aws_iam_role.sidecar_created_certificate_lambda_execution.id
+  path   = "/"
   policy = data.aws_iam_policy_document.sidecar_created_certificate_lambda_execution.json
+}
+
+resource "aws_iam_role_policy_attachment" "sidecar_created_certificate_lambda_execution" {
+  role       = aws_iam_role.sidecar_created_certificate_lambda_execution.name
+  policy_arn = aws_iam_policy.sidecar_created_certificate_lambda_execution.arn
 }
 
 #############################
