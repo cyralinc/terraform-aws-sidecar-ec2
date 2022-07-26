@@ -33,6 +33,10 @@ resource "aws_lambda_function" "sidecar_created_certificate" {
   depends_on = [
     aws_iam_role_policy.sidecar_created_certificate_lambda_execution
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lambda_invocation" "sidecar_created_certificate" {
