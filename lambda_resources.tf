@@ -27,22 +27,12 @@ resource "aws_lambda_function" "sidecar_created_certificate" {
       )
     }
   }
-
-  # Need permissions by inner policy to be created before lambda invocation can
-  # execute.
-  depends_on = [
-    aws_iam_role_policy.sidecar_created_certificate_lambda_execution
-  ]
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_lambda_invocation" "sidecar_created_certificate" {
   function_name = aws_lambda_function.sidecar_created_certificate.function_name
   input         = jsonencode({})
-  depends_on = [
-    aws_iam_role_policy.sidecar_created_certificate_lambda_execution
-  ]
+  lifecycle {
+    ignore_changes = [function_name]
+  }
 }
