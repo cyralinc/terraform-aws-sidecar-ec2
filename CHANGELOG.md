@@ -1,3 +1,9 @@
+## 2.10.3 (July 27, 2022)
+Minimum required sidecar version: `v2.31`.
+### Bug fix
+* Fix minimum AWS provider requirements ([#46](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/46))
+* ENG-8959: Fix race condition when upgrading sidecar ([#44](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/44))
+
 ## 2.10.2 (July 22, 2022)
 Minimum required sidecar version: `v2.31`.
 ### Bug fix
