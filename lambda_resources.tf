@@ -32,4 +32,7 @@ resource "aws_lambda_function" "sidecar_created_certificate" {
 resource "aws_lambda_invocation" "sidecar_created_certificate" {
   function_name = aws_lambda_function.sidecar_created_certificate.function_name
   input         = jsonencode({})
+  lifecycle {
+    ignore_changes = [function_name]
+  }
 }
