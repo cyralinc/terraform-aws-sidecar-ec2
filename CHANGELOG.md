@@ -1,3 +1,8 @@
+## 2.11.0 (July 28, 2022)
+Minimum required sidecar version: `v2.34`. This whole module is fully compatible with sidecars `<2.34`, although the `dynamodb` control will be ignored in them.
+### Feature
+* ENG-9007: Add DynamoDB to list of supported repositories ([#45](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/45))
+
 ## 2.10.3 (July 27, 2022)
 Minimum required sidecar version: `v2.31`.
 ### Bug fix
