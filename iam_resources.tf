@@ -36,7 +36,8 @@ data "aws_iam_policy_document" "init_script_policy" {
   # Secrets Manager permissions
   statement {
     actions = [
-      "secretsmanager:GetSecretValue"
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:UpdateSecret"
     ]
     resources = compact([
       "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:/cyral/*",
