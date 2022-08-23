@@ -36,13 +36,20 @@ data "aws_iam_policy_document" "init_script_policy" {
   # Secrets Manager permissions
   statement {
     actions = [
-      "secretsmanager:GetSecretValue",
-      "secretsmanager:UpdateSecret"
+      "secretsmanager:GetSecretValue"
     ]
     resources = compact([
       "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:/cyral/*",
       "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:${var.secrets_location}*"
     ])
+  }
+  statement {
+    actions = [
+      "secretsmanager:UpdateSecret"
+    ]
+    resources = [
+      "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:/cyral/sidecars/${var.sidecar_id}/self-signed-certificate*"
+    ]
   }
 
   source_policy_documents = [
@@ -101,7 +108,7 @@ resource "aws_iam_role_policy_attachment" "init_script_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "user_policies" {
-  count   = length(var.iam_policies)
+  count      = length(var.iam_policies)
   role       = aws_iam_role.sidecar_role.name
   policy_arn = var.iam_policies[count.index]
 }
