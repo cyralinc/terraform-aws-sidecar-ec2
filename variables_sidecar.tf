@@ -34,6 +34,12 @@ variable "control_plane" {
   type        = string
 }
 
+variable "external_http_port" {
+  description = "external CP HTTP port"
+  type        = string
+  default     = "8000"
+}
+
 variable "external_tls_type" {
   description = "TLS mode for the control plane - tls, tls-skip-verify, no-tls"
   type        = string
