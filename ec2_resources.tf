@@ -48,7 +48,7 @@ resource "aws_launch_configuration" "cyral-sidecar-lc" {
       return 1
     fi
     local access_token=$(echo "$token" | jq -r .access_token)
-    local url="${local.protocol}://${var.control_plane}/deploy/docker-compose?TemplateVersion=${var.sidecar_version}&TemplateType=terraform&LogIntegration=${var.log_integration}&MetricsIntegration=${var.metrics_integration}&HCVaultIntegrationID=${var.hc_vault_integration_id}&WiresEnabled=${join(",", var.repositories_supported)}"
+    local url="${local.protocol}://${var.control_plane}/deploy/docker-compose?TemplateVersion=${var.sidecar_version}&clientId=${var.client_id}&clientSecret=${var.client_secret}&SidecarId=${var.sidecar_id}&TemplateType=terraform&LogIntegration=${var.log_integration}&MetricsIntegration=${var.metrics_integration}&HCVaultIntegrationID=${var.hc_vault_integration_id}&WiresEnabled=${join(",", var.repositories_supported)}"
     echo "Trying to download the sidecar template from: $url"
     if [[ $(${local.curl} -s -o /home/ec2-user/sidecar.compose.yaml -w "%%{http_code}" -L "$url" -H "authorization: Bearer $access_token") = 200 ]]; then
       return 0
