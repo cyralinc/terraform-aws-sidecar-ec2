@@ -34,8 +34,8 @@ variable "control_plane" {
   type        = string
 }
 
-variable "external_http_port" {
-  description = "external CP HTTP port"
+variable "control_plane_port" {
+  description = "TCP/IP port of the control plane."
   type        = string
   default     = "8000"
 }
