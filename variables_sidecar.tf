@@ -35,9 +35,9 @@ variable "control_plane" {
 }
 
 variable "control_plane_port" {
-  description = "TCP/IP port of the control plane."
+  description = "Control plane API port."
   type        = string
-  default     = "8000"
+  default     = ""
 }
 
 variable "external_tls_type" {

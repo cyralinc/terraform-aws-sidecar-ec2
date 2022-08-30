@@ -41,11 +41,27 @@ resource "aws_launch_configuration" "cyral-sidecar-lc" {
 
   echo "Downloading sidecar.compose.yaml..."
   function download_sidecar () {
-    local url_token="${local.protocol}://${var.control_plane}:${var.control_plane_port}/v1/users/oidc/token"
-    local token=$(${local.curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="${var.client_id}" -d client_secret="${var.client_secret}" 2>&1)
-    local token_error=$(echo $?)
-    if [[ $token_error -ne 0 ]]; then
-      return 1
+    if [[ -z "${var.control_plane_port}" ]]; then
+      # No control_plane_port is set, testing default (443) and then 8000
+      local url_token="${local.protocol}://${var.control_plane}/v1/users/oidc/token"
+      local token=$(${local.curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="${var.client_id}" -d client_secret="${var.client_secret}" 2>&1)
+      local token_error=$(echo $?)
+      if [[ $token_error -ne 0 ]]; then
+        local url_token="${local.protocol}://${var.control_plane}:8000/v1/users/oidc/token"
+        local token=$(${local.curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="${var.client_id}" -d client_secret="${var.client_secret}" 2>&1)
+        local token_error=$(echo $?)
+        if [[ $token_error -ne 0 ]]; then
+          return 1
+        fi
+      fi
+    else
+      # Use the control_plane_port defined
+      local url_token="${local.protocol}://${var.control_plane}:${var.control_plane_port}/v1/users/oidc/token"
+      local token=$(${local.curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="${var.client_id}" -d client_secret="${var.client_secret}" 2>&1)
+      local token_error=$(echo $?)
+      if [[ $token_error -ne 0 ]]; then
+        return 1
+      fi
     fi
     local access_token=$(echo "$token" | jq -r .access_token)
     local url="${local.protocol}://${var.control_plane}/deploy/docker-compose?TemplateVersion=${var.sidecar_version}&clientId=${var.client_id}&clientSecret=${var.client_secret}&SidecarId=${var.sidecar_id}&TemplateType=terraform&LogIntegration=${var.log_integration}&MetricsIntegration=${var.metrics_integration}&HCVaultIntegrationID=${var.hc_vault_integration_id}&WiresEnabled=${join(",", var.repositories_supported)}"
