@@ -6,7 +6,7 @@
 
   echo "Downloading sidecar.compose.yaml..."
   function download_sidecar () {
-    if [[ -z ${controlplane_port} ]]; then
+    if [[ -z \"${controlplane_port}\" ]]; then
       # No controlplane_port is set, testing default (443) and then 8000
       local url_token="${protocol}://${controlplane_host}/v1/users/oidc/token"
       local token=$(${curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="$${SIDECAR_CLIENT_ID}" -d client_secret="$${SIDECAR_CLIENT_SECRET}" 2>&1)
@@ -37,6 +37,9 @@
     return 1
   }
   retry download_sidecar
+
+  unset SIDECAR_CLIENT_ID
+  unset SIDECAR_CLIENT_SECRET
 
   echo "Fetching secret: container registry key..."
   aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
