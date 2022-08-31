@@ -5,33 +5,33 @@
     --region ${aws_region} | jq -r .clientSecret)
 
   echo "Downloading sidecar.compose.yaml..."
+  function get_token () {
+    local url_token="${local.protocol}://${var.control_plane}:$1/v1/users/oidc/token"
+    token=$(${local.curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="${var.client_id}" -d client_secret="${var.client_secret}" 2>&1)
+    token_error=$(echo $?)
+  }
+
   function download_sidecar () {
-    if [[ -z "${controlplane_port}" ]]; then
-      # No controlplane_port is set, testing default (443) and then 8000
-      local url_token="${protocol}://${controlplane_host}/v1/users/oidc/token"
-      local token=$(${curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="$${SIDECAR_CLIENT_ID}" -d client_secret="$${SIDECAR_CLIENT_SECRET}" 2>&1)
-      local token_error=$(echo $?)
+    if [[ -z ${var.control_plane_port} ]]; then
+      # No control_plane_port is set, testing default (443) and then 8000
+      get_token "443"
       if [[ $token_error -ne 0 ]]; then
-        local url_token="${protocol}://${controlplane_host}:8000/v1/users/oidc/token"
-        local token=$(${curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="$${SIDECAR_CLIENT_ID}" -d client_secret="$${SIDECAR_CLIENT_SECRET}" 2>&1)
-        local token_error=$(echo $?)
+        get_token "8000"
         if [[ $token_error -ne 0 ]]; then
           return 1
         fi
       fi
     else
-      # Use the controlplane_port defined
-      local url_token="${protocol}://${controlplane_host}:${controlplane_port}/v1/users/oidc/token"
-      local token=$(${curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="$${SIDECAR_CLIENT_ID}" -d client_secret="$${SIDECAR_CLIENT_SECRET}" 2>&1)
-      local token_error=$(echo $?)
+      # Use the control_plane_port defined
+      get_token ${var.control_plane_port}
       if [[ $token_error -ne 0 ]]; then
         return 1
       fi
     fi
     local access_token=$(echo "$token" | jq -r .access_token)
-    local url="${protocol}://${controlplane_host}/deploy/docker-compose?TemplateVersion=${sidecar_version}&TemplateType=terraform&LogIntegration=${log_integration}&MetricsIntegration=${metrics_integration}&HCVaultIntegrationID=${hc_vault_integration_id}&WiresEnabled=${repositories_supported}"
+    local url="${local.protocol}://${var.control_plane}/deploy/docker-compose?TemplateVersion=${var.sidecar_version}&clientId=${var.client_id}&clientSecret=${var.client_secret}&SidecarId=${var.sidecar_id}&TemplateType=terraform&LogIntegration=${var.log_integration}&MetricsIntegration=${var.metrics_integration}&HCVaultIntegrationID=${var.hc_vault_integration_id}&WiresEnabled=${join(",", var.repositories_supported)}"
     echo "Trying to download the sidecar template from: $url"
-    if [[ $(${curl} -s -o /home/ec2-user/sidecar.compose.yaml -w "%%{http_code}" -L "$url" -H "Authorization: Bearer $access_token") = 200 ]]; then
+    if [[ $(${local.curl} -s -o /home/ec2-user/sidecar.compose.yaml -w "%%{http_code}" -L "$url" -H "authorization: Bearer $access_token") = 200 ]]; then
       return 0
     fi
     return 1
