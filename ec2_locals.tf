@@ -14,6 +14,7 @@ locals {
     sidecar_id                            = var.sidecar_id
     name_prefix                           = var.name_prefix
     controlplane_host                     = var.control_plane
+    controlplane_port                     = var.control_plane_port
     container_registry                    = var.container_registry
     container_registry_username           = var.container_registry_username
     elk_address                           = var.elk_address
@@ -41,6 +42,10 @@ locals {
     mysql_multiplexed_port                = var.mysql_multiplexed_port
     sidecar_created_certificate_secret_id = aws_secretsmanager_secret.sidecar_created_certificate.arn
     load_balancer_tls_ports               = join(",", var.load_balancer_tls_ports)
+    protocol                              = local.protocol
+    curl                                  = local.curl
+    sidecar_version                       = var.sidecar_version
+    repositories_supported                = join(",", var.repositories_supported)
   }
 
   cloud_init_pre  = templatefile("${path.module}/files/cloud-init-pre.sh.tmpl", local.templatevars)

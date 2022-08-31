@@ -1,4 +1,60 @@
-function login () {
+  echo "Fetching secret: sidecar client ID and client secret."
+  SIDECAR_CLIENT_ID=$(aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
+    --region ${aws_region} | jq -r .clientId)
+  SIDECAR_CLIENT_SECRET=$(aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
+    --region ${aws_region} | jq -r .clientSecret)
+
+  echo "Downloading sidecar.compose.yaml..."
+  function download_sidecar () {
+    if [[ -z ${controlplane_port} ]]; then
+      # No controlplane_port is set, testing default (443) and then 8000
+      local url_token="${protocol}://${controlplane_host}/v1/users/oidc/token"
+      local token=$(${local.curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="${SIDECAR_CLIENT_ID}" -d client_secret="${SIDECAR_CLIENT_SECRET}" 2>&1)
+      local token_error=$(echo $?)
+      if [[ $token_error -ne 0 ]]; then
+        local url_token="${protocol}://${controlplane_host}:8000/v1/users/oidc/token"
+        local token=$(${local.curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="${SIDECAR_CLIENT_ID}" -d client_secret="${SIDECAR_CLIENT_SECRET}" 2>&1)
+        local token_error=$(echo $?)
+        if [[ $token_error -ne 0 ]]; then
+          return 1
+        fi
+      fi
+    else
+      # Use the controlplane_port defined
+      local url_token="${protocol}://${controlplane_host}:${controlplane_port}/v1/users/oidc/token"
+      local token=$(${local.curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="${SIDECAR_CLIENT_ID}" -d client_secret="${SIDECAR_CLIENT_SECRET}" 2>&1)
+      local token_error=$(echo $?)
+      if [[ $token_error -ne 0 ]]; then
+        return 1
+      fi
+    fi
+    local access_token=$(echo "$token" | jq -r .access_token)
+    local url="${protocol}://${controlplane_host}/deploy/docker-compose?TemplateVersion=${sidecar_version}&clientId=${SIDECAR_CLIENT_ID}&clientSecret=${SIDECAR_CLIENT_SECRET}&SidecarId=${sidecar_id}&TemplateType=terraform&LogIntegration=${log_integration}&MetricsIntegration=${metrics_integration}&HCVaultIntegrationID=${hc_vault_integration_id}&WiresEnabled=${repositories_supported}"
+    echo "Trying to download the sidecar template from: $url"
+    if [[ $(${local.curl} -s -o /home/ec2-user/sidecar.compose.yaml -w "%%{http_code}" -L "$url" -H "authorization: Bearer $access_token") = 200 ]]; then
+      return 0
+    fi
+    return 1
+  }
+  retry download_sidecar
+
+  echo "Fetching secret: container registry key..."
+  aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
+    --region ${aws_region} | jq -r 'select(.containerRegistryKey != null) | .containerRegistryKey' | base64 --decode > /home/ec2-user/cyral/container_registry_key.json
+  until [ -f /home/ec2-user/cyral/container_registry_key.json ]; do echo "wait"; sleep 1; done
+  cat >> /home/ec2-user/.bash_profile << EOF
+  if [[ ${container_registry} == *".amazonaws.com"* ]]; then
+    echo "Logging in to AWS ECR..."
+    eval $(aws ecr --no-include-email get-login  --region ${aws_region})
+  elif [ -s /home/ec2-user/cyral/container_registry_key.json ]; then
+      echo "Logging in to GCR..."
+      cat /home/ec2-user/cyral/container_registry_key.json | docker login -u ${container_registry_username} --password-stdin https://gcr.io
+  else
+      echo "Won't log in automatically to any image registry. Image registry set to: ${container_registry}"
+  fi
+  EOF
+
+  function login () {
   if [[ ${container_registry} == *".amazonaws.com"* ]]; then
     echo "(login): Logging in to AWS ECR..."
     eval $(aws ecr --no-include-email get-login  --region ${aws_region})

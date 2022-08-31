@@ -38,56 +38,6 @@ resource "aws_launch_configuration" "cyral-sidecar-lc" {
   #!/bin/bash -xe
   ${lookup(var.custom_user_data, "pre")}
   ${local.cloud_init_pre}
-
-  echo "Downloading sidecar.compose.yaml..."
-  function download_sidecar () {
-    if [[ -z ${var.control_plane_port} ]]; then
-      # No control_plane_port is set, testing default (443) and then 8000
-      local url_token="${local.protocol}://${var.control_plane}/v1/users/oidc/token"
-      local token=$(${local.curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="${var.client_id}" -d client_secret="${var.client_secret}" 2>&1)
-      local token_error=$(echo $?)
-      if [[ $token_error -ne 0 ]]; then
-        local url_token="${local.protocol}://${var.control_plane}:8000/v1/users/oidc/token"
-        local token=$(${local.curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="${var.client_id}" -d client_secret="${var.client_secret}" 2>&1)
-        local token_error=$(echo $?)
-        if [[ $token_error -ne 0 ]]; then
-          return 1
-        fi
-      fi
-    else
-      # Use the control_plane_port defined
-      local url_token="${local.protocol}://${var.control_plane}:${var.control_plane_port}/v1/users/oidc/token"
-      local token=$(${local.curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="${var.client_id}" -d client_secret="${var.client_secret}" 2>&1)
-      local token_error=$(echo $?)
-      if [[ $token_error -ne 0 ]]; then
-        return 1
-      fi
-    fi
-    local access_token=$(echo "$token" | jq -r .access_token)
-    local url="${local.protocol}://${var.control_plane}/deploy/docker-compose?TemplateVersion=${var.sidecar_version}&clientId=${var.client_id}&clientSecret=${var.client_secret}&SidecarId=${var.sidecar_id}&TemplateType=terraform&LogIntegration=${var.log_integration}&MetricsIntegration=${var.metrics_integration}&HCVaultIntegrationID=${var.hc_vault_integration_id}&WiresEnabled=${join(",", var.repositories_supported)}"
-    echo "Trying to download the sidecar template from: $url"
-    if [[ $(${local.curl} -s -o /home/ec2-user/sidecar.compose.yaml -w "%%{http_code}" -L "$url" -H "authorization: Bearer $access_token") = 200 ]]; then
-      return 0
-    fi
-    return 1
-  }
-  retry download_sidecar
-
-  echo "Fetching secrets..."
-  aws secretsmanager get-secret-value --secret-id ${var.secrets_location} --query SecretString --output text \
-    --region ${data.aws_region.current.name} | jq -r 'select(.containerRegistryKey != null) | .containerRegistryKey' | base64 --decode > /home/ec2-user/cyral/container_registry_key.json
-  until [ -f /home/ec2-user/cyral/container_registry_key.json ]; do echo "wait"; sleep 1; done
-  cat >> /home/ec2-user/.bash_profile << EOF
-  if [[ ${var.container_registry} == *".amazonaws.com"* ]]; then
-    echo "Logging in to AWS ECR..."
-    eval $(aws ecr --no-include-email get-login  --region ${data.aws_region.current.name})
-  elif [ -s /home/ec2-user/cyral/container_registry_key.json ]; then
-      echo "Logging in to GCR..."
-      cat /home/ec2-user/cyral/container_registry_key.json | docker login -u ${var.container_registry_username} --password-stdin https://gcr.io
-  else
-      echo "Won't log in automatically to any image registry. Image registry set to: ${var.container_registry}"
-  fi
-  EOF
   ${local.cloud_init_post}
   ${lookup(var.custom_user_data, "post")}
 EOT
