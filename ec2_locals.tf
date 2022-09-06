@@ -14,7 +14,6 @@ locals {
     sidecar_id                            = var.sidecar_id
     name_prefix                           = var.name_prefix
     controlplane_host                     = var.control_plane
-    controlplane_port                     = var.control_plane_port
     container_registry                    = var.container_registry
     container_registry_username           = var.container_registry_username
     elk_address                           = var.elk_address

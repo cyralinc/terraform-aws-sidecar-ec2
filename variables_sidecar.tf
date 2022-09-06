@@ -34,12 +34,6 @@ variable "control_plane" {
   type        = string
 }
 
-variable "control_plane_port" {
-  description = "Control plane API port."
-  type        = string
-  default     = ""
-}
-
 variable "external_tls_type" {
   description = "TLS mode for the control plane - tls, tls-skip-verify, no-tls"
   type        = string

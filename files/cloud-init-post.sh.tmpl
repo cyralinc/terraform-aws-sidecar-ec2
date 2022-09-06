@@ -12,18 +12,10 @@ function get_token () {
 }
 
 function download_sidecar () {
-  if [[ -z "${controlplane_port}" ]]; then
-    # No control_plane_port is set, testing default (443) and then 8000
-    get_token "443"
-    if [[ $token_error -ne 0 ]]; then
-      get_token "8000"
-      if [[ $token_error -ne 0 ]]; then
-        return 1
-      fi
-    fi
-  else
-    # Use the control_plane_port defined
-    get_token ${controlplane_port}
+  # Test default (443) and then 8000
+  get_token "443"
+  if [[ $token_error -ne 0 ]]; then
+    get_token "8000"
     if [[ $token_error -ne 0 ]]; then
       return 1
     fi
