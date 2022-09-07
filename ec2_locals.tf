@@ -41,6 +41,10 @@ locals {
     mysql_multiplexed_port                = var.mysql_multiplexed_port
     sidecar_created_certificate_secret_id = aws_secretsmanager_secret.sidecar_created_certificate.arn
     load_balancer_tls_ports               = join(",", var.load_balancer_tls_ports)
+    protocol                              = local.protocol
+    curl                                  = local.curl
+    sidecar_version                       = var.sidecar_version
+    repositories_supported                = join(",", var.repositories_supported)
   }
 
   cloud_init_pre  = templatefile("${path.module}/files/cloud-init-pre.sh.tmpl", local.templatevars)
