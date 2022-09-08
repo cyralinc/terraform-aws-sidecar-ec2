@@ -4,13 +4,12 @@
 
 ```hcl
 module "cyral_sidecar" {
-    source  = "cyralinc/sidecar-aws/cyral"  
-    version = ">= 2.10.0" # terraform module version
+    source  = "cyralinc/sidecar-ec2/aws"  
+    version = ">= 2.12.0" # terraform module version
 
     sidecar_version = ""
     sidecar_id      = ""
 
-    name_prefix   = ""
     control_plane = ""
 
     sidecar_ports = [443, 3306, 5432, 27017, 27018, 27019]
@@ -32,8 +31,7 @@ module "cyral_sidecar" {
 
 **Note:**
 
-- `name_prefix` is filled automatically when you download the Terraform sidecar
-  template from the Cyral control plane. If you wish to define a custom
+- `name_prefix` is defined automatically. If you wish to define a custom
   `name_prefix`, please keep in mind that its length must be **at most 24
   characters**.
 

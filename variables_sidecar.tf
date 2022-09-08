@@ -87,6 +87,7 @@ variable "mysql_multiplexed_port" {
 variable "name_prefix" {
   description = "Prefix for names of created resources in AWS. Maximum length is 24 characters."
   type        = string
+  default     = "cyral-${substr(lower(var.sidecar_id), -6, -1)}"
 }
 
 variable "sidecar_id" {
