@@ -11,7 +11,7 @@ data "aws_ami" "amazon_linux_2" {
 
 resource "aws_launch_configuration" "cyral-sidecar-lc" {
   # Launch configuration for sidecar instances that will run containers
-  name_prefix                 = "${var.name_prefix}-autoscaling-"
+  name_prefix                 = "${local.name_prefix}-autoscaling-"
   image_id                    = var.ami_id != "" ? var.ami_id : data.aws_ami.amazon_linux_2.id
   instance_type               = var.instance_type
   iam_instance_profile        = aws_iam_instance_profile.sidecar_profile.name
@@ -76,7 +76,7 @@ EOT
 resource "aws_autoscaling_group" "cyral-sidecar-asg" {
   # Autoscaling group of immutable sidecar instances
   count                     = var.asg_count
-  name                      = "${var.name_prefix}-asg"
+  name                      = "${local.name_prefix}-asg"
   launch_configuration      = aws_launch_configuration.cyral-sidecar-lc.id
   vpc_zone_identifier       = var.subnets
   min_size                  = var.asg_min
@@ -88,7 +88,7 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
 
   tag {
     key                 = "Name"
-    value               = "${var.name_prefix}-instance"
+    value               = "${local.name_prefix}-instance"
     propagate_at_launch = true
   }
 
@@ -105,7 +105,7 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
 }
 
 resource "aws_security_group" "instance" {
-  name   = "${var.name_prefix}-instance"
+  name   = "${local.name_prefix}-instance"
   vpc_id = var.vpc_id
 
   # Allow SSH inbound
@@ -161,7 +161,7 @@ resource "aws_security_group" "instance" {
 
 resource "aws_lb" "cyral-lb" {
   # Core load balancer
-  name                             = "${var.name_prefix}-lb"
+  name                             = "${local.name_prefix}-lb"
   internal                         = var.load_balancer_scheme == "internet-facing" ? false : true
   load_balancer_type               = "network"
   subnets                          = length(var.load_balancer_subnets) > 0 ? var.load_balancer_subnets : var.subnets
@@ -170,7 +170,7 @@ resource "aws_lb" "cyral-lb" {
 
 resource "aws_lb_target_group" "cyral-sidecar-tg" {
   for_each = { for port in var.sidecar_ports : tostring(port) => port }
-  name     = "${var.name_prefix}-tg${each.value}"
+  name     = "${local.name_prefix}-tg${each.value}"
   port     = each.value
   protocol = "TCP"
   vpc_id   = var.vpc_id

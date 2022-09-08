@@ -29,7 +29,7 @@ resource "aws_secretsmanager_secret" "sidecar_created_certificate" {
 
 resource "aws_secretsmanager_secret" "sidecar_custom_certificate" {
   count                   = local.create_sidecar_custom_certificate_secret ? 1 : 0
-  name                    = "/cyral/sidecars/certificate/${var.name_prefix}"
+  name                    = "/cyral/sidecars/certificate/${local.name_prefix}"
   description             = "Custom certificate used by Cyral sidecar for TLS. This secret will be controlled by the Sidecar Custom Certificate module."
   recovery_window_in_days = 0
   kms_key_id              = var.secrets_kms_key_id

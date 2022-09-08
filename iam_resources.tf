@@ -85,18 +85,18 @@ data "aws_iam_policy_document" "sidecar" {
 }
 
 resource "aws_iam_instance_profile" "sidecar_profile" {
-  name = "${var.name_prefix}-sidecar_profile"
+  name = "${local.name_prefix}-sidecar_profile"
   role = aws_iam_role.sidecar_role.name
 }
 
 resource "aws_iam_role" "sidecar_role" {
-  name               = "${var.name_prefix}-sidecar_role"
+  name               = "${local.name_prefix}-sidecar_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar.json
 }
 
 resource "aws_iam_policy" "init_script_policy" {
-  name        = "${var.name_prefix}-init_script_policy"
+  name        = "${local.name_prefix}-init_script_policy"
   path        = "/"
   description = "Allow EC2 to update ASG when init complete"
   policy      = data.aws_iam_policy_document.init_script_policy.json
@@ -141,14 +141,14 @@ data "aws_iam_policy_document" "sidecar_custom_certificate_secrets_manager" {
 
 resource "aws_iam_role" "sidecar_custom_certificate" {
   count              = local.create_custom_certificate_role ? 1 : 0
-  name               = "${var.name_prefix}-sidecar_custom_certificate_lambda_role"
+  name               = "${local.name_prefix}-sidecar_custom_certificate_lambda_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar_custom_certificate_assume_role[0].json
 }
 
 resource "aws_iam_policy" "sidecar_custom_certificate_secrets_manager" {
   count  = local.create_custom_certificate_role ? 1 : 0
-  name   = "${var.name_prefix}-sidecar_custom_certificate_sm"
+  name   = "${local.name_prefix}-sidecar_custom_certificate_sm"
   path   = "/"
   policy = data.aws_iam_policy_document.sidecar_custom_certificate_secrets_manager[0].json
 }
