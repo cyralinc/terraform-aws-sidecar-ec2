@@ -2,6 +2,7 @@
 
 ## Usage
 
+### Regular configuration
 ```hcl
 module "cyral_sidecar" {
     source  = "cyralinc/sidecar-ec2/aws"  
@@ -12,7 +13,7 @@ module "cyral_sidecar" {
 
     control_plane = ""
 
-    sidecar_ports = [443, 3306, 5432, 27017, 27018, 27019]
+    sidecar_ports = [443, 3306, 5432]
     mongodb_port_alloc_range_low  = 27017
     mongodb_port_alloc_range_high = 27019
 
@@ -28,7 +29,33 @@ module "cyral_sidecar" {
     client_secret      = ""
 }
 ```
+### MongoDB configuration with replica set
+```hcl
+module "cyral_sidecar" {
+    source  = "cyralinc/sidecar-ec2/aws"  
+    version = ">= 2.12.0" # terraform module version
 
+    sidecar_version = ""
+    sidecar_id      = ""
+
+    control_plane = ""
+
+    sidecar_ports = [443, 3306, 5432, 27017, 27018, 27019, 27020, 27021]
+    mongodb_port_alloc_range_low  = 27017
+    mongodb_port_alloc_range_high = 27021
+
+    vpc_id  = ""
+    subnets = [""]
+
+    ssh_inbound_cidr         = ["0.0.0.0/0"]
+    db_inbound_cidr          = ["0.0.0.0/0"]
+    healthcheck_inbound_cidr = ["0.0.0.0/0"]
+
+    container_registry = ""
+    client_id          = ""
+    client_secret      = ""
+}
+```
 **Note:**
 
 - `name_prefix` is defined automatically. If you wish to define a custom
@@ -134,10 +161,10 @@ No modules.
 | <a name="input_load_balancer_tls_ports"></a> [load\_balancer\_tls\_ports](#input\_load\_balancer\_tls\_ports) | List of ports that will have TLS terminated at load balancer level<br>(snowflake support, for example). If assigned, 'load\_balancer\_certificate\_arn' <br>must also be provided. This parameter must be a subset of 'sidecar\_ports'. | `list(number)` | `[]` | no |
 | <a name="input_log_integration"></a> [log\_integration](#input\_log\_integration) | Logs destination | `string` | `"cloudwatch"` | no |
 | <a name="input_metrics_integration"></a> [metrics\_integration](#input\_metrics\_integration) | Metrics destination | `string` | `""` | no |
-| <a name="input_mongodb_port_alloc_range_high"></a> [mongodb\_port\_alloc\_range\_high](#input\_mongodb\_port\_alloc\_range\_high) | Final value for MongoDB port allocation range. The consecutive ports in the<br>range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used<br>for mongodb cluster monitoring. All the ports in this range must be listed in<br>`sidecar_ports`. | `number` | n/a | yes |
-| <a name="input_mongodb_port_alloc_range_low"></a> [mongodb\_port\_alloc\_range\_low](#input\_mongodb\_port\_alloc\_range\_low) | Initial value for MongoDB port allocation range. The consecutive ports in the<br>range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used<br>for mongodb cluster monitoring. All the ports in this range must be listed in<br>`sidecar_ports`. | `number` | n/a | yes |
+| <a name="input_mongodb_port_alloc_range_high"></a> [mongodb\_port\_alloc\_range\_high](#input\_mongodb\_port\_alloc\_range\_high) | Final value for MongoDB port allocation range. The consecutive ports in the<br>range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used<br>for mongodb cluster monitoring. All the ports in this range must be listed in<br>`sidecar_ports`. | `number` | `27019` | no |
+| <a name="input_mongodb_port_alloc_range_low"></a> [mongodb\_port\_alloc\_range\_low](#input\_mongodb\_port\_alloc\_range\_low) | Initial value for MongoDB port allocation range. The consecutive ports in the<br>range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used<br>for mongodb cluster monitoring. All the ports in this range must be listed in<br>`sidecar_ports`. | `number` | `27017` | no |
 | <a name="input_mysql_multiplexed_port"></a> [mysql\_multiplexed\_port](#input\_mysql\_multiplexed\_port) | Port that will be used by the sidecar to multiplex connections to MySQL | `number` | `0` | no |
-| <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Prefix for names of created resources in AWS. Maximum length is 24 characters. | `string` | n/a | yes |
+| <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Prefix for names of created resources in AWS. Maximum length is 24 characters. | `string` | `""` | no |
 | <a name="input_reduce_security_group_rules_count"></a> [reduce\_security\_group\_rules\_count](#input\_reduce\_security\_group\_rules\_count) | If set to `false`, each port in `sidecar_ports` will be used individually for each CIDR in `db_inbound_cidr` to create inbound rules in the sidecar security group, resulting in a number of inbound rules that is equal to the number of `sidecar_ports` * `db_inbound_cidr`. If set to `true`, the entire sidecar port range from `min(sidecar_ports)` to `max(sidecar_ports)` will be used to configure each inbound rule for each CIDR in `db_inbound_cidr` for the sidecar security group. Setting it to `true` can be useful if you need to use multiple sequential sidecar ports and different CIDRs for DB inbound (`db_inbound_cidr`) since it will significantly reduce the number of inbound rules and avoid hitting AWS quotas. As a side effect, it will open all the ports between `min(sidecar_ports)` and `max(sidecar_ports)` in the security group created by this module. | `bool` | `false` | no |
 | <a name="input_repositories_supported"></a> [repositories\_supported](#input\_repositories\_supported) | List of all repositories that will be supported by the sidecar (lower case only) | `list(string)` | <pre>[<br>  "denodo",<br>  "dremio",<br>  "dynamodb",<br>  "mongodb",<br>  "mysql",<br>  "oracle",<br>  "postgresql",<br>  "redshift",<br>  "rest",<br>  "snowflake",<br>  "sqlserver",<br>  "s3"<br>]</pre> | no |
 | <a name="input_secrets_kms_key_id"></a> [secrets\_kms\_key\_id](#input\_secrets\_kms\_key\_id) | ARN of the KMS key used to encrypt secrets. If not set, secrets will use the default KMS key. | `string` | `""` | no |

@@ -66,6 +66,7 @@ for mongodb cluster monitoring. All the ports in this range must be listed in
 `sidecar_ports`.
 EOF
   type        = number
+  default     = 27017
 }
 
 variable "mongodb_port_alloc_range_high" {
@@ -76,6 +77,7 @@ for mongodb cluster monitoring. All the ports in this range must be listed in
 `sidecar_ports`.
 EOF
   type        = number
+  default     = 27019
 }
 
 variable "mysql_multiplexed_port" {
