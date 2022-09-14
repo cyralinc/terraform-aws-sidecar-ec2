@@ -6,7 +6,7 @@
 ```hcl
 module "cyral_sidecar" {
     source  = "cyralinc/sidecar-ec2/aws"  
-    version = ">= 2.12.0" # terraform module version
+    version = "~> 3.0" # terraform module version
 
     sidecar_version = ""
     sidecar_id      = ""
@@ -33,7 +33,7 @@ module "cyral_sidecar" {
 ```hcl
 module "cyral_sidecar" {
     source  = "cyralinc/sidecar-ec2/aws"  
-    version = ">= 2.12.0" # terraform module version
+    version = "~> 3.0" # terraform module version
 
     sidecar_version = ""
     sidecar_id      = ""
