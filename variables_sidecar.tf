@@ -66,6 +66,7 @@ for mongodb cluster monitoring. All the ports in this range must be listed in
 `sidecar_ports`.
 EOF
   type        = number
+  default     = 27017
 }
 
 variable "mongodb_port_alloc_range_high" {
@@ -76,6 +77,7 @@ for mongodb cluster monitoring. All the ports in this range must be listed in
 `sidecar_ports`.
 EOF
   type        = number
+  default     = 27019
 }
 
 variable "mysql_multiplexed_port" {
@@ -87,6 +89,7 @@ variable "mysql_multiplexed_port" {
 variable "name_prefix" {
   description = "Prefix for names of created resources in AWS. Maximum length is 24 characters."
   type        = string
+  default     = ""
 }
 
 variable "sidecar_id" {
@@ -139,24 +142,6 @@ variable "sidecar_ports" {
 variable "sidecar_version" {
   description = "Version of the sidecar"
   type        = string
-}
-
-variable "sidecar_certificate_lambda_version" {
-  description = "Version of the lambda that creates the sidecar certificate. This variable is ignored if 'sidecar_certificate_lambda_key' is set."
-  type        = string
-  default     = "v0.1.0"
-}
-
-variable "sidecar_certificate_lambda_bucket" {
-  description = "S3 bucket that contains the sidecar-created certificate lambda code. LEAVE EMPTY UNLESS YOU WANT TO OVERRIDE THE DEFAULT."
-  type        = string
-  default     = ""
-}
-
-variable "sidecar_certificate_lambda_key" {
-  description = "Object key for the sidecar-created certificate lambda code. See 'sidecar_certificate_lambda_bucket'. LEAVE EMPTY UNLESS YOU WANT TO OVERRIDE THE DEFAULT."
-  type        = string
-  default     = ""
 }
 
 variable "repositories_supported" {

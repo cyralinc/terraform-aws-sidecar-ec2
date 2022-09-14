@@ -43,6 +43,14 @@ data "aws_iam_policy_document" "init_script_policy" {
       "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:${var.secrets_location}*"
     ])
   }
+  statement {
+    actions = [
+      "secretsmanager:UpdateSecret"
+    ]
+    resources = [
+      "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:/cyral/sidecars/${var.sidecar_id}/self-signed-certificate*"
+    ]
+  }
 
   source_policy_documents = [
     data.aws_iam_policy_document.kms.json
@@ -77,18 +85,18 @@ data "aws_iam_policy_document" "sidecar" {
 }
 
 resource "aws_iam_instance_profile" "sidecar_profile" {
-  name = "${var.name_prefix}-sidecar_profile"
+  name = "${local.name_prefix}-sidecar_profile"
   role = aws_iam_role.sidecar_role.name
 }
 
 resource "aws_iam_role" "sidecar_role" {
-  name               = "${var.name_prefix}-sidecar_role"
+  name               = "${local.name_prefix}-sidecar_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar.json
 }
 
 resource "aws_iam_policy" "init_script_policy" {
-  name        = "${var.name_prefix}-init_script_policy"
+  name        = "${local.name_prefix}-init_script_policy"
   path        = "/"
   description = "Allow EC2 to update ASG when init complete"
   policy      = data.aws_iam_policy_document.init_script_policy.json
@@ -100,75 +108,9 @@ resource "aws_iam_role_policy_attachment" "init_script_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "user_policies" {
-  count   = length(var.iam_policies)
+  count      = length(var.iam_policies)
   role       = aws_iam_role.sidecar_role.name
   policy_arn = var.iam_policies[count.index]
-}
-
-##############################
-# Sidecar created certificate
-##############################
-
-data "aws_iam_policy_document" "sidecar_created_certificate_lambda_assume_role" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "sidecar_created_certificate_lambda_execution" {
-  # Cloudwatch permissions
-  statement {
-    actions = [
-      "logs:PutLogEvents",
-      "logs:CreateLogStream",
-      "logs:CreateLogGroup",
-      "logs:DescribeLogStreams"
-    ]
-    resources = [
-      "arn:${data.aws_arn.cw_lg.partition}:logs:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:*"
-    ]
-  }
-  statement {
-    actions   = ["cloudwatch:PutMetricData"]
-    resources = ["*"]
-  }
-
-  # Secrets Manager permissions
-  statement {
-    actions = [
-      "secretsmanager:DescribeSecret",
-      "secretsmanager:GetSecretValue",
-      "secretsmanager:UpdateSecret"
-    ]
-    resources = [
-      "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:/cyral/sidecars/${var.sidecar_id}/self-signed-certificate*"
-    ]
-  }
-
-  source_policy_documents = [
-    data.aws_iam_policy_document.kms.json
-  ]
-}
-
-resource "aws_iam_role" "sidecar_created_certificate_lambda_execution" {
-  name               = "${var.name_prefix}-sidecar_created_certificate_lambda"
-  path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.sidecar_created_certificate_lambda_assume_role.json
-}
-
-resource "aws_iam_policy" "sidecar_created_certificate_lambda_execution" {
-  name   = "${var.name_prefix}-sidecar_created_certificate_lambda"
-  path   = "/"
-  policy = data.aws_iam_policy_document.sidecar_created_certificate_lambda_execution.json
-}
-
-resource "aws_iam_role_policy_attachment" "sidecar_created_certificate_lambda_execution" {
-  role       = aws_iam_role.sidecar_created_certificate_lambda_execution.name
-  policy_arn = aws_iam_policy.sidecar_created_certificate_lambda_execution.arn
 }
 
 #############################
@@ -199,14 +141,14 @@ data "aws_iam_policy_document" "sidecar_custom_certificate_secrets_manager" {
 
 resource "aws_iam_role" "sidecar_custom_certificate" {
   count              = local.create_custom_certificate_role ? 1 : 0
-  name               = "${var.name_prefix}-sidecar_custom_certificate_lambda_role"
+  name               = "${local.name_prefix}-sidecar_custom_certificate_lambda_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar_custom_certificate_assume_role[0].json
 }
 
 resource "aws_iam_policy" "sidecar_custom_certificate_secrets_manager" {
   count  = local.create_custom_certificate_role ? 1 : 0
-  name   = "${var.name_prefix}-sidecar_custom_certificate_sm"
+  name   = "${local.name_prefix}-sidecar_custom_certificate_sm"
   path   = "/"
   policy = data.aws_iam_policy_document.sidecar_custom_certificate_secrets_manager[0].json
 }

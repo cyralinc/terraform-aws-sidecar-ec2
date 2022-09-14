@@ -7,12 +7,13 @@ locals {
     ) : (
     length(aws_route53_record.cyral-sidecar-dns-record) == 1 ? aws_route53_record.cyral-sidecar-dns-record[0].fqdn : aws_lb.cyral-lb.dns_name
   )
-  protocol = var.external_tls_type == "no-tls" ? "http" : "https"
-  curl     = var.external_tls_type == "tls-skip-verify" ? "curl -k" : "curl"
+  protocol    = var.external_tls_type == "no-tls" ? "http" : "https"
+  curl        = var.external_tls_type == "tls-skip-verify" ? "curl -k" : "curl"
+  name_prefix = var.name_prefix == "" ? "cyral-${substr(lower(var.sidecar_id), -6, -1)}" : var.name_prefix
 
   templatevars = {
     sidecar_id                            = var.sidecar_id
-    name_prefix                           = var.name_prefix
+    name_prefix                           = local.name_prefix
     controlplane_host                     = var.control_plane
     container_registry                    = var.container_registry
     container_registry_username           = var.container_registry_username
