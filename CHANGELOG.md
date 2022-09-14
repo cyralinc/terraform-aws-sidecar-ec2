@@ -1,3 +1,9 @@
+## 3.0.0 (September 15, 2022)
+Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.4`. This whole module will not work with previous sidecar or control planne versions.
+### Feature
+* ENG-8822: Make management of sidecar-created certificate internal to the sidecar ([#47](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/47))
+* ENG-9286: Deprecate public docker route ([#48](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/48))
+
 ## 2.11.0 (July 28, 2022)
 Minimum required sidecar version: `v2.34`. This whole module is fully compatible with sidecars `<2.34`, although the `dynamodb` control will be ignored in them.
 ### Feature
