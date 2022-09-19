@@ -1,5 +1,6 @@
 locals {
   create_custom_certificate_role = var.sidecar_custom_certificate_account_id != ""
+  create_kms_policy              = var.ec2_ebs_kms_arn != "" || var.secrets_kms_arn != ""
 }
 
 # Gets the ARN from a resource that is deployed by this module in order to
@@ -53,40 +54,24 @@ data "aws_iam_policy_document" "init_script_policy" {
   }
 
   source_policy_documents = [
-    data.aws_iam_policy_document.kms_secrets.json,
-    data.aws_iam_policy_document.kms_ebs.json
+    data.aws_iam_policy_document.kms.json
   ]
 }
 
-data "aws_iam_policy_document" "kms_secrets" {
+data "aws_iam_policy_document" "kms" {
   # KMS permissions
   dynamic "statement" {
-    for_each = var.secrets_kms_arn != "" ? [1] : []
+    for_each = local.create_kms_policy ? [1] : []
     content {
       actions = [
         "kms:Decrypt",
         "kms:Encrypt",
         "kms:GenerateDataKey"
       ]
-      resources = [
-        "${var.secrets_kms_arn}"
-      ]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "kms_ebs" {
-  # KMS permissions
-  dynamic "statement" {
-    for_each = var.ec2_ebs_kms_arn != "" ? [1] : []
-    content {
-      actions = [
-        "kms:Decrypt",
-        "kms:Encrypt"
-      ]
-      resources = [
+      resources = compact([
+        "${var.secrets_kms_arn}",
         "${var.ec2_ebs_kms_arn}"
-      ]
+      ])
     }
   }
 }

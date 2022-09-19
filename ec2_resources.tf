@@ -19,6 +19,7 @@ resource "aws_launch_template" "cyral_sidecar_lt" {
     name = aws_iam_instance_profile.sidecar_profile.name
   }
   network_interfaces {
+    device_index                = 0
     associate_public_ip_address = var.associate_public_ip_address
     security_groups = concat(
       [aws_security_group.instance.id],
