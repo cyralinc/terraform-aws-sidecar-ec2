@@ -53,11 +53,12 @@ data "aws_iam_policy_document" "init_script_policy" {
   }
 
   source_policy_documents = [
-    data.aws_iam_policy_document.kms.json
+    data.aws_iam_policy_document.kms_secrets.json,
+    data.aws_iam_policy_document.kms_ebs.json
   ]
 }
 
-data "aws_iam_policy_document" "kms" {
+data "aws_iam_policy_document" "kms_secrets" {
   # KMS permissions
   dynamic "statement" {
     for_each = var.secrets_kms_arn != "" ? [1] : []
@@ -69,6 +70,22 @@ data "aws_iam_policy_document" "kms" {
       ]
       resources = [
         "${var.secrets_kms_arn}"
+      ]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "kms_ebs" {
+  # KMS permissions
+  dynamic "statement" {
+    for_each = var.ec2_ebs_kms_arn != "" ? [1] : []
+    content {
+      actions = [
+        "kms:Decrypt",
+        "kms:Encrypt"
+      ]
+      resources = [
+        "${var.ec2_ebs_kms_arn}"
       ]
     }
   }
