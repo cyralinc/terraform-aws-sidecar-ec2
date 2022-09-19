@@ -33,6 +33,8 @@ resource "aws_launch_template" "cyral_sidecar_lt" {
     http_put_response_hop_limit = 2
   }
   block_device_mappings {
+    device_name = "/dev/xvda"
+
     ebs {
       delete_on_termination = true
       encrypted             = true
