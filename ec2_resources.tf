@@ -58,7 +58,7 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
   count = var.asg_count
   name  = "${local.name_prefix}-asg"
   launch_template {
-    id      = aws_launch_template.cyral_sidecar_lt
+    id      = aws_launch_template.cyral_sidecar_lt.id
     version = aws_launch_template.cyral_sidecar_lt.latest_version
   }
   vpc_zone_identifier       = var.subnets
