@@ -41,13 +41,14 @@ resource "aws_launch_template" "cyral_sidecar_lt" {
       volume_type           = "gp2"
     }
   }
-  user_data = <<-EOT
+  user_data = base64encode(<<-EOT
   #!/bin/bash -xe
   ${lookup(var.custom_user_data, "pre")}
   ${local.cloud_init_pre}
   ${local.cloud_init_post}
   ${lookup(var.custom_user_data, "post")}
 EOT
+  )
   lifecycle {
     create_before_destroy = true
   }
