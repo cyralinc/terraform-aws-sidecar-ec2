@@ -69,8 +69,8 @@ data "aws_iam_policy_document" "kms" {
         "kms:GenerateDataKey"
       ]
       resources = compact([
-        "${var.secrets_kms_arn}",
-        "${var.ec2_ebs_kms_arn}"
+        var.secrets_kms_arn,
+        var.ec2_ebs_kms_arn
       ])
     }
   }
