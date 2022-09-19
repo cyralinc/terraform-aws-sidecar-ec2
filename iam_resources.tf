@@ -60,7 +60,7 @@ data "aws_iam_policy_document" "init_script_policy" {
 data "aws_iam_policy_document" "kms" {
   # KMS permissions
   dynamic "statement" {
-    for_each = var.secrets_kms_key_id != "" ? [1] : []
+    for_each = var.secrets_kms_arn != "" ? [1] : []
     content {
       actions = [
         "kms:Decrypt",
@@ -68,7 +68,7 @@ data "aws_iam_policy_document" "kms" {
         "kms:GenerateDataKey"
       ]
       resources = [
-        "${var.secrets_kms_key_id}"
+        "${var.secrets_kms_arn}"
       ]
     }
   }
