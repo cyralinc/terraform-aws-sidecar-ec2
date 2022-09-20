@@ -41,7 +41,7 @@ module "cyral_sidecar" {
     sidecar_id      = ""
 
     control_plane = ""
-    # Considering MongDB ports are from the range 27017 to 27021
+    # Considering MongoDB ports are from the range 27017 to 27021
     sidecar_ports = [443, 3306, 5432, 27017, 27018, 27019, 27020, 27021]
     mongodb_port_alloc_range_low  = 27017
     mongodb_port_alloc_range_high = 27021
