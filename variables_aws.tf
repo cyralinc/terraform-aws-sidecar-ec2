@@ -152,8 +152,14 @@ variable "secrets_location" {
   type        = string
 }
 
-variable "secrets_kms_key_id" {
-  description = "ARN of the KMS key used to encrypt secrets. If not set, secrets will use the default KMS key."
+variable "secrets_kms_arn" {
+  description = "ARN of the KMS key used to encrypt/decrypt secrets. If not set, secrets will use the default KMS key."
+  type        = string
+  default     = ""
+}
+
+variable "ec2_ebs_kms_arn" {
+  description = "ARN of the KMS key used to encrypt/decrypt EBS volumes. If not set, EBS will use the default KMS key. Make sure the KMS key allows the principal `arn:aws:iam::ACCOUNT_NUMBER:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`, otherwise the ASG will not be able to launch the new instances."
   type        = string
   default     = ""
 }

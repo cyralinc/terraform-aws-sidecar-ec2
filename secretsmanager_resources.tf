@@ -11,7 +11,7 @@ resource "aws_secretsmanager_secret" "cyral-sidecar-secret" {
   count                   = var.deploy_secrets ? 1 : 0
   name                    = var.secrets_location
   recovery_window_in_days = 0
-  kms_key_id              = var.secrets_kms_key_id
+  kms_key_id              = var.secrets_kms_arn
 }
 
 resource "aws_secretsmanager_secret_version" "cyral-sidecar-secret-version" {
@@ -24,7 +24,7 @@ resource "aws_secretsmanager_secret" "sidecar_created_certificate" {
   name                    = "/cyral/sidecars/${var.sidecar_id}/self-signed-certificate"
   description             = "Self-signed TLS certificate used by sidecar in case a custom certificate is not provided."
   recovery_window_in_days = 0
-  kms_key_id              = var.secrets_kms_key_id
+  kms_key_id              = var.secrets_kms_arn
 }
 
 resource "aws_secretsmanager_secret" "sidecar_custom_certificate" {
@@ -32,5 +32,5 @@ resource "aws_secretsmanager_secret" "sidecar_custom_certificate" {
   name                    = "/cyral/sidecars/certificate/${local.name_prefix}"
   description             = "Custom certificate used by Cyral sidecar for TLS. This secret will be controlled by the Sidecar Custom Certificate module."
   recovery_window_in_days = 0
-  kms_key_id              = var.secrets_kms_key_id
+  kms_key_id              = var.secrets_kms_arn
 }

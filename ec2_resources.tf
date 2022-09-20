@@ -9,18 +9,23 @@ data "aws_ami" "amazon_linux_2" {
   owners = ["amazon"]
 }
 
-resource "aws_launch_configuration" "cyral-sidecar-lc" {
+resource "aws_launch_template" "cyral_sidecar_lt" {
   # Launch configuration for sidecar instances that will run containers
-  name_prefix                 = "${local.name_prefix}-autoscaling-"
-  image_id                    = var.ami_id != "" ? var.ami_id : data.aws_ami.amazon_linux_2.id
-  instance_type               = var.instance_type
-  iam_instance_profile        = aws_iam_instance_profile.sidecar_profile.name
-  key_name                    = var.key_name
-  associate_public_ip_address = var.associate_public_ip_address
-  security_groups = concat(
-    [aws_security_group.instance.id],
-    var.additional_security_groups
-  )
+  name          = "${local.name_prefix}-LT"
+  image_id      = var.ami_id != "" ? var.ami_id : data.aws_ami.amazon_linux_2.id
+  instance_type = var.instance_type
+  key_name      = var.key_name
+  iam_instance_profile {
+    name = aws_iam_instance_profile.sidecar_profile.name
+  }
+  network_interfaces {
+    device_index                = 0
+    associate_public_ip_address = var.associate_public_ip_address
+    security_groups = concat(
+      [aws_security_group.instance.id],
+      var.additional_security_groups
+    )
+  }
   metadata_options {
     # So docker can access ec2 metadata
     # see https://github.com/aws/aws-sdk-go/issues/2972
@@ -28,19 +33,25 @@ resource "aws_launch_configuration" "cyral-sidecar-lc" {
     http_tokens                 = "optional"
     http_put_response_hop_limit = 2
   }
-  root_block_device {
-    delete_on_termination = true
-    encrypted             = true
-    volume_size           = var.volume_size
-    volume_type           = "gp2"
+  block_device_mappings {
+    device_name = "/dev/xvda"
+
+    ebs {
+      delete_on_termination = true
+      encrypted             = true
+      kms_key_id            = var.ec2_ebs_kms_arn
+      volume_size           = var.volume_size
+      volume_type           = "gp2"
+    }
   }
-  user_data = <<-EOT
+  user_data = base64encode(<<-EOT
   #!/bin/bash -xe
   ${lookup(var.custom_user_data, "pre")}
   ${local.cloud_init_pre}
   ${local.cloud_init_post}
   ${lookup(var.custom_user_data, "post")}
 EOT
+  )
   lifecycle {
     create_before_destroy = true
   }
@@ -48,9 +59,12 @@ EOT
 
 resource "aws_autoscaling_group" "cyral-sidecar-asg" {
   # Autoscaling group of immutable sidecar instances
-  count                     = var.asg_count
-  name                      = "${local.name_prefix}-asg"
-  launch_configuration      = aws_launch_configuration.cyral-sidecar-lc.id
+  count = var.asg_count
+  name  = "${local.name_prefix}-asg"
+  launch_template {
+    id      = aws_launch_template.cyral_sidecar_lt.id
+    version = aws_launch_template.cyral_sidecar_lt.latest_version
+  }
   vpc_zone_identifier       = var.subnets
   min_size                  = var.asg_min
   desired_capacity          = var.asg_desired
