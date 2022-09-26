@@ -95,6 +95,7 @@ resource "aws_iam_role" "sidecar_role" {
   name               = "${local.name_prefix}-sidecar_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar.json
+  permissions_boundary = var.permissions_boundary
 }
 
 resource "aws_iam_policy" "init_script_policy" {
@@ -146,6 +147,7 @@ resource "aws_iam_role" "sidecar_custom_certificate" {
   name               = "${local.name_prefix}-sidecar_custom_certificate_lambda_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar_custom_certificate_assume_role[0].json
+  permissions_boundary = var.permissions_boundary
 }
 
 resource "aws_iam_policy" "sidecar_custom_certificate_secrets_manager" {

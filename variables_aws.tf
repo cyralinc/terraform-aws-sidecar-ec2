@@ -185,3 +185,9 @@ variable "cloudwatch_logs_retention" {
   #    error_message = "Valid values are: [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]."
   #  }
 }
+
+variable "permissions_boundary" {
+  description = "ARN of the permissions boundary to apply to all the IAM roles. Set to an empty string if no permission boundaries should be used."
+  type        = string
+  default     = ""
+}
