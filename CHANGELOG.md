@@ -1,3 +1,8 @@
+## 3.0.1 (October 11, 2022)
+Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control planne versions.
+### Bug fix
+* ENG-9772: Remove references to rest wire ([#50](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/50))
+
 ## 3.0.0 (September 19, 2022)
 Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control planne versions.
 ### Feature
