@@ -83,7 +83,10 @@ EOF
 }
 
 variable "mysql_multiplexed_port" {
-  description = "Port that will be used by the sidecar to multiplex connections to MySQL"
+  description = <<EOF
+(Deprecated) Port that will be used by the sidecar to multiplex connections to MySQL.
+This variable is deprecated for sidecars v4.0.0 and later.
+EOF
   type        = number
   default     = 0
 }
