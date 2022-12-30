@@ -29,6 +29,12 @@ variable "client_secret" {
   #sensitive   = true
 }
 
+variable "secret_manager_type" {
+  description = "Define secret manager type for sidecar_client_id and sidecar_client_secret."
+  type        = string
+  default     = "aws"
+}
+
 variable "control_plane" {
   description = "Address of the control plane - <tenant>.cyral.com"
   type        = string

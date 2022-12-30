@@ -21,6 +21,7 @@ locals {
     elk_username                          = var.elk_username
     elk_password                          = var.elk_password
     sidecar_endpoint                      = local.sidecar_endpoint
+    secret_manager_type                   = var.secret_manager_type
     dd_api_key                            = var.dd_api_key
     aws_region                            = data.aws_region.current.name
     log_integration                       = var.log_integration
