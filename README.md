@@ -15,10 +15,10 @@ module "cyral_sidecar" {
     sidecar_id      = ""
 
     control_plane = ""
-    # If `repositories_supported` is ommitted, all repositories will be supported,
-    # though you have to open the desired ports using `sidecar_ports`.
     # Considering MongoDB ports are from the range 27017 to 27021
     sidecar_ports = [443, 3306, 5432, 27017, 27018, 27019, 27020, 27021]
+    # If `repositories_supported` is ommitted, all repositories will be supported,
+    # though you have to open the desired ports using `sidecar_ports`.
     repositories_supported = ["snowflake", "postgresql", "mysql", "mongodb"]
 
     vpc_id  = ""
@@ -41,7 +41,7 @@ module "cyral_sidecar" {
 
 ## Upgrade Notes
 
-Check the [upgrade notes](docs/upgrade-notes.md) section if you are upgrading an existing sidecar.
+Check the [upgrade notes](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/upgrade-notes.md) section if you are upgrading an existing sidecar.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
