@@ -1,10 +1,16 @@
+## 3.0.2 (February 14, 2023)
+Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control plane versions.
+### Documentation
+* ENG-10517: Add deprecation note to the mysql_multiplexed_port variable ([#51](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/
+* ENG-10518: Add deprecation note to the mongodb low/high alloc ports variables ([#53](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/53))
+
 ## 3.0.1 (October 11, 2022)
-Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control planne versions.
+Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control plane versions.
 ### Bug fix
 * ENG-9772: Remove references to rest wire ([#50](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/50))
 
 ## 3.0.0 (September 19, 2022)
-Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control planne versions.
+Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control plane versions.
 ### Feature
 * ENG-8822: Make management of sidecar-created certificate internal to the sidecar ([#47](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/47))
 * ENG-9286: Deprecate public docker route ([#48](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/48))

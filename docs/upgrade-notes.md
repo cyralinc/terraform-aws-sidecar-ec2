@@ -1,5 +1,21 @@
 # Upgrade Notes
 
+## Upgrading from module 2.x.y to 3.0.0 or later
+
+### Deprecated variables
+
+#### mongodb_port_alloc_range_low and mongodb_port_alloc_range_high
+
+The MongoDB port allocation variables were deprecated in all sidecars `3.0` or later and will be removed in 
+the version `4.0` of this module. This information is now retrieved by the sidecar from the repository 
+configuration in the control plane.
+
+#### mysql_multiplexed_port
+
+The MySQL multiplexed port configuration variable was deprecated in all sidecars `4.0` or later and will be 
+removed in the version `4.0` of this module. This information is now retrieved by the sidecar from the 
+repository and sidecar configurations in the control plane.
+
 ## Upgrading from module 1.x.y to 2.2.0 or later
 
 ### New variables
