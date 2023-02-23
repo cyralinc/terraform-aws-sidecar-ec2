@@ -29,8 +29,8 @@ resource "aws_launch_template" "cyral_sidecar_lt" {
   }
   metadata_options {
     http_endpoint               = "enabled"
-    http_put_response_hop_limit = 1
     http_tokens                 = var.instance_metadata_token
+    http_put_response_hop_limit = 1
   }
   block_device_mappings {
     device_name = "/dev/xvda"
