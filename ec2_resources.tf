@@ -137,6 +137,15 @@ resource "aws_security_group" "instance" {
     cidr_blocks = var.healthcheck_inbound_cidr # TODO - change this to LB IP only
   }
 
+  # Allow metrics inbound
+  ingress {
+    description = "Sidecar - metrics"
+    from_port   = var.metrics_port
+    to_port     = var.metrics_port
+    protocol    = "tcp"
+    cidr_blocks = var.metrics_inbound_cidr
+  }
+
   # Allow all outbound
   egress {
     from_port   = 0
