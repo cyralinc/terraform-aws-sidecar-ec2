@@ -14,13 +14,7 @@ resource "aws_launch_template" "cyral_sidecar_lt" {
   name          = "${local.name_prefix}-LT"
   image_id      = var.ami_id != "" ? var.ami_id : data.aws_ami.amazon_linux_2.id
   instance_type = var.instance_type
-  tag_specifications {
-    resource_type = "instance"
-    tags = {
-      "metricsPort" : var.metrics_port
-    }
-  }
-  key_name = var.key_name
+  key_name      = var.key_name
   iam_instance_profile {
     name = aws_iam_instance_profile.sidecar_profile.name
   }
@@ -88,6 +82,12 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
   tag {
     key                 = "SidecarVersion"
     value               = var.sidecar_version
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "MetricsPort"
+    value               = var.metrics_port
     propagate_at_launch = true
   }
 
