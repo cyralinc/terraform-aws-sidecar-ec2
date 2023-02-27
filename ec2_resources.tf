@@ -14,7 +14,13 @@ resource "aws_launch_template" "cyral_sidecar_lt" {
   name          = "${local.name_prefix}-LT"
   image_id      = var.ami_id != "" ? var.ami_id : data.aws_ami.amazon_linux_2.id
   instance_type = var.instance_type
-  key_name      = var.key_name
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      "metricsPort" : var.metrics_port
+    }
+  }
+  key_name = var.key_name
   iam_instance_profile {
     name = aws_iam_instance_profile.sidecar_profile.name
   }
