@@ -27,11 +27,9 @@ resource "aws_launch_template" "cyral_sidecar_lt" {
     )
   }
   metadata_options {
-    # So docker can access ec2 metadata
-    # see https://github.com/aws/aws-sdk-go/issues/2972
     http_endpoint               = "enabled"
     http_tokens                 = "optional"
-    http_put_response_hop_limit = 2
+    http_put_response_hop_limit = 1
   }
   block_device_mappings {
     device_name = "/dev/xvda"
