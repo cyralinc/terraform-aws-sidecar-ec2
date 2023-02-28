@@ -1,3 +1,9 @@
+## 3.0.3 (February 28, 2023)
+Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control plane versions.
+### Documentation
+* ENG-11115: Change IMDS hop count from 2 to 1 ([#56](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/56))
+* ENG-10518: Add deprecation note to the mongodb low/high alloc ports variables ([#53](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/53))
+
 ## 3.0.2 (February 14, 2023)
 Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control plane versions.
 ### Documentation
