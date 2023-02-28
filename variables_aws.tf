@@ -142,9 +142,9 @@ variable "healthcheck_port" {
 }
 
 variable "metrics_inbound_cidr" {
-  description = "Allowed CIDR block for health check requests to the sidecar"
+  description = "Allowed CIDR block for health check requests to the sidecar. This is set as none by default, to allow all sources use '[\"0.0.0.0/0\"]' "
   type        = list(string)
-  default = [ "0.0.0.0/0" ]
+  default     = []
 }
 
 variable "deploy_secrets" {
