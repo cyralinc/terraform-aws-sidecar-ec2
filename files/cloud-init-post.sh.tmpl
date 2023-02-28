@@ -50,6 +50,6 @@ function login () {
   fi
 }
 
-function launch () { cd /home/ec2-user && docker-compose -f sidecar.compose.yaml up -d; }
+function launch () { cd /home/ec2-user && docker compose -f sidecar.compose.yaml up -d; }
 retry login
 retry launch

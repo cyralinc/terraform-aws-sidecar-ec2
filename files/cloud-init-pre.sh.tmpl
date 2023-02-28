@@ -2,7 +2,7 @@
 # aws autoscaling complete-lifecycle-action --lifecycle-action-result CONTINUE --instance-id $INSTANCE_ID --lifecycle-hook-name ${name_prefix}-InitLifeCycleHook --auto-scaling-group-name $ASG_NAME --region ${aws_region}
 
 yum update -y
-yum install -y aws-cfn-bootstrap wget ec2-instance-connect docker
+yum install -y aws-cfn-bootstrap wget ec2-instance-connect docker amazon-cloudwatch-agent docker-compose-plugin
 function retry() {
   RETRIES=15
   while [ $RETRIES -gt 0 ]; do
@@ -28,18 +28,16 @@ sudo service docker start
 # Add ec2-user to docker group
 sudo usermod -a -G docker ec2-user
 
+# Install 
+sudo mkdir -p /usr/local/lib/docker/cli-plugins/
+sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
 export PUBLIC_REPO=artifacts.cyralpublic.appspot.com
 export GCS_API_ENDPOINT=https://storage.googleapis.com
 export DOCKER_COMPOSE_VERSION=1.29.2
 export JQ_VERSION=1.6
 export BASTION_BOOTSTRAP_VERSION=0.1.1
-
-# Install docker-compose
-wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/docker-compose/$DOCKER_COMPOSE_VERSION/docker-compose-Linux-x86_64
-sudo mv docker-compose-`uname -s`-`uname -m` /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-docker-compose --version
 
 # Configure fd limit for ec2 instance and containers
 sudo bash -c 'cat > /etc/security/limits.d/fdlimit.conf' << EOF
@@ -61,15 +59,8 @@ sudo ln -s /usr/local/bin/jq /usr/bin/jq
 export PATH=$PATH:/usr/local/bin
 jq --version
 
-wget $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/quickstart-linux-bastion/$BASTION_BOOTSTRAP_VERSION/bastion_bootstrap.sh -O /home/ec2-user/bootstrap.sh
-chmod a+x /home/ec2-user/bootstrap.sh
-
-function bootstrap () { /home/ec2-user/bootstrap.sh  --tcp-forwarding true --public-gcp-repo $PUBLIC_REPO --gcs-api-endpoint $GCS_API_ENDPOINT; }
-retry bootstrap
-service sshd restart
-
 # Configure cloudwatch
-cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d/bastion.json << EOF
+cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d/cloud-init-logs.json << EOF
 {
   "logs": {
     "force_flush_interval": 5,
@@ -93,11 +84,11 @@ cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d/bastion.jso
   }
 }
 EOF
-rm /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
 systemctl restart amazon-cloudwatch-agent
 
 echo "Fetching public hostname..."
-export STATUS_CODE=$(curl -o instance-id.txt -w "%%{http_code}\n" -s http://169.254.169.254/latest/meta-data/instance-id -m 10)
+IMDS_TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+export STATUS_CODE=$(curl -H "X-aws-ec2-metadata-token:$IMDS_TOKEN" -o instance-id.txt -w "%%{http_code}\n" -s http://169.254.169.254/latest/meta-data/instance-id -m 10)
 if [ $STATUS_CODE -eq 200 ]; then
   export INSTANCE_ID=$(cat instance-id.txt)
 else

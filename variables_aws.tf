@@ -52,10 +52,11 @@ variable "instance_type" {
 variable "instance_metadata_token" {
   description = "Instance Metadata Service token requirement"
   type        = string
-  default     = "optional"
+  default     = "required"
 
   validation {
-    allowed_values = ["optional", "required"]
+    condition = contains(["optional", "required"], var.instance_metadata_token)
+    error_message = "Valid values for instance_metadata_token are (optional, required)"
   }
 }
 
