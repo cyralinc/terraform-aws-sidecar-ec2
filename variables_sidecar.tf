@@ -151,7 +151,7 @@ variable "sidecar_ports" {
 variable "metrics_port" {
   description = "Port which will respond with metrics on the sidecar"
   type        = number
-  default     = 8080
+  default     = 9000
 }
 
 variable "sidecar_version" {
