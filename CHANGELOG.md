@@ -1,3 +1,9 @@
+## 3.1.0 (March 3, 2023)
+Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control plane versions.
+
+### Feature
+* ENG-10707: Add metrics aggregator to services ([#55](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/55))
+
 ## 3.0.3 (February 28, 2023)
 Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control plane versions.
 ### Documentation
