@@ -83,6 +83,12 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
     propagate_at_launch = true
   }
 
+  tag {
+    key                 = "MetricsPort"
+    value               = var.metrics_port
+    propagate_at_launch = true
+  }
+
   # Delete existing hosts before starting a new one
   lifecycle {
     create_before_destroy = false
@@ -133,6 +139,15 @@ resource "aws_security_group" "instance" {
     # A network load balancer has no security group:
     # https://docs.aws.amazon.com/elasticloadbalancing/latest/network/target-group-register-targets.html#target-security-groups
     cidr_blocks = var.healthcheck_inbound_cidr # TODO - change this to LB IP only
+  }
+
+  # Allow metrics inbound
+  ingress {
+    description = "Sidecar - metrics"
+    from_port   = var.metrics_port
+    to_port     = var.metrics_port
+    protocol    = "tcp"
+    cidr_blocks = var.metrics_inbound_cidr
   }
 
   # Allow all outbound

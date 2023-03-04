@@ -148,6 +148,12 @@ variable "sidecar_ports" {
   type        = list(number)
 }
 
+variable "metrics_port" {
+  description = "Port which will respond with metrics on the sidecar"
+  type        = number
+  default     = 9000
+}
+
 variable "sidecar_version" {
   description = "Version of the sidecar"
   type        = string

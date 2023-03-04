@@ -141,6 +141,12 @@ variable "healthcheck_port" {
   default     = 8888
 }
 
+variable "metrics_inbound_cidr" {
+  description = "Allowed CIDR block for health check requests to the sidecar. This is set as none by default, to allow all sources use '[\"0.0.0.0/0\"]' "
+  type        = list(string)
+  default     = []
+}
+
 variable "deploy_secrets" {
   description = "Create the AWS Secrets Manager resource at secret_location using client_id, client_secret and container_registry_key"
   type        = bool

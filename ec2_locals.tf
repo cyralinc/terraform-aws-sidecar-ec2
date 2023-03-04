@@ -46,6 +46,7 @@ locals {
     curl                                  = local.curl
     sidecar_version                       = var.sidecar_version
     repositories_supported                = join(",", var.repositories_supported)
+    metrics_port                          = var.metrics_port
   }
 
   cloud_init_pre  = templatefile("${path.module}/files/cloud-init-pre.sh.tmpl", local.templatevars)
