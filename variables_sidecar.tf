@@ -58,6 +58,12 @@ variable "metrics_integration" {
   default     = ""
 }
 
+variable "metric_name_regex" {
+  description = "Regex to filter exposed metrics by name"
+  type        = string
+  default     = ""
+}
+
 variable "mongodb_port_alloc_range_low" {
   description = <<EOF
 (Deprecated) Initial value for MongoDB port allocation range. This is mandatory for MongoDB
