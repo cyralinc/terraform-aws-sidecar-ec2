@@ -1,8 +1,6 @@
 # for the moment, acknowledge early
 # aws autoscaling complete-lifecycle-action --lifecycle-action-result CONTINUE --instance-id $INSTANCE_ID --lifecycle-hook-name ${name_prefix}-InitLifeCycleHook --auto-scaling-group-name $ASG_NAME --region ${aws_region}
 
-yum update -y
-yum install -y aws-cfn-bootstrap wget ec2-instance-connect docker amazon-cloudwatch-agent docker-compose-plugin
 function retry() {
   RETRIES=15
   while [ $RETRIES -gt 0 ]; do
@@ -21,24 +19,17 @@ function retry() {
   echo "Retries exceeded"
   exit 3
 }
+# General package install
+yum update -y
+yum install -y aws-cfn-bootstrap wget ec2-instance-connect docker jq
 
-# Start docker
+## Docker Setup
 sudo service docker start
-
-# Add ec2-user to docker group
 sudo usermod -a -G docker ec2-user
-
-# Install 
+# Compose Setup
 sudo mkdir -p /usr/local/lib/docker/cli-plugins/
 sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
 sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-
-export PUBLIC_REPO=artifacts.cyralpublic.appspot.com
-export GCS_API_ENDPOINT=https://storage.googleapis.com
-export DOCKER_COMPOSE_VERSION=1.29.2
-export JQ_VERSION=1.6
-export BASTION_BOOTSTRAP_VERSION=0.1.1
-
 # Configure fd limit for ec2 instance and containers
 sudo bash -c 'cat > /etc/security/limits.d/fdlimit.conf' << EOF
 *       soft  nofile  65535
@@ -51,49 +42,10 @@ DAEMON_PIDFILE_TIMEOUT=10
 EOF
 sudo systemctl restart docker
 
-# Install JQ
-wget -q $GCS_API_ENDPOINT/$PUBLIC_REPO/sidecar/jq/$JQ_VERSION/jq-linux64
-sudo mv jq-linux64 /usr/local/bin/jq
-sudo chmod a+x /usr/local/bin/jq
-sudo ln -s /usr/local/bin/jq /usr/bin/jq
-export PATH=$PATH:/usr/local/bin
-jq --version
-
-# Configure cloudwatch
-cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d/cloud-init-logs.json << EOF
-{
-  "logs": {
-    "force_flush_interval": 5,
-    "logs_collected": {
-      "files": {
-        "collect_list": [{
-          "file_path": "/var/log/cloud-init.log",
-          "log_group_name": "${name_prefix}",
-          "log_stream_name": "${name_prefix}/{instance_id}/cloud-init.log",
-          "timestamp_format": "%Y-%m-%d %H:%M:%S",
-          "timezone": "UTC"
-        }, {
-          "file_path": "/var/log/cloud-init-output.log",
-          "log_group_name": "${name_prefix}",
-          "log_stream_name": "${name_prefix}/{instance_id}/cloud-init-output.log",
-          "timestamp_format": "%Y-%m-%d %H:%M:%S",
-          "timezone": "UTC"
-        }]
-      }
-    }
-  }
-}
-EOF
-systemctl restart amazon-cloudwatch-agent
-
 echo "Fetching public hostname..."
-IMDS_TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-export STATUS_CODE=$(curl -H "X-aws-ec2-metadata-token:$IMDS_TOKEN" -o instance-id.txt -w "%%{http_code}\n" -s http://169.254.169.254/latest/meta-data/instance-id -m 10)
-if [ $STATUS_CODE -eq 200 ]; then
-  export INSTANCE_ID=$(cat instance-id.txt)
-else
-  export INSTANCE_ID=$HOSTNAME
-fi
+INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $( \
+    curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" \
+    )" http://169.254.169.254/latest/meta-data/instance-id || echo "$HOSTNAME")
 echo "Setting INSTANCE_ID to '$INSTANCE_ID'"
 
 export NGINX_RESOLVER=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')

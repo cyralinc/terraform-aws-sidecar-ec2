@@ -1,13 +1,13 @@
-echo "Fetching secret: sidecar client ID and client secret."
-SIDECAR_CLIENT_ID=$(aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
-    --region ${aws_region} | jq -r .clientId)
-SIDECAR_CLIENT_SECRET=$(aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
-    --region ${aws_region} | jq -r .clientSecret)
 
-echo "Downloading sidecar.compose.yaml..."
+function get_secret(){
+  secret=$(aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text --region ${aws_region})
+}
+
 function get_token () {
+  local sidecar_client_id=$(echo "$secret" | jq -r .clientId)
+  local sidecar_client_secret=$(echo "$secret" | jq -r .clientSecret)
   local url_token="${protocol}://${controlplane_host}:$1/v1/users/oidc/token"
-  token=$(${curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="$${SIDECAR_CLIENT_ID}" -d client_secret="$${SIDECAR_CLIENT_SECRET}" 2>&1)
+  token=$(${curl} --fail --no-progress-meter --request POST "$url_token" -d grant_type=client_credentials -d client_id="$${sidecar_client_id}" -d client_secret="$${sidecar_client_secret}" 2>&1)
   token_error=$(echo $?)
 }
 
@@ -28,28 +28,27 @@ function download_sidecar () {
   fi
   return 1
 }
-retry download_sidecar
-
-unset SIDECAR_CLIENT_ID
-unset SIDECAR_CLIENT_SECRET
-
-echo "Fetching secret: container registry key..."
-aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
-    --region ${aws_region} | jq -r 'select(.containerRegistryKey != null) | .containerRegistryKey' | base64 --decode > /home/ec2-user/cyral/container_registry_key.json
-until [ -f /home/ec2-user/cyral/container_registry_key.json ]; do echo "wait"; sleep 1; done
 
 function login () {
+  local key=$(echo "$secret" | jq -r 'select(.containerRegistryKey != null) | .containerRegistryKey' | base64 --decode)
   if [[ ${container_registry} == *".amazonaws.com"* ]]; then
     echo "(login): Logging in to AWS ECR..."
     eval $(aws ecr --no-include-email get-login  --region ${aws_region})
-  elif [ -s /home/ec2-user/cyral/container_registry_key.json ]; then
+  elif [ -n "$key" ]; then
     echo "(login): Logging in to GCR..."
-    cat /home/ec2-user/cyral/container_registry_key.json | docker login -u ${container_registry_username} --password-stdin https://gcr.io
+    echo "$key" | docker login -u ${container_registry_username} --password-stdin https://gcr.io
   else
     echo "(login): Won't log in automatically to any image registry. Image registry set to: ${container_registry}"
   fi
 }
 
 function launch () { cd /home/ec2-user && docker compose -f sidecar.compose.yaml up -d; }
+
+echo "Fetching secret"
+retry get_secret
+echo "Downloading sidecar compose"
+retry download_sidecar
+echo "processing container registry login"
 retry login
+echo "launching cyral services"
 retry launch
