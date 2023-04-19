@@ -119,9 +119,9 @@ No modules.
 | <a name="input_dd_api_key"></a> [dd\_api\_key](#input\_dd\_api\_key) | API key to connect to DataDog | `string` | `""` | no |
 | <a name="input_deploy_secrets"></a> [deploy\_secrets](#input\_deploy\_secrets) | Create the AWS Secrets Manager resource at secret\_location using client\_id, client\_secret and container\_registry\_key | `bool` | `true` | no |
 | <a name="input_ec2_ebs_kms_arn"></a> [ec2\_ebs\_kms\_arn](#input\_ec2\_ebs\_kms\_arn) | ARN of the KMS key used to encrypt/decrypt EBS volumes. If not set, EBS will use the default KMS key. Make sure the KMS key allows the principal `arn:aws:iam::ACCOUNT_NUMBER:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`, otherwise the ASG will not be able to launch the new instances. | `string` | `""` | no |
-| <a name="input_elk_address"></a> [elk\_address](#input\_elk\_address) | Address to ship logs to ELK | `string` | `""` | no |
-| <a name="input_elk_password"></a> [elk\_password](#input\_elk\_password) | (Optional) Password to use to ship logs to ELK | `string` | `""` | no |
-| <a name="input_elk_username"></a> [elk\_username](#input\_elk\_username) | (Optional) Username to use to ship logs to ELK | `string` | `""` | no |
+| <a name="input_elk_address"></a> [elk\_address](#input\_elk\_address) | (Deprecated) Address to ship logs to ELK | `string` | `""` | no |
+| <a name="input_elk_password"></a> [elk\_password](#input\_elk\_password) | (Deprecated) (Optional) Password to use to ship logs to ELK | `string` | `""` | no |
+| <a name="input_elk_username"></a> [elk\_username](#input\_elk\_username) | (Deprecated) (Optional) Username to use to ship logs to ELK | `string` | `""` | no |
 | <a name="input_enable_cross_zone_load_balancing"></a> [enable\_cross\_zone\_load\_balancing](#input\_enable\_cross\_zone\_load\_balancing) | Enable cross zone load balancing | `bool` | `true` | no |
 | <a name="input_external_tls_type"></a> [external\_tls\_type](#input\_external\_tls\_type) | TLS mode for the control plane - tls, tls-skip-verify, no-tls | `string` | `"tls"` | no |
 | <a name="input_hc_vault_integration_id"></a> [hc\_vault\_integration\_id](#input\_hc\_vault\_integration\_id) | HashiCorp Vault integration ID | `string` | `""` | no |
@@ -157,16 +157,16 @@ No modules.
 | <a name="input_sidecar_id"></a> [sidecar\_id](#input\_sidecar\_id) | Sidecar identifier | `string` | n/a | yes |
 | <a name="input_sidecar_ports"></a> [sidecar\_ports](#input\_sidecar\_ports) | List of ports allowed to connect to the sidecar. See also 'load\_balancer\_tls\_ports'. | `list(number)` | n/a | yes |
 | <a name="input_sidecar_version"></a> [sidecar\_version](#input\_sidecar\_version) | Version of the sidecar | `string` | n/a | yes |
-| <a name="input_splunk_host"></a> [splunk\_host](#input\_splunk\_host) | Splunk host | `string` | `""` | no |
-| <a name="input_splunk_index"></a> [splunk\_index](#input\_splunk\_index) | Splunk index | `string` | `""` | no |
-| <a name="input_splunk_port"></a> [splunk\_port](#input\_splunk\_port) | Splunk port | `number` | `0` | no |
-| <a name="input_splunk_tls"></a> [splunk\_tls](#input\_splunk\_tls) | Splunk TLS | `bool` | `false` | no |
-| <a name="input_splunk_token"></a> [splunk\_token](#input\_splunk\_token) | Splunk token | `string` | `""` | no |
+| <a name="input_splunk_host"></a> [splunk\_host](#input\_splunk\_host) | (Deprecated) Splunk host | `string` | `""` | no |
+| <a name="input_splunk_index"></a> [splunk\_index](#input\_splunk\_index) | (Deprecated) Splunk index | `string` | `""` | no |
+| <a name="input_splunk_port"></a> [splunk\_port](#input\_splunk\_port) | (Deprecated) Splunk port | `number` | `0` | no |
+| <a name="input_splunk_tls"></a> [splunk\_tls](#input\_splunk\_tls) | (Deprecated) Splunk TLS | `bool` | `false` | no |
+| <a name="input_splunk_token"></a> [splunk\_token](#input\_splunk\_token) | (Deprecated) Splunk token | `string` | `""` | no |
 | <a name="input_ssh_inbound_cidr"></a> [ssh\_inbound\_cidr](#input\_ssh\_inbound\_cidr) | Allowed CIDR block for SSH access to the sidecar. Can't be combined with 'ssh\_inbound\_security\_group'. | `list(string)` | n/a | yes |
 | <a name="input_ssh_inbound_security_group"></a> [ssh\_inbound\_security\_group](#input\_ssh\_inbound\_security\_group) | Pre-existing security group IDs allowed to ssh into the EC2 host. Can't be combined with 'ssh\_inbound\_cidr'. | `list(string)` | `[]` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | Subnets to add sidecar to (list of string) | `list(string)` | n/a | yes |
-| <a name="input_sumologic_host"></a> [sumologic\_host](#input\_sumologic\_host) | Sumologic host | `string` | `""` | no |
-| <a name="input_sumologic_uri"></a> [sumologic\_uri](#input\_sumologic\_uri) | Sumologic uri | `string` | `""` | no |
+| <a name="input_sumologic_host"></a> [sumologic\_host](#input\_sumologic\_host) | (Deprecated) Sumologic host | `string` | `""` | no |
+| <a name="input_sumologic_uri"></a> [sumologic\_uri](#input\_sumologic\_uri) | (Deprecated) Sumologic uri | `string` | `""` | no |
 | <a name="input_volume_size"></a> [volume\_size](#input\_volume\_size) | Size of the sidecar disk | `number` | `15` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | AWS VPC ID to deploy sidecar to | `string` | n/a | yes |
 

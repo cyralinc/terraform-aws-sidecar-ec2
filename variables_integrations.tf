@@ -13,19 +13,19 @@ variable "dd_api_key" {
 ################################
 
 variable "elk_address" {
-  description = "Address to ship logs to ELK"
+  description = "(Deprecated) Address to ship logs to ELK"
   type        = string
   default     = ""
 }
 
 variable "elk_username" {
-  description = "(Optional) Username to use to ship logs to ELK"
+  description = "(Deprecated) (Optional) Username to use to ship logs to ELK"
   type        = string
   default     = ""
 }
 
 variable "elk_password" {
-  description = "(Optional) Password to use to ship logs to ELK"
+  description = "(Deprecated) (Optional) Password to use to ship logs to ELK"
   type        = string
   default     = ""
   # Only compatible with Terraform >=0.14
@@ -59,31 +59,31 @@ variable "load_balancer_certificate_arn" {
 ################################
 
 variable "splunk_index" {
-  description = "Splunk index"
+  description = "(Deprecated) Splunk index"
   type        = string
   default     = ""
 }
 
 variable "splunk_host" {
-  description = "Splunk host"
+  description = "(Deprecated) Splunk host"
   type        = string
   default     = ""
 }
 
 variable "splunk_port" {
-  description = "Splunk port"
+  description = "(Deprecated) Splunk port"
   type        = number
   default     = 0
 }
 
 variable "splunk_tls" {
-  description = "Splunk TLS"
+  description = "(Deprecated) Splunk TLS"
   type        = bool
   default     = false
 }
 
 variable "splunk_token" {
-  description = "Splunk token"
+  description = "(Deprecated) Splunk token"
   type        = string
   default     = ""
   # Only compatible with Terraform >=0.14
@@ -95,13 +95,13 @@ variable "splunk_token" {
 ################################
 
 variable "sumologic_host" {
-  description = "Sumologic host"
+  description = "(Deprecated) Sumologic host"
   type        = string
   default     = ""
 }
 
 variable "sumologic_uri" {
-  description = "Sumologic uri"
+  description = "(Deprecated) Sumologic uri"
   type        = string
   default     = ""
 }
