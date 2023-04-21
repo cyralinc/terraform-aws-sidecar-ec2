@@ -42,14 +42,14 @@ variable "idp_certificate" {
   default     = ""
 }
 
-variable "load_balancer_certificate_arn" {
-  description = "(Optional) ARN of SSL certificate that will be used for client connections to Snowflake."
+variable "idp_sso_login_url" {
+  description = "(Optional) The IdP SSO URL for the IdP being used with Snowflake."
   type        = string
   default     = ""
 }
 
-variable "idp_sso_login_url" {
-  description = "(Optional) The IdP SSO URL for the IdP being used with Snowflake."
+variable "load_balancer_certificate_arn" {
+  description = "(Optional) ARN of SSL certificate that will be used for client connections to Snowflake."
   type        = string
   default     = ""
 }
