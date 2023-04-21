@@ -1,3 +1,10 @@
+## 3.2.0 (April 21, 2023)
+Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control plane versions.
+
+### Feature
+* Add parameters for Snowflake SSO ([#59](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/59))
+* ENG-11522: Deprecate log integration input variables ([#58](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/58))
+
 ## 3.1.0 (March 3, 2023)
 Minimum required **control plane** version: `v2.34.6`. Minimum required **sidecar version**: `v2.34.6`. This whole module will not work with previous sidecar or control plane versions.
 
