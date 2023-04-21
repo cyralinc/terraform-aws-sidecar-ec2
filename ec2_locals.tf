@@ -36,6 +36,8 @@ locals {
     sumologic_uri                         = var.sumologic_uri
     idp_sso_login_url                     = var.idp_sso_login_url
     idp_certificate                       = var.idp_certificate
+    sidecar_public_idp_certificate        = var.sidecar_public_idp_certificate
+    sidecar_private_idp_key               = var.sidecar_private_idp_key
     hc_vault_integration_id               = var.hc_vault_integration_id
     mongodb_port_alloc_range_low          = var.mongodb_port_alloc_range_low
     mongodb_port_alloc_range_high         = var.mongodb_port_alloc_range_high
