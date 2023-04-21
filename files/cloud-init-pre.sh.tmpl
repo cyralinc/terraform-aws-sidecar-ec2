@@ -131,10 +131,10 @@ METRICS_INTEGRATION=${metrics_integration}
 
 NGINX_RESOLVER=$NGINX_RESOLVER
 SSO_LOGIN_URL=${idp_sso_login_url}
-IDP_CERTIFICATE=${idp_certificate//$'\n'/\\n}
+IDP_CERTIFICATE=${replace(idp_certificate, "\n", "\\n")}
 
-SIDECAR_IDP_PUBLIC_CERT=${sidecar_public_idp_certificate//$'\n'/\\n}
-SIDECAR_IDP_PRIVATE_KEY=${sidecar_private_idp_key//$'\n'/\\n}
+SIDECAR_IDP_PUBLIC_CERT=${replace(sidecar_public_idp_certificate, "\n", "\\n")}
+SIDECAR_IDP_PRIVATE_KEY=${replace(sidecar_private_idp_key, "\n", "\\n")}
 
 SPLUNK_INDEX=${splunk_index}
 SPLUNK_HOST=${splunk_host}
