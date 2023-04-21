@@ -36,14 +36,14 @@ variable "elk_password" {
 #           Snowflake
 ################################
 
-variable "load_balancer_certificate_arn" {
-  description = "(Optional) ARN of SSL certificate that will be used for client connections to Snowflake."
+variable "idp_certificate" {
+  description = "(Optional) The certificate used to verify SAML assertions from the IdP being used with Snowflake. Enter this value as a one-line string with literal \n characters specifying the line breaks."
   type        = string
   default     = ""
 }
 
-variable "idp_certificate" {
-  description = "(Optional) The certificate used to verify SAML assertions from the IdP being used with Snowflake. Enter this value as a one-line string with literal \n characters specifying the line breaks."
+variable "load_balancer_certificate_arn" {
+  description = "(Optional) ARN of SSL certificate that will be used for client connections to Snowflake."
   type        = string
   default     = ""
 }
