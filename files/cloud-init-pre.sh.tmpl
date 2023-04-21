@@ -109,6 +109,10 @@ export NGINX_RESOLVER=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}
 echo "Setting NGINX_RESOLVER to '$NGINX_RESOLVER'"
 
 echo "Fetching secrets..."
+SIDECAR_IDP_PUBLIC_CERT="$(aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
+    --region ${aws_region} | jq -r .sidecarPublicIdpCertificate)"
+SIDECAR_IDP_PRIVATE_KEY="$(aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
+    --region ${aws_region} | jq -r .sidecarPrivateIdpKey)"
 mkdir -p /home/ec2-user/cyral/
 
 echo "Initializing environment variables..."
@@ -133,8 +137,8 @@ NGINX_RESOLVER=$NGINX_RESOLVER
 SSO_LOGIN_URL=${idp_sso_login_url}
 IDP_CERTIFICATE=${replace(idp_certificate, "\n", "\\n")}
 
-SIDECAR_IDP_PUBLIC_CERT=${replace(sidecar_public_idp_certificate, "\n", "\\n")}
-SIDECAR_IDP_PRIVATE_KEY=${replace(sidecar_private_idp_key, "\n", "\\n")}
+SIDECAR_IDP_PUBLIC_CERT=$SIDECAR_IDP_PUBLIC_CERT
+SIDECAR_IDP_PRIVATE_KEY=$SIDECAR_IDP_PRIVATE_KEY
 
 SPLUNK_INDEX=${splunk_index}
 SPLUNK_HOST=${splunk_host}
