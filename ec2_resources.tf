@@ -68,7 +68,7 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
   desired_capacity          = var.asg_desired
   max_size                  = var.asg_max
   health_check_grace_period = var.health_check_grace_period
-  health_check_type         = "ELB"
+  health_check_type         = "EC2"
   target_group_arns         = [for tg in aws_lb_target_group.cyral-sidecar-tg : tg.id]
 
   tag {
