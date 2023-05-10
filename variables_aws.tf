@@ -139,6 +139,7 @@ variable "healthcheck_port" {
   description = "Port used for the healthcheck"
   type        = number
   default     = 8888
+  deprecation = "This variable is no longer being used and the health check port is set to 9000"
 }
 
 variable "metrics_inbound_cidr" {

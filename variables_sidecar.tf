@@ -152,6 +152,7 @@ variable "metrics_port" {
   description = "Port which will respond with metrics on the sidecar"
   type        = number
   default     = 9000
+  deprecation = "This value is no longer being used and the metrics port is hardcoded to 9000"
 }
 
 variable "sidecar_version" {
