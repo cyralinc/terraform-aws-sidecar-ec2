@@ -37,7 +37,7 @@ variable "elk_password" {
 ################################
 
 variable "idp_certificate" {
-  description = "(Optional) The certificate used to verify SAML assertions from the IdP being used with Snowflake. Enter this value as a one-line string with literal new line characters (\n) specifying the line breaks."
+  description = "(Optional) The certificate used to verify SAML assertions from the IdP being used with Snowflake. Enter this value as a one-line string with literal new line characters (\\n) specifying the line breaks."
   type        = string
   default     = ""
 }
