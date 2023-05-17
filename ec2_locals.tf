@@ -55,8 +55,8 @@ locals {
       var.sidecar_tls_certificate_secret_arn != "" &&
       var.sidecar_tls_certificate_role_arn != ""
     )
-    sidecar_ca_certificate_secret_arn    = var.sidecar_ca_certificate_secret_arn
-    sidecar_ca_certificate_role_arn      = var.sidecar_ca_certificate_role_arn
+    sidecar_ca_certificate_secret_arn = var.sidecar_ca_certificate_secret_arn
+    sidecar_ca_certificate_role_arn   = var.sidecar_ca_certificate_role_arn
     sidecar_ca_certificate_must_assume_role = (
       var.sidecar_ca_certificate_secret_arn != "" &&
       var.sidecar_ca_certificate_role_arn != ""

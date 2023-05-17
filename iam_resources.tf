@@ -54,6 +54,54 @@ data "aws_iam_policy_document" "init_script_policy" {
     ]
   }
 
+  dynamic "statement" {
+    for_each = (var.sidecar_tls_certificate_secret_arn != "" && var.sidecar_tls_certificate_role_arn == "") ? [1] : []
+    content {
+      actions = [
+        "secretsmanager:GetSecretValue"
+      ]
+      resources = compact([
+        var.sidecar_tls_certificate_secret_arn,
+      ])
+    }
+  }
+
+  dynamic "statement" {
+    for_each = (var.sidecar_ca_certificate_secret_arn != "" && var.sidecar_ca_certificate_role_arn == "") ? [1] : []
+    content {
+      actions = [
+        "secretsmanager:GetSecretValue"
+      ]
+      resources = compact([
+        var.sidecar_ca_certificate_secret_arn,
+      ])
+    }
+  }
+
+  dynamic "statement" {
+    for_each = (var.sidecar_tls_certificate_secret_arn != "" && var.sidecar_tls_certificate_role_arn != "") ? [1] : []
+    content {
+      actions = [
+        "sts:AssumeRole"
+      ]
+      resources = compact([
+        var.sidecar_tls_certificate_role_arn,
+      ])
+    }
+  }
+
+  dynamic "statement" {
+    for_each = (var.sidecar_ca_certificate_secret_arn != "" && var.sidecar_ca_certificate_role_arn != "") ? [1] : []
+    content {
+      actions = [
+        "sts:AssumeRole"
+      ]
+      resources = compact([
+        var.sidecar_ca_certificate_role_arn,
+      ])
+    }
+  }
+
   source_policy_documents = [
     data.aws_iam_policy_document.kms.json
   ]
