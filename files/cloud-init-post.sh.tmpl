@@ -4,6 +4,68 @@ SIDECAR_CLIENT_ID=$(aws secretsmanager get-secret-value --secret-id ${secrets_lo
 SIDECAR_CLIENT_SECRET=$(aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
     --region ${aws_region} | jq -r .clientSecret)
 
+function get_aws_secrets_manager_secret_field() {
+  secret_arn="$1"
+  secret_field="$2"
+  aws --region ${aws_region} secretsmanager get-secret-value --secret-id "$secret_arn" --query SecretString --output text | \
+    jq -r ."$secret_field"
+}
+
+function get_aws_secrets_manager_secret_field_with_assumed_role() {
+  role_to_assume="$1"
+  secret_arn="$2"
+  secret_field="$3"
+
+  assume_role_result="$(aws sts assume-role --role-arn $role_to_assume --role-session-name cyral-sidecar)"
+
+  AWS_ACCESS_KEY_ID=$(echo "$assume_role_result" | jq -r .Credentials.AccessKeyId) \
+  AWS_SECRET_ACCESS_KEY=$(echo "$assume_role_result" | jq -r .Credentials.SecretAccessKey) \
+  AWS_SESSION_TOKEN=$(echo "$assume_role_result" | jq -r .Credentials.SessionToken) \
+  get_aws_secrets_manager_secret_field "$secret_arn" "$secret_field"
+}
+
+ASSUME_ROLE_FOR_TLS_CERTIFICATE=${sidecar_tls_certificate_must_assume_role}
+if $ASSUME_ROLE_FOR_TLS_CERTIFICATE; then
+  get_aws_secrets_manager_secret_field_with_assumed_role \
+  "${sidecar_tls_certificate_role_arn}" \
+  "${sidecar_tls_certificate_secret_arn}" \
+  "key" > /home/ec2-user/.sidecar-tls-key.pem
+
+  get_aws_secrets_manager_secret_field_with_assumed_role \
+  "${sidecar_tls_certificate_role_arn}" \
+  "${sidecar_tls_certificate_secret_arn}" \
+  "cert" > /home/ec2-user/.sidecar-tls-cert.pem
+else
+  get_aws_secrets_manager_secret_field \
+  "${sidecar_tls_certificate_secret_arn}" \
+  "key" > /home/ec2-user/.sidecar-tls-key.pem
+
+  get_aws_secrets_manager_secret_field \
+  "${sidecar_tls_certificate_secret_arn}" \
+  "cert" > /home/ec2-user/.sidecar-tls-cert.pem
+fi
+
+ASSUME_ROLE_FOR_CA_CERTIFICATE=${sidecar_ca_certificate_must_assume_role}
+if $ASSUME_ROLE_FOR_CA_CERTIFICATE; then
+  get_aws_secrets_manager_secret_field_with_assumed_role \
+  "${sidecar_ca_certificate_role_arn}" \
+  "${sidecar_ca_certificate_secret_arn}" \
+  "key" > /home/ec2-user/.sidecar-ca-key.pem
+
+  get_aws_secrets_manager_secret_field_with_assumed_role \
+  "${sidecar_ca_certificate_role_arn}" \
+  "${sidecar_ca_certificate_secret_arn}" \
+  "cert" > /home/ec2-user/.sidecar-ca-cert.pem
+else
+  get_aws_secrets_manager_secret_field \
+  "${sidecar_ca_certificate_secret_arn}" \
+  "key" > /home/ec2-user/.sidecar-ca-key.pem
+
+  get_aws_secrets_manager_secret_field \
+  "${sidecar_ca_certificate_secret_arn}" \
+  "cert" > /home/ec2-user/.sidecar-ca-cert.pem
+fi
+
 echo "Downloading sidecar.compose.yaml..."
 function get_token () {
   local url_token="${protocol}://${controlplane_host}:$1/v1/users/oidc/token"

@@ -1,6 +1,7 @@
 locals {
   create_custom_certificate_role = var.sidecar_custom_certificate_account_id != ""
   create_kms_policy              = var.ec2_ebs_kms_arn != "" || var.secrets_kms_arn != ""
+  create_sidecar_role            = var.sidecar_custom_host_role_arn != ""
 }
 
 # Gets the ARN from a resource that is deployed by this module in order to
@@ -88,10 +89,11 @@ data "aws_iam_policy_document" "sidecar" {
 
 resource "aws_iam_instance_profile" "sidecar_profile" {
   name = "${local.name_prefix}-sidecar_profile"
-  role = aws_iam_role.sidecar_role.name
+  role = local.create_custom_certificate_role ? aws_iam_role.sidecar_role.name : local.sidecar_custom_host_role_arn
 }
 
 resource "aws_iam_role" "sidecar_role" {
+  count              = local.create_custom_certificate_role ? 1 : 0
   name               = "${local.name_prefix}-sidecar_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar.json
@@ -105,13 +107,13 @@ resource "aws_iam_policy" "init_script_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "init_script_policy" {
-  role       = aws_iam_role.sidecar_role.name
+  role       = local.create_custom_certificate_role ? aws_iam_role.sidecar_role.name : local.sidecar_custom_host_role_arn
   policy_arn = aws_iam_policy.init_script_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "user_policies" {
   count      = length(var.iam_policies)
-  role       = aws_iam_role.sidecar_role.name
+  role       = local.create_custom_certificate_role ? aws_iam_role.sidecar_role.name : local.sidecar_custom_host_role_arn
   policy_arn = var.iam_policies[count.index]
 }
 
