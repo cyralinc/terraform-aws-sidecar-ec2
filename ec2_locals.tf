@@ -49,18 +49,18 @@ locals {
     sidecar_version                       = var.sidecar_version
     repositories_supported                = join(",", var.repositories_supported)
     metrics_port                          = var.metrics_port
-    sidecar_tls_certificate_secret_arn    = var.sidecar_tls_certificate_secret_arn
-    sidecar_tls_certificate_role_arn      = var.sidecar_tls_certificate_role_arn
-    sidecar_tls_certificate_must_assume_role = (
-      var.sidecar_tls_certificate_secret_arn != "" &&
-      var.sidecar_tls_certificate_role_arn != ""
+    sidecar_tls_certificate_secret_arn = (
+      var.sidecar_tls_certificate_secret_arn != "" ?
+      var.sidecar_tls_certificate_secret_arn :
+      aws_secretsmanager_secret.sidecar_created_certificate.arn
     )
-    sidecar_ca_certificate_secret_arn = var.sidecar_ca_certificate_secret_arn
-    sidecar_ca_certificate_role_arn   = var.sidecar_ca_certificate_role_arn
-    sidecar_ca_certificate_must_assume_role = (
-      var.sidecar_ca_certificate_secret_arn != "" &&
-      var.sidecar_ca_certificate_role_arn != ""
+    sidecar_tls_certificate_role_arn = var.sidecar_tls_certificate_role_arn
+    sidecar_ca_certificate_secret_arn = (
+      var.sidecar_ca_certificate_secret_arn != "" ?
+      var.sidecar_ca_certificate_secret_arn :
+      aws_secretsmanager_secret.sidecar_ca_certificate.arn
     )
+    sidecar_ca_certificate_role_arn = var.sidecar_ca_certificate_role_arn
   }
 
   cloud_init_pre  = templatefile("${path.module}/files/cloud-init-pre.sh.tmpl", local.templatevars)
