@@ -1,7 +1,7 @@
 locals {
   create_custom_certificate_role = var.sidecar_custom_certificate_account_id != ""
   create_kms_policy              = var.ec2_ebs_kms_arn != "" || var.secrets_kms_arn != ""
-  create_sidecar_role            = var.sidecar_custom_host_role != ""
+  create_sidecar_role            = var.sidecar_custom_host_role == ""
 }
 
 # Gets the ARN from a resource that is deployed by this module in order to
@@ -141,7 +141,7 @@ resource "aws_iam_instance_profile" "sidecar_profile" {
 }
 
 resource "aws_iam_role" "sidecar_role" {
-  count              = local.create_custom_certificate_role ? 1 : 0
+  count              = local.create_sidecar_role ? 1 : 0
   name               = "${local.name_prefix}-sidecar_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar.json
