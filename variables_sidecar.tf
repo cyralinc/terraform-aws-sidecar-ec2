@@ -195,8 +195,8 @@ variable "sidecar_ca_certificate_role_arn" {
   default     = ""
 }
 
-variable "sidecar_custom_host_role_arn" {
-  description = "(Optional) ARN of an AWS IAM Role to attach to the EC2 instance profile."
+variable "sidecar_custom_host_role" {
+  description = "(Optional) Name of an AWS IAM Role to attach to the EC2 instance profile."
   type        = string
   default     = ""
 }
