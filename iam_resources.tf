@@ -137,7 +137,7 @@ data "aws_iam_policy_document" "sidecar" {
 
 resource "aws_iam_instance_profile" "sidecar_profile" {
   name = "${local.name_prefix}-sidecar_profile"
-  role = local.create_sidecar_role ? aws_iam_role.sidecar_role.name : var.sidecar_custom_host_role
+  role = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.sidecar_custom_host_role
 }
 
 resource "aws_iam_role" "sidecar_role" {
@@ -155,13 +155,13 @@ resource "aws_iam_policy" "init_script_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "init_script_policy" {
-  role       = local.create_sidecar_role ? aws_iam_role.sidecar_role.name : var.sidecar_custom_host_role
+  role       = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.sidecar_custom_host_role
   policy_arn = aws_iam_policy.init_script_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "user_policies" {
   count      = length(var.iam_policies)
-  role       = local.create_sidecar_role ? aws_iam_role.sidecar_role.name : var.sidecar_custom_host_role
+  role       = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.sidecar_custom_host_role
   policy_arn = var.iam_policies[count.index]
 }
 

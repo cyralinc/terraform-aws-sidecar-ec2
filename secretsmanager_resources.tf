@@ -35,7 +35,6 @@ resource "aws_secretsmanager_secret" "sidecar_created_certificate" {
   description             = "Self-signed TLS certificate used by sidecar in case a custom certificate is not provided."
   recovery_window_in_days = 0
   kms_key_id              = var.secrets_kms_arn
-  secret_string           = jsonencode(local.sidecar_created_certificate_payload)
 }
 
 resource "aws_secretsmanager_secret" "sidecar_ca_certificate" {
@@ -43,7 +42,6 @@ resource "aws_secretsmanager_secret" "sidecar_ca_certificate" {
   description             = "CA certificate used by sidecar in case a custom CA certificate is not provided."
   recovery_window_in_days = 0
   kms_key_id              = var.secrets_kms_arn
-  secret_string           = jsonencode(local.sidecar_ca_certificate_payload)
 }
 
 resource "tls_private_key" "tls" {
@@ -100,12 +98,12 @@ resource "tls_self_signed_cert" "ca" {
 
 resource "aws_secretsmanager_secret_version" "sidecar_created_certificate_version" {
   secret_id     = aws_secretsmanager_secret.sidecar_created_certificate.id
-  secret_string = jsonencode(local.sidecar_secrets)
+  secret_string = jsonencode(local.sidecar_created_certificate_payload)
 }
 
 resource "aws_secretsmanager_secret_version" "sidecar_ca_certificate_version" {
   secret_id     = aws_secretsmanager_secret.sidecar_ca_certificate.id
-  secret_string = jsonencode(local.sidecar_secrets)
+  secret_string = jsonencode(local.sidecar_ca_certificate_payload)
 }
 
 resource "aws_secretsmanager_secret" "sidecar_custom_certificate" {

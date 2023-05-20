@@ -14,7 +14,7 @@ output "sidecar_load_balancer_dns" {
 }
 
 output "aws_iam_role_arn" {
-  value       = aws_iam_role.sidecar_role.arn
+  value       = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].arn : null
   description = "Sidecar IAM role ARN"
 }
 

@@ -17,7 +17,7 @@ function read_certificate() {
       export AWS_SECRET_ACCESS_KEY=$(echo "$assume_role_result" | jq -r .Credentials.SecretAccessKey)
       export AWS_SESSION_TOKEN=$(echo "$assume_role_result" | jq -r .Credentials.SessionToken)
     fi
-    secret_value="$(aws --region ${AWS::Region} secretsmanager get-secret-value --secret-id $secret_arn --query SecretString --output text)"
+    secret_value="$(aws --region ${aws_region} secretsmanager get-secret-value --secret-id $secret_arn --query SecretString --output text)"
     echo $secret_value | jq -r .key > "/home/ec2-user/.$${file_name_prefix}-key.pem"
     echo $secret_value | jq -r .cert > "/home/ec2-user/.$${file_name_prefix}-cert.pem"
   )
