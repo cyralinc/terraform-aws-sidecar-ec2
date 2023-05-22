@@ -68,7 +68,7 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
   desired_capacity          = var.asg_desired
   max_size                  = var.asg_max
   health_check_grace_period = var.health_check_grace_period
-  health_check_type         = "ELB"
+  health_check_type         = "EC2"
   target_group_arns         = [for tg in aws_lb_target_group.cyral-sidecar-tg : tg.id]
 
   tag {
@@ -85,7 +85,7 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
 
   tag {
     key                 = "MetricsPort"
-    value               = var.metrics_port
+    value               = 9000
     propagate_at_launch = true
   }
 
@@ -133,8 +133,8 @@ resource "aws_security_group" "instance" {
   # Allow healthcheck inbound
   ingress {
     description = "Sidecar - Healthcheck"
-    from_port   = var.healthcheck_port
-    to_port     = var.healthcheck_port
+    from_port   = 9000
+    to_port     = 9000
     protocol    = "tcp"
     # A network load balancer has no security group:
     # https://docs.aws.amazon.com/elasticloadbalancing/latest/network/target-group-register-targets.html#target-security-groups
@@ -144,8 +144,8 @@ resource "aws_security_group" "instance" {
   # Allow metrics inbound
   ingress {
     description = "Sidecar - metrics"
-    from_port   = var.metrics_port
-    to_port     = var.metrics_port
+    from_port   = 9000
+    to_port     = 9000
     protocol    = "tcp"
     cidr_blocks = var.metrics_inbound_cidr
   }
@@ -175,8 +175,9 @@ resource "aws_lb_target_group" "cyral-sidecar-tg" {
   protocol = "TCP"
   vpc_id   = var.vpc_id
   health_check {
-    port     = var.healthcheck_port
-    protocol = "TCP"
+    port     = 9000
+    protocol = "HTTP"
+    path     = "/health"
   }
   deregistration_delay = 0
   stickiness {
