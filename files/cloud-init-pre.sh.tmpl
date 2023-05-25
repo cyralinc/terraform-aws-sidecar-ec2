@@ -121,9 +121,6 @@ SIDECAR_ID=${sidecar_id}
 CONTROLPLANE_HOST=${controlplane_host}
 CONTAINER_REGISTRY=${container_registry}
 SECRETS_LOCATION=${secrets_location}
-ELK_ADDRESS=${elk_address}
-ELK_USERNAME=${elk_username}
-ELK_PASSWORD=${elk_password}
 SIDECAR_ENDPOINT=${sidecar_endpoint}
 AWS_REGION=${aws_region}
 INSTANCE_ID=$INSTANCE_ID
@@ -140,26 +137,10 @@ IDP_CERTIFICATE=${replace(idp_certificate, "\n", "\\n")}
 SIDECAR_IDP_PUBLIC_CERT=$SIDECAR_IDP_PUBLIC_CERT
 SIDECAR_IDP_PRIVATE_KEY=$SIDECAR_IDP_PRIVATE_KEY
 
-SPLUNK_INDEX=${splunk_index}
-SPLUNK_HOST=${splunk_host}
-SPLUNK_PORT=${splunk_port}
-SPLUNK_TLS=${splunk_tls}
-SPLUNK_TOKEN=${splunk_token}
-
-SUMOLOGIC_HOST=${sumologic_host}
-SUMOLOGIC_URI=${sumologic_uri}
-
 HCVAULT_INTEGRATION_ID=${hc_vault_integration_id}
-
-MONGODB_PORT_ALLOC_RANGE_LOW=${mongodb_port_alloc_range_low}
-MONGODB_PORT_ALLOC_RANGE_HIGH=${mongodb_port_alloc_range_high}
-
-MYSQL_MULTIPLEXED_PORT=${mysql_multiplexed_port}
 
 LOAD_BALANCER_TLS_PORTS=${load_balancer_tls_ports}
 
 CYRAL_CERTIFICATE_MANAGER_SELFSIGNED_SECRET_ID=${sidecar_created_certificate_secret_id}
 CYRAL_CERTIFICATE_MANAGER_SELFSIGNED_SECRET_TYPE=aws
-
-METRICS_PORT=${metrics_port}
 EOF
