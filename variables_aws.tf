@@ -130,15 +130,9 @@ variable "db_inbound_security_group" {
   default     = []
 }
 
-variable "healthcheck_inbound_cidr" {
-  description = "Allowed CIDR block for health check requests to the sidecar"
+variable "monitoring_inbound_cidr" {
+  description = "Allowed CIDR block for health check and metric requests to the sidecar"
   type        = list(string)
-}
-
-variable "metrics_inbound_cidr" {
-  description = "Allowed CIDR block for health check requests to the sidecar. This is set as none by default, to allow all sources use '[\"0.0.0.0/0\"]' "
-  type        = list(string)
-  default     = []
 }
 
 variable "deploy_secrets" {
