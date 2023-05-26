@@ -135,16 +135,6 @@ variable "healthcheck_inbound_cidr" {
   type        = list(string)
 }
 
-variable "healthcheck_port" {
-  description = <<EOF
-(Deprecated) Port which will respond with health status on the sidecar.
-
-This value is deprecated for sidecars v4.7.0 and above, being hardcoded to port 9000.
-EOF
-  type        = number
-  default     = 8888
-}
-
 variable "metrics_inbound_cidr" {
   description = "Allowed CIDR block for health check requests to the sidecar. This is set as none by default, to allow all sources use '[\"0.0.0.0/0\"]' "
   type        = list(string)
