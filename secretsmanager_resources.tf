@@ -102,14 +102,26 @@ resource "tls_self_signed_cert" "ca" {
   ]
 }
 
+data "aws_secretsmanager_secret_version" "existing_sidecar_created_certificate" {
+  secret_id = aws_secretsmanager_secret.sidecar_created_certificate.id
+}
+
 resource "aws_secretsmanager_secret_version" "sidecar_created_certificate_version" {
-  secret_id     = aws_secretsmanager_secret.sidecar_created_certificate.id
-  secret_string = jsonencode(local.sidecar_created_certificate_payload)
+  secret_id = aws_secretsmanager_secret.sidecar_created_certificate.id
+  secret_string = data.aws_secretsmanager_secret_version.existing_sidecar_created_certificate.secret_string != "" ? (
+    data.aws_secretsmanager_secret_version.existing_sidecar_created_certificate.secret_string
+  ) : jsonencode(local.sidecar_created_certificate_payload)
+}
+
+data "aws_secretsmanager_secret_version" "existing_sidecar_ca_certificate" {
+  secret_id = aws_secretsmanager_secret.sidecar_ca_certificate.id
 }
 
 resource "aws_secretsmanager_secret_version" "sidecar_ca_certificate_version" {
-  secret_id     = aws_secretsmanager_secret.sidecar_ca_certificate.id
-  secret_string = jsonencode(local.sidecar_ca_certificate_payload)
+  secret_id = aws_secretsmanager_secret.sidecar_ca_certificate.id
+  secret_string = data.aws_secretsmanager_secret_version.existing_sidecar_ca_certificate.secret_string != "" ? (
+    data.aws_secretsmanager_secret_version.existing_sidecar_ca_certificate.secret_string
+  ) : jsonencode(local.sidecar_ca_certificate_payload)
 }
 
 resource "aws_secretsmanager_secret" "sidecar_custom_certificate" {
