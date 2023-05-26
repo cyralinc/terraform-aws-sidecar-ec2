@@ -26,7 +26,7 @@ module "cyral_sidecar" {
 
     ssh_inbound_cidr         = ["0.0.0.0/0"]
     db_inbound_cidr          = ["0.0.0.0/0"]
-    healthcheck_inbound_cidr = ["0.0.0.0/0"]
+    monitoring_inbound_cidr = ["0.0.0.0/0"]
 
     container_registry = ""
     client_id          = ""
@@ -123,7 +123,6 @@ No modules.
 | <a name="input_external_tls_type"></a> [external\_tls\_type](#input\_external\_tls\_type) | TLS mode for the control plane - tls, tls-skip-verify, no-tls | `string` | `"tls"` | no |
 | <a name="input_hc_vault_integration_id"></a> [hc\_vault\_integration\_id](#input\_hc\_vault\_integration\_id) | HashiCorp Vault integration ID | `string` | `""` | no |
 | <a name="input_health_check_grace_period"></a> [health\_check\_grace\_period](#input\_health\_check\_grace\_period) | The grace period in seconds before the health check will terminate the instance | `number` | `600` | no |
-| <a name="input_healthcheck_inbound_cidr"></a> [healthcheck\_inbound\_cidr](#input\_healthcheck\_inbound\_cidr) | Allowed CIDR block for health check requests to the sidecar | `list(string)` | n/a | yes |
 | <a name="input_iam_policies"></a> [iam\_policies](#input\_iam\_policies) | (Optional) List of IAM policies ARNs that will be attached to the sidecar IAM role | `list(string)` | `[]` | no |
 | <a name="input_idp_certificate"></a> [idp\_certificate](#input\_idp\_certificate) | (Optional) The certificate used to verify SAML assertions from the IdP being used with Snowflake. Enter this value as a one-line string with literal new line characters (\n) specifying the line breaks. | `string` | `""` | no |
 | <a name="input_idp_sso_login_url"></a> [idp\_sso\_login\_url](#input\_idp\_sso\_login\_url) | (Optional) The IdP SSO URL for the IdP being used with Snowflake. | `string` | `""` | no |
@@ -135,8 +134,8 @@ No modules.
 | <a name="input_load_balancer_subnets"></a> [load\_balancer\_subnets](#input\_load\_balancer\_subnets) | Subnets to add load balancer to. If not provided, the load balancer will assume the subnets specified in the `subnets` parameter. | `list(string)` | `[]` | no |
 | <a name="input_load_balancer_tls_ports"></a> [load\_balancer\_tls\_ports](#input\_load\_balancer\_tls\_ports) | List of ports that will have TLS terminated at load balancer level<br>(snowflake support, for example). If assigned, 'load\_balancer\_certificate\_arn' <br>must also be provided. This parameter must be a subset of 'sidecar\_ports'. | `list(number)` | `[]` | no |
 | <a name="input_log_integration"></a> [log\_integration](#input\_log\_integration) | Logs destination | `string` | `"cloudwatch"` | no |
-| <a name="input_metrics_inbound_cidr"></a> [metrics\_inbound\_cidr](#input\_metrics\_inbound\_cidr) | Allowed CIDR block for health check requests to the sidecar. This is set as none by default, to allow all sources use '["0.0.0.0/0"]' | `list(string)` | `[]` | no |
 | <a name="input_metrics_integration"></a> [metrics\_integration](#input\_metrics\_integration) | Metrics destination | `string` | `""` | no |
+| <a name="input_monitoring_inbound_cidr"></a> [monitoring\_inbound\_cidr](#input\_monitoring\_inbound\_cidr) | Allowed CIDR block for health check and metric requests to the sidecar | `list(string)` | n/a | yes |
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Prefix for names of created resources in AWS. Maximum length is 24 characters. | `string` | `""` | no |
 | <a name="input_reduce_security_group_rules_count"></a> [reduce\_security\_group\_rules\_count](#input\_reduce\_security\_group\_rules\_count) | If set to `false`, each port in `sidecar_ports` will be used individually for each CIDR in `db_inbound_cidr` to create inbound rules in the sidecar security group, resulting in a number of inbound rules that is equal to the number of `sidecar_ports` * `db_inbound_cidr`. If set to `true`, the entire sidecar port range from `min(sidecar_ports)` to `max(sidecar_ports)` will be used to configure each inbound rule for each CIDR in `db_inbound_cidr` for the sidecar security group. Setting it to `true` can be useful if you need to use multiple sequential sidecar ports and different CIDRs for DB inbound (`db_inbound_cidr`) since it will significantly reduce the number of inbound rules and avoid hitting AWS quotas. As a side effect, it will open all the ports between `min(sidecar_ports)` and `max(sidecar_ports)` in the security group created by this module. | `bool` | `false` | no |
 | <a name="input_repositories_supported"></a> [repositories\_supported](#input\_repositories\_supported) | List of all repositories that will be supported by the sidecar (lower case only) | `list(string)` | <pre>[<br>  "denodo",<br>  "dremio",<br>  "dynamodb",<br>  "mongodb",<br>  "mysql",<br>  "oracle",<br>  "postgresql",<br>  "redshift",<br>  "snowflake",<br>  "sqlserver",<br>  "s3"<br>]</pre> | no |

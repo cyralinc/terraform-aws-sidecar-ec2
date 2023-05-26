@@ -130,24 +130,14 @@ resource "aws_security_group" "instance" {
     }
   }
 
-  # Allow healthcheck inbound
-  ingress {
-    description = "Sidecar - Healthcheck"
-    from_port   = 9000
-    to_port     = 9000
-    protocol    = "tcp"
-    # A network load balancer has no security group:
-    # https://docs.aws.amazon.com/elasticloadbalancing/latest/network/target-group-register-targets.html#target-security-groups
-    cidr_blocks = var.healthcheck_inbound_cidr # TODO - change this to LB IP only
-  }
 
-  # Allow metrics inbound
+  # Allow monitoring inbound
   ingress {
-    description = "Sidecar - metrics"
+    description = "Sidecar - monitoring"
     from_port   = 9000
     to_port     = 9000
     protocol    = "tcp"
-    cidr_blocks = var.metrics_inbound_cidr
+    cidr_blocks = var.monitoring_inbound_cidr
   }
 
   # Allow all outbound
