@@ -44,11 +44,13 @@ resource "aws_launch_template" "cyral_sidecar_lt" {
     }
   }
   user_data = base64encode(<<-EOT
-  #!/bin/bash -xe
+  #!/bin/bash -e
+  ${local.cloud_init_func}
   ${lookup(var.custom_user_data, "pre")}
   ${local.cloud_init_pre}
-  ${local.cloud_init_post}
   ${lookup(var.custom_user_data, "post")}
+  ${local.cloud_init_post}
+  ${lookup(var.custom_user_data, "post_start")}
 EOT
   )
   lifecycle {

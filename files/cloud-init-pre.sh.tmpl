@@ -1,61 +1,15 @@
 # for the moment, acknowledge early
 # aws autoscaling complete-lifecycle-action --lifecycle-action-result CONTINUE --instance-id $INSTANCE_ID --lifecycle-hook-name ${name_prefix}-InitLifeCycleHook --auto-scaling-group-name $ASG_NAME --region ${aws_region}
 
-function retry() {
-  RETRIES=15
-  while [ $RETRIES -gt 0 ]; do
-    set +e
-    $@
-    RESULT=$?
-    set -e
-    if [ $RESULT -eq 0 ]; then
-      echo "Success"
-      return 0
-    fi
-    echo "Failed"
-    sleep 5
-    let RETRIES-=1
-  done
-  echo "Retries exceeded"
-  exit 3
-}
-# General package install
-yum update -y
-yum install -y aws-cfn-bootstrap wget ec2-instance-connect docker jq
+package_install
+docker_setup
+fetch_hostname
+update_nginx_resolver
+get_secret
+registry_login
+SIDECAR_IDP_PUBLIC_CERT="$(echo "$secret" | jq -r .sidecarPublicIdpCertificate)"
+SIDECAR_IDP_PRIVATE_KEY="$(echo "$secret" | jq -r .sidecarPrivateIdpKey)"
 
-## Docker Setup
-sudo service docker start
-sudo usermod -a -G docker ec2-user
-# Compose Setup
-sudo mkdir -p /usr/local/lib/docker/cli-plugins/
-sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
-sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-# Configure fd limit for ec2 instance and containers
-sudo bash -c 'cat > /etc/security/limits.d/fdlimit.conf' << EOF
-*       soft  nofile  65535
-*       hard  nofile  65535
-EOF
-sudo bash -c 'cat > /etc/sysconfig/docker' << EOF
-DAEMON_MAXFILES=65535
-OPTIONS="--default-ulimit nofile=65535:65535"
-DAEMON_PIDFILE_TIMEOUT=10
-EOF
-sudo systemctl restart docker
-
-echo "Fetching public hostname..."
-INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $( \
-    curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" \
-    )" http://169.254.169.254/latest/meta-data/instance-id || echo "$HOSTNAME")
-echo "Setting INSTANCE_ID to '$INSTANCE_ID'"
-
-export NGINX_RESOLVER=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
-echo "Setting NGINX_RESOLVER to '$NGINX_RESOLVER'"
-
-echo "Fetching secrets..."
-SIDECAR_IDP_PUBLIC_CERT="$(aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
-    --region ${aws_region} | jq -r .sidecarPublicIdpCertificate)"
-SIDECAR_IDP_PRIVATE_KEY="$(aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
-    --region ${aws_region} | jq -r .sidecarPrivateIdpKey)"
 mkdir -p /home/ec2-user/cyral/
 
 function extract_key_from_json_input() {
@@ -133,3 +87,5 @@ CYRAL_CERTIFICATE_MANAGER_TLS_CERT=$${SIDECAR_TLS_CERT}
 CYRAL_CERTIFICATE_MANAGER_CA_KEY=$${SIDECAR_CA_KEY}
 CYRAL_CERTIFICATE_MANAGER_CA_CERT=$${SIDECAR_CA_CERT}
 EOF
+
+retry download_sidecar
