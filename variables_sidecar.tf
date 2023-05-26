@@ -58,43 +58,6 @@ variable "metrics_integration" {
   default     = ""
 }
 
-variable "mongodb_port_alloc_range_low" {
-  description = <<EOF
-(Deprecated) Initial value for MongoDB port allocation range. This is mandatory for MongoDB
-use case and the consecutive ports in the
-range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used
-for mongodb cluster monitoring. All the ports in this range must be listed in
-`sidecar_ports`.
-
-This variable is deprecated for sidecars v3.0.0 and later.
-EOF
-  type        = number
-  default     = 27017
-}
-
-variable "mongodb_port_alloc_range_high" {
-  description = <<EOF
-(Deprecated) Final value for MongoDB port allocation range. This is mandatory for MongoDB
-use case and the consecutive ports in the
-range `mongodb_port_alloc_range_low:mongodb_port_alloc_range_high` will be used
-for mongodb cluster monitoring. All the ports in this range must be listed in
-`sidecar_ports`.
-
-This variable is deprecated for sidecars v3.0.0 and later.
-EOF
-  type        = number
-  default     = 27019
-}
-
-variable "mysql_multiplexed_port" {
-  description = <<EOF
-(Deprecated) Port that will be used by the sidecar to multiplex connections to MySQL.
-This variable is deprecated for sidecars v4.0.0 and later.
-EOF
-  type        = number
-  default     = 0
-}
-
 variable "name_prefix" {
   description = "Prefix for names of created resources in AWS. Maximum length is 24 characters."
   type        = string
@@ -146,12 +109,6 @@ variable "sidecar_dns_overwrite" {
 variable "sidecar_ports" {
   description = "List of ports allowed to connect to the sidecar. See also 'load_balancer_tls_ports'."
   type        = list(number)
-}
-
-variable "metrics_port" {
-  description = "Port which will respond with metrics on the sidecar"
-  type        = number
-  default     = 9000
 }
 
 variable "sidecar_version" {
