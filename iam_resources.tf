@@ -45,14 +45,6 @@ data "aws_iam_policy_document" "init_script_policy" {
       "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:${var.secrets_location}*"
     ])
   }
-  statement {
-    actions = [
-      "secretsmanager:UpdateSecret"
-    ]
-    resources = [
-      "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:/cyral/sidecars/${var.sidecar_id}/self-signed-certificate*"
-    ]
-  }
 
   dynamic "statement" {
     for_each = (var.sidecar_tls_certificate_secret_arn != "" && var.sidecar_tls_certificate_role_arn == "") ? [1] : []
@@ -185,7 +177,6 @@ data "aws_iam_policy_document" "sidecar_custom_certificate_secrets_manager" {
   statement {
     actions = [
       "secretsmanager:GetSecretValue",
-      "secretsmanager:UpdateSecret"
     ]
     resources = [aws_secretsmanager_secret.sidecar_custom_certificate[0].id]
   }

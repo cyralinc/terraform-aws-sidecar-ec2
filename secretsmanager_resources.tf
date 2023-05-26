@@ -7,6 +7,11 @@ locals {
     sidecarPrivateIdpKey        = replace(var.sidecar_private_idp_key, "\n", "\\n")
   }
   create_sidecar_custom_certificate_secret = var.sidecar_custom_certificate_account_id != ""
+  selfsigned_cert_country                  = "US"
+  selfsigned_cert_province                 = "CA"
+  selfsigned_cert_locality                 = "Redwood City"
+  selfsigned_cert_organization             = "Cyral Inc."
+  selfsigned_cert_validity_period_hours    = 10 * 365 * 24
   sidecar_created_certificate_payload = {
     key  = tls_private_key.tls.private_key_pem
     cert = tls_self_signed_cert.tls.cert_pem
@@ -59,14 +64,14 @@ resource "tls_self_signed_cert" "tls" {
   is_ca_certificate = false
 
   subject {
-    country      = "US"
-    province     = "CA"
-    locality     = "Redwood City"
-    organization = "Cyral Inc."
-    common_name  = "sidecar.app.cyral.com"
+    country      = local.selfsigned_cert_country
+    province     = local.selfsigned_cert_province
+    locality     = local.selfsigned_cert_locality
+    organization = local.selfsigned_cert_organization
+    common_name  = local.sidecar_endpoint
   }
 
-  validity_period_hours = 10 * 365 * 24
+  validity_period_hours = local.selfsigned_cert_validity_period_hours
 
   allowed_uses = [
     "key_encipherment",
@@ -76,17 +81,18 @@ resource "tls_self_signed_cert" "tls" {
 }
 
 resource "tls_self_signed_cert" "ca" {
-  private_key_pem   = tls_private_key.tls.private_key_pem
+  private_key_pem   = tls_private_key.ca.private_key_pem
   is_ca_certificate = true
 
   subject {
-    country      = "US"
-    province     = "CA"
-    locality     = "Redwood City"
-    organization = "Cyral Inc."
+    country      = local.selfsigned_cert_country
+    province     = local.selfsigned_cert_province
+    locality     = local.selfsigned_cert_locality
+    organization = local.selfsigned_cert_organization
+    common_name  = local.sidecar_endpoint
   }
 
-  validity_period_hours = 10 * 365 * 24
+  validity_period_hours = local.selfsigned_cert_validity_period_hours
 
   allowed_uses = [
     "key_encipherment",
