@@ -42,7 +42,7 @@ locals {
     mongodb_port_alloc_range_low          = var.mongodb_port_alloc_range_low
     mongodb_port_alloc_range_high         = var.mongodb_port_alloc_range_high
     mysql_multiplexed_port                = var.mysql_multiplexed_port
-    sidecar_created_certificate_secret_id = aws_secretsmanager_secret.sidecar_created_certificate.arn
+    sidecar_created_certificate_secret_id = local.sidecar_created_certificate_secret_id
     load_balancer_tls_ports               = join(",", var.load_balancer_tls_ports)
     protocol                              = local.protocol
     curl                                  = local.curl
@@ -52,7 +52,7 @@ locals {
     sidecar_tls_certificate_secret_arn = (
       var.sidecar_tls_certificate_secret_arn != "" ?
       var.sidecar_tls_certificate_secret_arn :
-      aws_secretsmanager_secret.sidecar_created_certificate.arn
+      local.sidecar_created_certificate_secret_id
     )
     sidecar_tls_certificate_role_arn = var.sidecar_tls_certificate_role_arn
     sidecar_ca_certificate_secret_arn = (
