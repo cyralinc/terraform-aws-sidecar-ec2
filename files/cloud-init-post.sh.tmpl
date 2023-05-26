@@ -4,33 +4,6 @@ SIDECAR_CLIENT_ID=$(aws secretsmanager get-secret-value --secret-id ${secrets_lo
 SIDECAR_CLIENT_SECRET=$(aws secretsmanager get-secret-value --secret-id ${secrets_location} --query SecretString --output text \
     --region ${aws_region} | jq -r .clientSecret)
 
-function read_certificate() {
-  file_name_prefix="$1"
-  secret_arn="$2"
-  role_arn="$3"
-
-  [ -z "$secret_arn" ] && return
-  (
-    if [ -n "$role_arn" ]; then
-      assume_role_result="$(aws sts assume-role --role-arn $role_arn --role-session-name cyral-sidecar)"
-      export AWS_ACCESS_KEY_ID=$(echo "$assume_role_result" | jq -r .Credentials.AccessKeyId)
-      export AWS_SECRET_ACCESS_KEY=$(echo "$assume_role_result" | jq -r .Credentials.SecretAccessKey)
-      export AWS_SESSION_TOKEN=$(echo "$assume_role_result" | jq -r .Credentials.SessionToken)
-    fi
-    secret_value="$(aws --region ${aws_region} secretsmanager get-secret-value --secret-id $secret_arn --query SecretString --output text)"
-    echo $secret_value | jq -r .key > "/home/ec2-user/.$${file_name_prefix}-key.pem"
-    echo $secret_value | jq -r .cert > "/home/ec2-user/.$${file_name_prefix}-cert.pem"
-  )
-}
-
-read_certificate sidecar-tls \
-  "${sidecar_tls_certificate_secret_arn}" \
-  "${sidecar_tls_certificate_role_arn}"
-
-read_certificate sidecar-ca \
-  "${sidecar_ca_certificate_secret_arn}" \
-  "${sidecar_ca_certificate_role_arn}"
-
 echo "Downloading sidecar.compose.yaml..."
 function get_token () {
   local url_token="${protocol}://${controlplane_host}:$1/v1/users/oidc/token"
