@@ -154,10 +154,10 @@ SIDECAR_TLS_CERT_SECRET_VALUE=$(
 SIDECAR_CA_CERT_SECRET_VALUE=$(
   get_secret_value "${sidecar_ca_certificate_secret_arn}" "${sidecar_ca_certificate_role_arn}"
 )
-SIDECAR_TLS_KEY=$(echo "$SIDECAR_TLS_CERT_SECRET_VALUE" | extract_key_from_json_input | sed -z 's/\n/\\n/g')
-SIDECAR_TLS_CERT=$(echo "$SIDECAR_TLS_CERT_SECRET_VALUE" | extract_cert_from_json_input | sed -z 's/\n/\\n/g')
-SIDECAR_CA_KEY=$(echo "$SIDECAR_CA_CERT_SECRET_VALUE" | extract_key_from_json_input | sed -z 's/\n/\\n/g')
-SIDECAR_CA_CERT=$(echo "$SIDECAR_CA_CERT_SECRET_VALUE" | extract_cert_from_json_input | sed -z 's/\n/\\n/g')
+SIDECAR_TLS_KEY=$(echo "$SIDECAR_TLS_CERT_SECRET_VALUE" | extract_key_from_json_input | base64 -w 0)
+SIDECAR_TLS_CERT=$(echo "$SIDECAR_TLS_CERT_SECRET_VALUE" | extract_cert_from_json_input | base64 -w 0)
+SIDECAR_CA_KEY=$(echo "$SIDECAR_CA_CERT_SECRET_VALUE" | extract_key_from_json_input | base64 -w 0)
+SIDECAR_CA_CERT=$(echo "$SIDECAR_CA_CERT_SECRET_VALUE" | extract_cert_from_json_input | base64 -w 0)
 
 echo "Initializing environment variables..."
 cat > /home/ec2-user/.env << EOF
