@@ -6,7 +6,6 @@ function package_install(){
 
 function docker_setup(){
     echo "Configuring Docker..."
-    sudo service docker start
     sudo usermod -a -G docker ec2-user
     # Compose Setup
     sudo mkdir -p /usr/local/lib/docker/cli-plugins/
@@ -44,6 +43,39 @@ function retry() {
   exit 3
 }
 
+function extract_key_from_json_input() {
+  # Both key and tls.key are valid JSON keys for private keys.
+  # Values can be PEM strings or base64-encoded PEM strings.
+  jq -r '
+    (if has("key") then .key else ."tls.key" end) as $key |
+    if ($key | startswith("-----BEGIN")) then $key else ($key | @base64d) end
+  '
+}
+
+function extract_cert_from_json_input() {
+  # Both cert and tls.crt are valid JSON keys for certificates.
+  # Values can be PEM strings or base64-encoded PEM strings.
+  jq -r '
+    (if has("cert") then .cert else ."tls.crt" end) as $cert |
+    if ($cert | startswith("-----BEGIN")) then $cert else ($cert | @base64d) end
+  '
+}
+
+function get_secret_value() {
+  secret_arn="$1"
+  role_arn="$2"
+  [ -z "$secret_arn" ] && return
+  (
+    if [ -n "$role_arn" ]; then
+      assume_role_result="$(aws sts assume-role --role-arn $role_arn --role-session-name cyral-sidecar)"
+      export AWS_ACCESS_KEY_ID=$(echo "$assume_role_result" | jq -r .Credentials.AccessKeyId)
+      export AWS_SECRET_ACCESS_KEY=$(echo "$assume_role_result" | jq -r .Credentials.SecretAccessKey)
+      export AWS_SESSION_TOKEN=$(echo "$assume_role_result" | jq -r .Credentials.SessionToken)
+    fi
+    aws --region ${aws_region} secretsmanager get-secret-value --secret-id $secret_arn --query SecretString --output text
+  )
+}
+
 function get_secret(){
     echo "Fetching Secret..."
     if ! secret=$(aws secretsmanager get-secret-value --secret-id "${secrets_location}" --query SecretString --output text --region "${aws_region}" 2>&1); then
@@ -51,6 +83,27 @@ function get_secret(){
         echo "Error: $secret"
         exit 1
     fi
+}
+
+function load_certs() {
+    echo "Loading certificates..."
+    local sidecar_tls_cert_secret_value sidecar_ca_cert_secret_value
+    sidecar_tls_cert_secret_value=$(
+        get_secret_value "${sidecar_tls_certificate_secret_arn}" "${sidecar_tls_certificate_role_arn}"
+    )
+    sidecar_ca_cert_secret_value=$(
+        get_secret_value "${sidecar_ca_certificate_secret_arn}" "${sidecar_ca_certificate_role_arn}"
+    )
+    SIDECAR_TLS_KEY=$(echo "$sidecar_tls_cert_secret_value" | extract_key_from_json_input | base64 -w 0)
+    SIDECAR_TLS_CERT=$(echo "$sidecar_tls_cert_secret_value" | extract_cert_from_json_input | base64 -w 0)
+    SIDECAR_CA_KEY=$(echo "$sidecar_ca_cert_secret_value" | extract_key_from_json_input | base64 -w 0)
+    SIDECAR_CA_CERT=$(echo "$sidecar_ca_cert_secret_value" | extract_cert_from_json_input | base64 -w 0)
+}
+
+function load_idp_certs() {
+    echo "Loading IDP certificates..."
+    SIDECAR_IDP_PUBLIC_CERT="$(echo "$secret" | jq -r .sidecarPublicIdpCertificate)"
+    SIDECAR_IDP_PRIVATE_KEY="$(echo "$secret" | jq -r .sidecarPrivateIdpKey)"
 }
 
 function fetch_hostname() {
@@ -63,7 +116,7 @@ function fetch_hostname() {
 
 function update_nginx_resolver(){
     export NGINX_RESOLVER=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
-    echo "Setting NGINX_RESOLVER to '$NGINX_RESOLVER'"
+    echo "Setting NGINX_RESOLVER to '$NGINX_RESOLVER'..."
 }
 
 function get_token () {
@@ -76,6 +129,7 @@ function get_token () {
 }
 
 function download_sidecar () {
+    local access_token url
     echo "Downloading Sidecar Compose File..."
     get_token "443"
     if [[ $token_error -ne 0 ]]; then
@@ -88,8 +142,8 @@ function download_sidecar () {
             return 1
         fi
     fi
-    local access_token=$(echo "$token" | jq -r .access_token)
-    local url="${protocol}://${controlplane_host}/deploy/docker-compose?TemplateVersion=${sidecar_version}&TemplateType=terraform&LogIntegration=${log_integration}&MetricsIntegration=${metrics_integration}&HCVaultIntegrationID=${hc_vault_integration_id}&WiresEnabled=${repositories_supported}"
+    access_token=$(echo "$token" | jq -r .access_token)
+    url="${protocol}://${controlplane_host}/deploy/docker-compose?TemplateVersion=${sidecar_version}&TemplateType=terraform&LogIntegration=${log_integration}&MetricsIntegration=${metrics_integration}&HCVaultIntegrationID=${hc_vault_integration_id}&WiresEnabled=${repositories_supported}"
     echo "Trying to download the sidecar template from: $url"
     if ! ${curl} -fsS --no-progress-meter -o /home/ec2-user/sidecar.compose.yaml -L "$url" -H "Authorization: Bearer $access_token"; then
         echo "Unable to download compose file for version ${sidecar_version}, please make sure all parameters are correct"
