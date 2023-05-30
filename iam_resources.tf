@@ -201,3 +201,48 @@ resource "aws_iam_role_policy_attachment" "sidecar_custom_certificate" {
   role       = aws_iam_role.sidecar_custom_certificate[0].name
   policy_arn = aws_iam_policy.sidecar_custom_certificate_secrets_manager[0].arn
 }
+
+resource "aws_iam_role" "self_signed_certificate" {
+  name = "${local.name_prefix}-self_signed_certificate_role"
+  path = "/"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      },
+    ]
+  })
+  inline_policy {
+    name = "CertificateManagerLambdaPolicy"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect = "Allow"
+          Action = [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+          ]
+          Resource = "arn:${local.aws_partition}:logs:${local.aws_region}:${local.aws_account_id}:*"
+        },
+        {
+          Effect = "Allow"
+          Action = [
+            "secretsmanager:GetSecretValue",
+            "secretsmanager:UpdateSecret",
+          ]
+          Resource = [
+            "arn:${local.aws_partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:/cyral/sidecars/${var.sidecar_id}/self-signed-certificate*",
+            "arn:${local.aws_partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:/cyral/sidecars/${var.sidecar_id}/ca-certificate*",
+          ]
+        },
+      ]
+    })
+  }
+}

@@ -40,3 +40,8 @@ output "sidecar_custom_certificate_role_arn" {
   )
   description = "IAM role ARN to use in the Sidecar Custom Certificate modules."
 }
+
+output "aws_cloudwatch_log_group_name" {
+  value       = aws_cloudwatch_log_group.cyral-sidecar-lg.name
+  description = "Name of the CloudWatch log group where sidecar logs are stored."
+}

@@ -1,7 +1,12 @@
-# Get AWS Region defined by the user in `provider` section.
+# Get AWS Partition, Region, and Account ID defined by the user in `provider` section.
+data "aws_partition" "current" {}
 data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
 
 locals {
+  aws_partition  = data.aws_partition.current.partition
+  aws_region     = data.aws_region.current.name
+  aws_account_id = data.aws_caller_identity.current.account_id
   sidecar_endpoint = (length(aws_route53_record.cyral-sidecar-dns-record) == 0 && length(var.sidecar_dns_name) > 0) ? (
     var.sidecar_dns_name
     ) : (
@@ -19,7 +24,7 @@ locals {
     container_registry_username           = var.container_registry_username
     sidecar_endpoint                      = local.sidecar_endpoint
     dd_api_key                            = var.dd_api_key
-    aws_region                            = data.aws_region.current.name
+    aws_region                            = local.aws_region
     log_integration                       = var.log_integration
     metrics_integration                   = var.metrics_integration
     log_group_name                        = aws_cloudwatch_log_group.cyral-sidecar-lg.name
@@ -29,7 +34,7 @@ locals {
     sidecar_public_idp_certificate        = var.sidecar_public_idp_certificate
     sidecar_private_idp_key               = var.sidecar_private_idp_key
     hc_vault_integration_id               = var.hc_vault_integration_id
-    sidecar_created_certificate_secret_id = local.sidecar_created_certificate_secret_id
+    sidecar_created_certificate_secret_id = aws_secretsmanager_secret.sidecar_created_certificate.arn
     load_balancer_tls_ports               = join(",", var.load_balancer_tls_ports)
     protocol                              = local.protocol
     curl                                  = local.curl
@@ -38,7 +43,7 @@ locals {
     sidecar_tls_certificate_secret_arn = (
       var.sidecar_tls_certificate_secret_arn != "" ?
       var.sidecar_tls_certificate_secret_arn :
-      local.sidecar_created_certificate_secret_id
+      aws_secretsmanager_secret.sidecar_created_certificate.arn
     )
     sidecar_tls_certificate_role_arn = var.sidecar_tls_certificate_role_arn
     sidecar_ca_certificate_secret_arn = (
