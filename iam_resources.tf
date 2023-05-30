@@ -128,6 +128,7 @@ data "aws_iam_policy_document" "sidecar" {
 }
 
 resource "aws_iam_instance_profile" "sidecar_profile" {
+  count = local.create_sidecar_role ? 1 : 0
   name = "${local.name_prefix}-sidecar_profile"
   role = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.sidecar_custom_host_role
 }
