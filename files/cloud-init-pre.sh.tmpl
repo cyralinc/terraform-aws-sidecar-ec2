@@ -115,6 +115,50 @@ SIDECAR_IDP_PRIVATE_KEY="$(aws secretsmanager get-secret-value --secret-id ${sec
     --region ${aws_region} | jq -r .sidecarPrivateIdpKey)"
 mkdir -p /home/ec2-user/cyral/
 
+function extract_key_from_json_input() {
+  # Both key and tls.key are valid JSON keys for private keys.
+  # Values can be PEM strings or base64-encoded PEM strings.
+  jq -r '
+    (if has("key") then .key else ."tls.key" end) as $key |
+    if ($key | startswith("-----BEGIN")) then $key else ($key | @base64d) end
+  '
+}
+
+function extract_cert_from_json_input() {
+  # Both cert and tls.crt are valid JSON keys for certificates.
+  # Values can be PEM strings or base64-encoded PEM strings.
+  jq -r '
+    (if has("cert") then .cert else ."tls.crt" end) as $cert |
+    if ($cert | startswith("-----BEGIN")) then $cert else ($cert | @base64d) end
+  '
+}
+
+function get_secret_value() {
+  secret_arn="$1"
+  role_arn="$2"
+  [ -z "$secret_arn" ] && return
+  (
+    if [ -n "$role_arn" ]; then
+      assume_role_result="$(aws sts assume-role --role-arn $role_arn --role-session-name cyral-sidecar)"
+      export AWS_ACCESS_KEY_ID=$(echo "$assume_role_result" | jq -r .Credentials.AccessKeyId)
+      export AWS_SECRET_ACCESS_KEY=$(echo "$assume_role_result" | jq -r .Credentials.SecretAccessKey)
+      export AWS_SESSION_TOKEN=$(echo "$assume_role_result" | jq -r .Credentials.SessionToken)
+    fi
+    aws --region ${aws_region} secretsmanager get-secret-value --secret-id $secret_arn --query SecretString --output text
+  )
+}
+
+SIDECAR_TLS_CERT_SECRET_VALUE=$(
+  get_secret_value "${sidecar_tls_certificate_secret_arn}" "${sidecar_tls_certificate_role_arn}"
+)
+SIDECAR_CA_CERT_SECRET_VALUE=$(
+  get_secret_value "${sidecar_ca_certificate_secret_arn}" "${sidecar_ca_certificate_role_arn}"
+)
+SIDECAR_TLS_KEY=$(echo "$SIDECAR_TLS_CERT_SECRET_VALUE" | extract_key_from_json_input | base64 -w 0)
+SIDECAR_TLS_CERT=$(echo "$SIDECAR_TLS_CERT_SECRET_VALUE" | extract_cert_from_json_input | base64 -w 0)
+SIDECAR_CA_KEY=$(echo "$SIDECAR_CA_CERT_SECRET_VALUE" | extract_key_from_json_input | base64 -w 0)
+SIDECAR_CA_CERT=$(echo "$SIDECAR_CA_CERT_SECRET_VALUE" | extract_cert_from_json_input | base64 -w 0)
+
 echo "Initializing environment variables..."
 cat > /home/ec2-user/.env << EOF
 SIDECAR_ID=${sidecar_id}
@@ -158,8 +202,10 @@ MYSQL_MULTIPLEXED_PORT=${mysql_multiplexed_port}
 
 LOAD_BALANCER_TLS_PORTS=${load_balancer_tls_ports}
 
-CYRAL_CERTIFICATE_MANAGER_SELFSIGNED_SECRET_ID=${sidecar_created_certificate_secret_id}
-CYRAL_CERTIFICATE_MANAGER_SELFSIGNED_SECRET_TYPE=aws
+CYRAL_CERTIFICATE_MANAGER_TLS_KEY=$${SIDECAR_TLS_KEY}
+CYRAL_CERTIFICATE_MANAGER_TLS_CERT=$${SIDECAR_TLS_CERT}
+CYRAL_CERTIFICATE_MANAGER_CA_KEY=$${SIDECAR_CA_KEY}
+CYRAL_CERTIFICATE_MANAGER_CA_CERT=$${SIDECAR_CA_CERT}
 
 METRICS_PORT=${metrics_port}
 EOF

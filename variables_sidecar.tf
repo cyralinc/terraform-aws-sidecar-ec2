@@ -170,3 +170,33 @@ variable "custom_user_data" {
   type        = map(any)
   default     = { "pre" = "", "post" = "" }
 }
+
+variable "sidecar_tls_certificate_secret_arn" {
+  description = "(Optional) ARN of secret in AWS Secrets Manager that contains a certificate to terminate TLS connections."
+  type        = string
+  default     = ""
+}
+
+variable "sidecar_tls_certificate_role_arn" {
+  description = "(Optional) ARN of an AWS IAM Role to assume when reading the TLS certificate."
+  type        = string
+  default     = ""
+}
+
+variable "sidecar_ca_certificate_secret_arn" {
+  description = "(Optional) ARN of secret in AWS Secrets Manager that contains a CA certificate to sign sidecar-generated certs."
+  type        = string
+  default     = ""
+}
+
+variable "sidecar_ca_certificate_role_arn" {
+  description = "(Optional) ARN of an AWS IAM Role to assume when reading the CA certificate."
+  type        = string
+  default     = ""
+}
+
+variable "sidecar_custom_host_role" {
+  description = "(Optional) Name of an AWS IAM Role to attach to the EC2 instance profile."
+  type        = string
+  default     = ""
+}
