@@ -1,6 +1,7 @@
 locals {
   create_custom_certificate_role = var.sidecar_custom_certificate_account_id != ""
   create_kms_policy              = var.ec2_ebs_kms_arn != "" || var.secrets_kms_arn != ""
+  create_sidecar_role            = var.sidecar_custom_host_role == ""
 }
 
 # Gets the ARN from a resource that is deployed by this module in order to
@@ -44,13 +45,53 @@ data "aws_iam_policy_document" "init_script_policy" {
       "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:${var.secrets_location}*"
     ])
   }
-  statement {
-    actions = [
-      "secretsmanager:UpdateSecret"
-    ]
-    resources = [
-      "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:/cyral/sidecars/${var.sidecar_id}/self-signed-certificate*"
-    ]
+
+  dynamic "statement" {
+    for_each = (var.sidecar_tls_certificate_secret_arn != "" && var.sidecar_tls_certificate_role_arn == "") ? [1] : []
+    content {
+      actions = [
+        "secretsmanager:GetSecretValue"
+      ]
+      resources = compact([
+        var.sidecar_tls_certificate_secret_arn,
+      ])
+    }
+  }
+
+  dynamic "statement" {
+    for_each = (var.sidecar_ca_certificate_secret_arn != "" && var.sidecar_ca_certificate_role_arn == "") ? [1] : []
+    content {
+      actions = [
+        "secretsmanager:GetSecretValue"
+      ]
+      resources = compact([
+        var.sidecar_ca_certificate_secret_arn,
+      ])
+    }
+  }
+
+  dynamic "statement" {
+    for_each = (var.sidecar_tls_certificate_secret_arn != "" && var.sidecar_tls_certificate_role_arn != "") ? [1] : []
+    content {
+      actions = [
+        "sts:AssumeRole"
+      ]
+      resources = compact([
+        var.sidecar_tls_certificate_role_arn,
+      ])
+    }
+  }
+
+  dynamic "statement" {
+    for_each = (var.sidecar_ca_certificate_secret_arn != "" && var.sidecar_ca_certificate_role_arn != "") ? [1] : []
+    content {
+      actions = [
+        "sts:AssumeRole"
+      ]
+      resources = compact([
+        var.sidecar_ca_certificate_role_arn,
+      ])
+    }
   }
 
   source_policy_documents = [
@@ -87,11 +128,13 @@ data "aws_iam_policy_document" "sidecar" {
 }
 
 resource "aws_iam_instance_profile" "sidecar_profile" {
+  count = local.create_sidecar_role ? 1 : 0
   name = "${local.name_prefix}-sidecar_profile"
-  role = aws_iam_role.sidecar_role.name
+  role = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.sidecar_custom_host_role
 }
 
 resource "aws_iam_role" "sidecar_role" {
+  count              = local.create_sidecar_role ? 1 : 0
   name               = "${local.name_prefix}-sidecar_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar.json
@@ -105,13 +148,13 @@ resource "aws_iam_policy" "init_script_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "init_script_policy" {
-  role       = aws_iam_role.sidecar_role.name
+  role       = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.sidecar_custom_host_role
   policy_arn = aws_iam_policy.init_script_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "user_policies" {
   count      = length(var.iam_policies)
-  role       = aws_iam_role.sidecar_role.name
+  role       = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.sidecar_custom_host_role
   policy_arn = var.iam_policies[count.index]
 }
 
@@ -135,7 +178,6 @@ data "aws_iam_policy_document" "sidecar_custom_certificate_secrets_manager" {
   statement {
     actions = [
       "secretsmanager:GetSecretValue",
-      "secretsmanager:UpdateSecret"
     ]
     resources = [aws_secretsmanager_secret.sidecar_custom_certificate[0].id]
   }
@@ -159,4 +201,49 @@ resource "aws_iam_role_policy_attachment" "sidecar_custom_certificate" {
   count      = local.create_custom_certificate_role ? 1 : 0
   role       = aws_iam_role.sidecar_custom_certificate[0].name
   policy_arn = aws_iam_policy.sidecar_custom_certificate_secrets_manager[0].arn
+}
+
+resource "aws_iam_role" "self_signed_certificate" {
+  name = "${local.name_prefix}-self_signed_certificate_role"
+  path = "/"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      },
+    ]
+  })
+  inline_policy {
+    name = "CertificateManagerLambdaPolicy"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect = "Allow"
+          Action = [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+          ]
+          Resource = "arn:${local.aws_partition}:logs:${local.aws_region}:${local.aws_account_id}:*"
+        },
+        {
+          Effect = "Allow"
+          Action = [
+            "secretsmanager:GetSecretValue",
+            "secretsmanager:UpdateSecret",
+          ]
+          Resource = [
+            "arn:${local.aws_partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:/cyral/sidecars/${var.sidecar_id}/self-signed-certificate*",
+            "arn:${local.aws_partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:/cyral/sidecars/${var.sidecar_id}/ca-certificate*",
+          ]
+        },
+      ]
+    })
+  }
 }

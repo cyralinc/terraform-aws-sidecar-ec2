@@ -16,7 +16,8 @@ resource "aws_launch_template" "cyral_sidecar_lt" {
   instance_type = var.instance_type
   key_name      = var.key_name
   iam_instance_profile {
-    name = aws_iam_instance_profile.sidecar_profile.name
+    # instance profile name should be the same as sidecar_custom_host_role when a custom role is provided
+    name = local.create_sidecar_role ? aws_iam_instance_profile.sidecar_profile[0].name : var.sidecar_custom_host_role
   }
   network_interfaces {
     device_index                = 0

@@ -14,7 +14,7 @@ output "sidecar_load_balancer_dns" {
 }
 
 output "aws_iam_role_arn" {
-  value       = aws_iam_role.sidecar_role.arn
+  value       = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].arn : null
   description = "Sidecar IAM role ARN"
 }
 
@@ -39,4 +39,9 @@ output "sidecar_custom_certificate_role_arn" {
     null
   )
   description = "IAM role ARN to use in the Sidecar Custom Certificate modules."
+}
+
+output "aws_cloudwatch_log_group_name" {
+  value       = aws_cloudwatch_log_group.cyral-sidecar-lg.name
+  description = "Name of the CloudWatch log group where sidecar logs are stored."
 }
