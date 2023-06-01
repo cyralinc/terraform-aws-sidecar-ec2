@@ -48,7 +48,7 @@ resource "aws_launch_template" "cyral_sidecar_lt" {
   ${local.cloud_init_func}
   ${lookup(var.custom_user_data, "pre")}
   ${local.cloud_init_pre}
-  ${lookup(var.custom_user_data, "post")}
+  ${lookup(var.custom_user_data, "pre_sidecar_start")}
   ${local.cloud_init_post}
   ${lookup(var.custom_user_data, "post_start")}
 EOT
