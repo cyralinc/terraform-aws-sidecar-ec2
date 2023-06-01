@@ -161,7 +161,6 @@ resource "aws_lb" "cyral-lb" {
 
 resource "aws_lb_target_group" "cyral-sidecar-tg" {
   for_each = { for port in var.sidecar_ports : tostring(port) => port }
-  name     = "${local.name_prefix}-tg${each.value}"
   port     = each.value
   protocol = "TCP"
   vpc_id   = var.vpc_id
