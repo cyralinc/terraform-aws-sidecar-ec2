@@ -49,6 +49,17 @@ variable "instance_type" {
   default     = "t3.medium"
 }
 
+variable "instance_metadata_token" {
+  description = "Instance Metadata Service token requirement"
+  type        = string
+  default     = "required"
+
+  validation {
+    condition = contains(["optional", "required"], var.instance_metadata_token)
+    error_message = "Valid values for instance_metadata_token are (optional, required)"
+  }
+}
+
 variable "key_name" {
   description = "AWS key name"
   type        = string

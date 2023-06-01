@@ -29,7 +29,7 @@ resource "aws_launch_template" "cyral_sidecar_lt" {
   }
   metadata_options {
     http_endpoint               = "enabled"
-    http_tokens                 = "optional"
+    http_tokens                 = var.instance_metadata_token
     http_put_response_hop_limit = 1
   }
   block_device_mappings {
@@ -44,9 +44,11 @@ resource "aws_launch_template" "cyral_sidecar_lt" {
     }
   }
   user_data = base64encode(<<-EOT
-  #!/bin/bash -xe
+  #!/bin/bash -e
+  ${local.cloud_init_func}
   ${lookup(var.custom_user_data, "pre")}
   ${local.cloud_init_pre}
+  ${lookup(var.custom_user_data, "pre_sidecar_start")}
   ${local.cloud_init_post}
   ${lookup(var.custom_user_data, "post")}
 EOT
