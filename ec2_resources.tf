@@ -191,6 +191,11 @@ resource "aws_lb_listener" "cyral-sidecar-lb-ls" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.cyral-sidecar-tg[each.key].arn
   }
+  # Lifecycle control added as part of a TG name that was performed
+  # to make sidecars deployed using previous versions of the module
+  # to recreate the TG. As the TG cannot be recreated with an existing
+  # listener, the listener is then forced to be recreated here as part of
+  # the TG name change.
   lifecycle {
     replace_triggered_by = [
       aws_lb_target_group.cyral-sidecar-tg[each.key].name
