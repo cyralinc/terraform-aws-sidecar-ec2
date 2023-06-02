@@ -21,6 +21,7 @@ DAEMON_MAXFILES=65535
 OPTIONS="--default-ulimit nofile=65535:65535"
 DAEMON_PIDFILE_TIMEOUT=10
 EOF
+    sudo systemctl enable docker
     sudo systemctl restart docker
 }
 
