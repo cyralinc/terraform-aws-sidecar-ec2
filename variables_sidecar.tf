@@ -200,3 +200,9 @@ variable "sidecar_custom_host_role" {
   type        = string
   default     = ""
 }
+
+variable "cloudwatch_log_group_name" {
+  description = "(Optional) Cloudwatch log group name."
+  type        = string
+  default     = ""
+}
