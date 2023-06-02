@@ -191,4 +191,9 @@ resource "aws_lb_listener" "cyral-sidecar-lb-ls" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.cyral-sidecar-tg[each.key].arn
   }
+  lifecycle {
+    replace_triggered_by = [
+      aws_lb_target_group.cyral-sidecar-tg[each.key].name
+    ]
+  }
 }
