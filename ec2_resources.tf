@@ -163,7 +163,7 @@ resource "aws_lb" "cyral-lb" {
 
 resource "aws_lb_target_group" "cyral-sidecar-tg" {
   for_each = { for port in var.sidecar_ports : tostring(port) => port }
-  name     = "${local.name_prefix}-tg${each.value}"
+  name     = "${local.name_prefix}-${each.value}"
   port     = each.value
   protocol = "TCP"
   vpc_id   = var.vpc_id
@@ -192,5 +192,15 @@ resource "aws_lb_listener" "cyral-sidecar-lb-ls" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.cyral-sidecar-tg[each.key].arn
+  }
+  # Lifecycle control added as part of a TG name that was performed
+  # to make sidecars deployed using previous versions of the module
+  # to recreate the TG. As the TG cannot be recreated with an existing
+  # listener, the listener is then forced to be recreated here as part of
+  # the TG name change.
+  lifecycle {
+    replace_triggered_by = [
+      aws_lb_target_group.cyral-sidecar-tg[each.key].name
+    ]
   }
 }
