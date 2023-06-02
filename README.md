@@ -9,17 +9,15 @@ provider "aws" {
 
 module "cyral_sidecar" {
     source  = "cyralinc/sidecar-ec2/aws"  
-    version = "~> 3.0" # terraform module version
+    version = "~> 4.0" # terraform module version
 
     sidecar_version = ""
     sidecar_id      = ""
 
     control_plane = ""
+
     # Considering MongoDB ports are from the range 27017 to 27021
     sidecar_ports = [443, 3306, 5432, 27017, 27018, 27019, 27020, 27021]
-    # If `repositories_supported` is ommitted, all repositories will be supported,
-    # though you have to open the desired ports using `sidecar_ports`.
-    repositories_supported = ["snowflake", "postgresql", "mysql", "mongodb"]
 
     vpc_id  = ""
     subnets = [""]
@@ -119,6 +117,7 @@ No modules.
 | <a name="input_associate_public_ip_address"></a> [associate\_public\_ip\_address](#input\_associate\_public\_ip\_address) | Associates a public IP to sidecar EC2 instances | `bool` | `false` | no |
 | <a name="input_client_id"></a> [client\_id](#input\_client\_id) | The client id assigned to the sidecar | `string` | n/a | yes |
 | <a name="input_client_secret"></a> [client\_secret](#input\_client\_secret) | The client secret assigned to the sidecar | `string` | n/a | yes |
+| <a name="input_cloudwatch_log_group_name"></a> [cloudwatch\_log\_group\_name](#input\_cloudwatch\_log\_group\_name) | (Optional) Cloudwatch log group name. | `string` | `""` | no |
 | <a name="input_cloudwatch_logs_retention"></a> [cloudwatch\_logs\_retention](#input\_cloudwatch\_logs\_retention) | Cloudwatch logs retention in days | `number` | `14` | no |
 | <a name="input_container_registry"></a> [container\_registry](#input\_container\_registry) | Address of the container registry where Cyral images are stored | `string` | n/a | yes |
 | <a name="input_container_registry_key"></a> [container\_registry\_key](#input\_container\_registry\_key) | Key provided by Cyral for authenticating on Cyral's container registry | `string` | `""` | no |
