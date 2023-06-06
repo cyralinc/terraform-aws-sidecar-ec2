@@ -28,7 +28,17 @@ variable "asg_desired" {
 variable "asg_max" {
   description = "The maximum number of hosts to create in the auto scaling group"
   type        = number
-  default     = 2
+  default     = 3
+}
+
+variable "asg_min_healthy_percentage" {
+  description = "The minimum percentage of healthy instances during an ASG refresh"
+  type        = number
+  default     = 100
+  validation {
+    condition     = (var.asg_min_healthy_percentage >= 0) && (var.asg_min_healthy_percentage <= 100)
+    error_message = "The minimum healthy percentage must be between `0` and `100`"
+  }
 }
 
 variable "enable_cross_zone_load_balancing" {
@@ -185,8 +195,8 @@ variable "cloudwatch_logs_retention" {
   description = "Cloudwatch logs retention in days"
   type        = number
   default     = 14
-  #  validation {
-  #    condition     = contains([1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653], var.cloudwatch_logs_retention)
-  #    error_message = "Valid values are: [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]."
-  #  }
+  validation {
+    condition     = contains([1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653], var.cloudwatch_logs_retention)
+    error_message = "Valid values are: [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]."
+  }
 }

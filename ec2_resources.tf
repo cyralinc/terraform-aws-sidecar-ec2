@@ -96,6 +96,13 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
   lifecycle {
     create_before_destroy = false
   }
+
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = var.asg_min_healthy_percentage
+    }
+  }
 }
 
 resource "aws_security_group" "instance" {
