@@ -100,7 +100,7 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
   instance_refresh {
     strategy = "Rolling"
     preferences {
-      min_healthy_percentage = 50
+      min_healthy_percentage = var.asg_min_healthy_percentage
     }
   }
 }
