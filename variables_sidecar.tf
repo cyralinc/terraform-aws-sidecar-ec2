@@ -1,6 +1,10 @@
 variable "container_registry" {
   description = "Address of the container registry where Cyral images are stored"
   type        = string
+  validation {
+    condition     = length(var.container_registry) > 0
+    error_message = "The container registry must not be empty"
+  }
 }
 
 variable "container_registry_username" {
@@ -13,8 +17,7 @@ variable "container_registry_key" {
   description = "Key provided by Cyral for authenticating on Cyral's container registry"
   type        = string
   default     = ""
-  # Only compatible with Terraform >=0.14
-  #sensitive   = true
+  sensitive   = true
 }
 
 variable "client_id" {
@@ -25,8 +28,7 @@ variable "client_id" {
 variable "client_secret" {
   description = "The client secret assigned to the sidecar"
   type        = string
-  # Only compatible with Terraform >=0.14
-  #sensitive   = true
+  sensitive   = true
 }
 
 variable "control_plane" {
