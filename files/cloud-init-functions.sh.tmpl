@@ -49,7 +49,7 @@ function extract_key_from_json_input() {
   # Values can be PEM strings or base64-encoded PEM strings.
   jq -r '
     (if has("key") then .key else ."tls.key" end) as $key |
-    if ($key | startswith("-----BEGIN")) then $key else ($key | @base64d) end
+    if ($key | startswith("-----BEGIN")) then $key else ($key | gsub("\\s+"; "") | @base64d) end
   '
 }
 
@@ -58,7 +58,7 @@ function extract_cert_from_json_input() {
   # Values can be PEM strings or base64-encoded PEM strings.
   jq -r '
     (if has("cert") then .cert else ."tls.crt" end) as $cert |
-    if ($cert | startswith("-----BEGIN")) then $cert else ($cert | @base64d) end
+    if ($cert | startswith("-----BEGIN")) then $cert else ($cert | gsub("\\s+"; "") | @base64d) end
   '
 }
 
