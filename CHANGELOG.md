@@ -2,8 +2,8 @@
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
 
-Health checks and metrics were merged into a single monitoring port starting in sidecar `v4.7.0`. In this sense, the change required a major release for this module.
-We used this major release to also clean up deprecated variables since the transition to control plane `v4`. The list of removed and added parameters is as follows:
+Health checks and metrics were merged into a single monitoring port starting in sidecar `v4.7.0`. Due to this, we have opted to release a new major version
+and also uset it to clean up deprecated variables since the transition to control plane `v4`. The list of removed and added parameters is as follows:
 
 New input parameters:
 
