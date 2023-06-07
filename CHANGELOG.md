@@ -1,3 +1,14 @@
+## 4.0.1 (June 7, 2023)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Bug fixes:
+
+* Fix TLS secret decoding when base64 has spaces ([#69](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/69))
+* Fix missing base64d in jq ([#70](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/70))
+
 ## 4.0.0 (June 6, 2023)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
@@ -37,6 +48,7 @@ Removed input parameters:
 - `sumologic_uri` -- no longer used. Retrieved from the control plane when sidecar is running.
 
 ### Features:
+
 * Add automatic ASG refresh and validations ([#67](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/67))
 * ENG-10585: Add TF param for IMDS token and clean up IMDS usage ([#54](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/54))
 * ENG-11072: Add certificate generation to sidecar templates ([#61](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/61))
