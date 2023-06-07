@@ -8,27 +8,27 @@ provider "aws" {
 }
 
 module "cyral_sidecar" {
-    source  = "cyralinc/sidecar-ec2/aws"  
-    version = "~> 4.0" # terraform module version
+  source  = "cyralinc/sidecar-ec2/aws"  
+  version = "~> 4.0" # terraform module version
 
-    sidecar_version = ""
-    sidecar_id      = ""
+  sidecar_version = ""
+  sidecar_id      = ""
 
-    control_plane = ""
+  control_plane = ""
 
-    # Considering MongoDB ports are from the range 27017 to 27021
-    sidecar_ports = [443, 3306, 5432, 27017, 27018, 27019, 27020, 27021]
+  # Considering MongoDB ports are from the range 27017 to 27021
+  sidecar_ports = [443, 3306, 5432, 27017, 27018, 27019, 27020, 27021]
 
-    vpc_id  = ""
-    subnets = [""]
+  vpc_id  = ""
+  subnets = [""]
 
-    ssh_inbound_cidr         = ["0.0.0.0/0"]
-    db_inbound_cidr          = ["0.0.0.0/0"]
-    monitoring_inbound_cidr = ["0.0.0.0/0"]
+  ssh_inbound_cidr        = ["0.0.0.0/0"]
+  db_inbound_cidr         = ["0.0.0.0/0"]
+  monitoring_inbound_cidr = ["0.0.0.0/0"]
 
-    container_registry = ""
-    client_id          = ""
-    client_secret      = ""
+  container_registry = ""
+  client_id          = ""
+  client_secret      = ""
 }
 ```
 **Note:**
