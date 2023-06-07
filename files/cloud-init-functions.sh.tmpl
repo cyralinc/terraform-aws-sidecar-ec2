@@ -45,20 +45,22 @@ function retry() {
 }
 
 function extract_key_from_json_input() {
-  # Both key and tls.key are valid JSON keys for private keys.
-  # Values can be PEM strings or base64-encoded PEM strings.
+  # Both cert and tls.crt are valid JSON keys for certificates.
+  # certificate-manager expects base64-encoded PEM.
+  # If the value is a raw PEM string, we encoded it in base64.
   jq -r '
     (if has("key") then .key else ."tls.key" end) as $key |
-    if ($key | startswith("-----BEGIN")) then $key else ($key | gsub("\\s+"; "") | @base64d) end
+    if ($key | startswith("-----BEGIN")) then ($key | @base64) else ($key | gsub("\\s+"; "")) end
   '
 }
 
 function extract_cert_from_json_input() {
   # Both cert and tls.crt are valid JSON keys for certificates.
-  # Values can be PEM strings or base64-encoded PEM strings.
+  # certificate-manager expects base64-encoded PEM.
+  # If the value is a raw PEM string, we encoded it in base64.
   jq -r '
     (if has("cert") then .cert else ."tls.crt" end) as $cert |
-    if ($cert | startswith("-----BEGIN")) then $cert else ($cert | gsub("\\s+"; "") | @base64d) end
+    if ($cert | startswith("-----BEGIN")) then ($cert | @base64) else ($cert | gsub("\\s+"; "")) end
   '
 }
 
@@ -95,10 +97,10 @@ function load_certs() {
     sidecar_ca_cert_secret_value=$(
         get_secret_value "${sidecar_ca_certificate_secret_arn}" "${sidecar_ca_certificate_role_arn}"
     )
-    SIDECAR_TLS_KEY=$(echo "$sidecar_tls_cert_secret_value" | extract_key_from_json_input | base64 -w 0)
-    SIDECAR_TLS_CERT=$(echo "$sidecar_tls_cert_secret_value" | extract_cert_from_json_input | base64 -w 0)
-    SIDECAR_CA_KEY=$(echo "$sidecar_ca_cert_secret_value" | extract_key_from_json_input | base64 -w 0)
-    SIDECAR_CA_CERT=$(echo "$sidecar_ca_cert_secret_value" | extract_cert_from_json_input | base64 -w 0)
+    SIDECAR_TLS_KEY=$(echo "$sidecar_tls_cert_secret_value" | extract_key_from_json_input)
+    SIDECAR_TLS_CERT=$(echo "$sidecar_tls_cert_secret_value" | extract_cert_from_json_input)
+    SIDECAR_CA_KEY=$(echo "$sidecar_ca_cert_secret_value" | extract_key_from_json_input)
+    SIDECAR_CA_CERT=$(echo "$sidecar_ca_cert_secret_value" | extract_cert_from_json_input)
 }
 
 function load_idp_certs() {
