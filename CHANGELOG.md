@@ -1,3 +1,13 @@
+## 4.0.2 (June 29, 2023)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Features:
+
+* ENG-12055: Remove old variables ([#71](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/71))
+
 ## 4.0.1 (June 7, 2023)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
