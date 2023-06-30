@@ -86,6 +86,8 @@ function get_secret(){
         echo "Error: $secret"
         exit 1
     fi
+    SIDECAR_CLIENT_ID=$(echo "$secret" | jq -r .clientId)
+    SIDECAR_CLIENT_SECRET=$(echo "$secret" | jq -r .clientSecret)
 }
 
 function load_certs() {
@@ -124,10 +126,8 @@ function update_nginx_resolver(){
 
 function get_token () {
     echo "Getting Control Plane Token using port $1..."
-    local sidecar_client_id=$(echo "$secret" | jq -r .clientId)
-    local sidecar_client_secret=$(echo "$secret" | jq -r .clientSecret)
     local url_token="https://${controlplane_host}:$1/v1/users/oidc/token"
-    token=$(curl --no-progress-meter --fail-with-body --request POST "$url_token" -d grant_type=client_credentials -d client_id="$${sidecar_client_id}" -d client_secret="$${sidecar_client_secret}" 2>&1)
+    token=$(curl --no-progress-meter --fail-with-body --request POST "$url_token" -d grant_type=client_credentials -d client_id="$${SIDECAR_CLIENT_ID}" -d client_secret="$${SIDECAR_CLIENT_SECRET}" 2>&1)
     token_error=$(echo $?)
 }
 
