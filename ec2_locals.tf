@@ -12,8 +12,6 @@ locals {
     ) : (
     length(aws_route53_record.cyral-sidecar-dns-record) == 1 ? aws_route53_record.cyral-sidecar-dns-record[0].fqdn : aws_lb.cyral-lb.dns_name
   )
-  protocol                  = var.external_tls_type == "no-tls" ? "http" : "https"
-  curl                      = var.external_tls_type == "tls-skip-verify" ? "curl -k" : "curl"
   name_prefix               = var.name_prefix == "" ? "cyral-${substr(lower(var.sidecar_id), -6, -1)}" : var.name_prefix
   cloudwatch_log_group_name = var.cloudwatch_log_group_name == "" ? local.name_prefix : var.cloudwatch_log_group_name
 
@@ -37,8 +35,6 @@ locals {
     hc_vault_integration_id               = var.hc_vault_integration_id
     sidecar_created_certificate_secret_id = aws_secretsmanager_secret.sidecar_created_certificate.arn
     load_balancer_tls_ports               = join(",", var.load_balancer_tls_ports)
-    protocol                              = local.protocol
-    curl                                  = local.curl
     sidecar_version                       = var.sidecar_version
     repositories_supported                = join(",", var.repositories_supported)
     cloudwatch_log_group_name             = local.cloudwatch_log_group_name
