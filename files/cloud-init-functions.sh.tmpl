@@ -126,7 +126,7 @@ function get_token () {
     echo "Getting Control Plane Token using port $1..."
     local sidecar_client_id=$(echo "$secret" | jq -r .clientId)
     local sidecar_client_secret=$(echo "$secret" | jq -r .clientSecret)
-    local url_token="${protocol}://${controlplane_host}:$1/v1/users/oidc/token"
+    local url_token="https://${controlplane_host}:$1/v1/users/oidc/token"
     token=$(curl --no-progress-meter --fail-with-body --request POST "$url_token" -d grant_type=client_credentials -d client_id="$${sidecar_client_id}" -d client_secret="$${sidecar_client_secret}" 2>&1)
     token_error=$(echo $?)
 }
@@ -146,7 +146,7 @@ function download_sidecar () {
         fi
     fi
     access_token=$(echo "$token" | jq -r .access_token)
-    url="${protocol}://${controlplane_host}/deploy/docker-compose?TemplateVersion=${sidecar_version}&TemplateType=terraform&LogIntegration=${log_integration}&MetricsIntegration=${metrics_integration}&HCVaultIntegrationID=${hc_vault_integration_id}&WiresEnabled=${repositories_supported}"
+    url="https://${controlplane_host}/deploy/docker-compose?TemplateVersion=${sidecar_version}&TemplateType=terraform&LogIntegration=${log_integration}&MetricsIntegration=${metrics_integration}&HCVaultIntegrationID=${hc_vault_integration_id}&WiresEnabled=${repositories_supported}"
     echo "Trying to download the sidecar template from: $url"
     if ! curl -fsS --no-progress-meter -o /home/ec2-user/sidecar.compose.yaml -L "$url" -H "Authorization: Bearer $access_token"; then
         echo "Unable to download compose file for version ${sidecar_version}, please make sure all parameters are correct"
