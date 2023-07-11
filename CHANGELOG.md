@@ -1,3 +1,13 @@
+## 4.1.0 (July 11, 2023)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Features:
+
+* Break out compose install ([#72](https://github.com/cyralinc/terraform-cyral-sidecar-aws/pull/72))
+
 ## 4.0.2 (June 29, 2023)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
