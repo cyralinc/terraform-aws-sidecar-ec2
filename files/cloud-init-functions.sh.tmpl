@@ -4,13 +4,16 @@ function package_install(){
     yum install -y aws-cfn-bootstrap wget ec2-instance-connect docker jq
 }
 
-function docker_setup(){
-    echo "Configuring Docker..."
-    sudo usermod -a -G docker ec2-user
+function docker_compose_install(){
     # Compose Setup
     sudo mkdir -p /usr/local/lib/docker/cli-plugins/
     sudo curl -SsfL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
     sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+}
+
+function docker_setup(){
+    echo "Configuring Docker..."
+    sudo usermod -a -G docker ec2-user
     # Configure fd limit for ec2 instance and containers
     sudo bash -c 'cat > /etc/security/limits.d/fdlimit.conf' << EOF
 *       soft  nofile  65535
