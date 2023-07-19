@@ -12,6 +12,7 @@ locals {
     ) : (
     length(aws_route53_record.cyral-sidecar-dns-record) == 1 ? aws_route53_record.cyral-sidecar-dns-record[0].fqdn : aws_lb.cyral-lb.dns_name
   )
+  curl                      = var.tls_skip_verify ? "curl -k" : "curl"
   name_prefix               = var.name_prefix == "" ? "cyral-${substr(lower(var.sidecar_id), -6, -1)}" : var.name_prefix
   cloudwatch_log_group_name = var.cloudwatch_log_group_name == "" ? local.name_prefix : var.cloudwatch_log_group_name
 
@@ -21,6 +22,7 @@ locals {
     controlplane_host                     = var.control_plane
     container_registry                    = var.container_registry
     container_registry_username           = var.container_registry_username
+    curl                                  = local.curl
     sidecar_endpoint                      = local.sidecar_endpoint
     dd_api_key                            = var.dd_api_key
     aws_region                            = local.aws_region
