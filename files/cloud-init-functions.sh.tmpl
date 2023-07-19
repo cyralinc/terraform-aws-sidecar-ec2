@@ -7,7 +7,7 @@ function package_install(){
 function docker_compose_install(){
     # Compose Setup
     sudo mkdir -p /usr/local/lib/docker/cli-plugins/
-    sudo curl -SsfL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+    sudo ${curl} -SsfL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
     sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 }
 
@@ -116,8 +116,8 @@ function load_idp_certs() {
 
 function fetch_hostname() {
     echo "Fetching public hostname..."
-    INSTANCE_ID=$(curl -sf -H "X-aws-ec2-metadata-token: $( \
-        curl -sf -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" \
+    INSTANCE_ID=$(${curl} -sf -H "X-aws-ec2-metadata-token: $( \
+        ${curl} -sf -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" \
         )" http://169.254.169.254/latest/meta-data/instance-id || echo "$HOSTNAME")
     echo "Setting INSTANCE_ID to '$INSTANCE_ID'"
 }
@@ -130,7 +130,7 @@ function update_nginx_resolver(){
 function get_token () {
     echo "Getting Control Plane Token using port $1..."
     local url_token="https://${controlplane_host}:$1/v1/users/oidc/token"
-    token=$(curl --no-progress-meter --fail-with-body --request POST "$url_token" -d grant_type=client_credentials -d client_id="$${SIDECAR_CLIENT_ID}" -d client_secret="$${SIDECAR_CLIENT_SECRET}" 2>&1)
+    token=$(${curl} --no-progress-meter --fail-with-body --request POST "$url_token" -d grant_type=client_credentials -d client_id="$${SIDECAR_CLIENT_ID}" -d client_secret="$${SIDECAR_CLIENT_SECRET}" 2>&1)
     token_error=$(echo $?)
 }
 
@@ -151,7 +151,7 @@ function download_sidecar () {
     access_token=$(echo "$token" | jq -r .access_token)
     url="https://${controlplane_host}/deploy/docker-compose?TemplateVersion=${sidecar_version}&TemplateType=terraform&LogIntegration=${log_integration}&MetricsIntegration=${metrics_integration}&HCVaultIntegrationID=${hc_vault_integration_id}&WiresEnabled=${repositories_supported}"
     echo "Trying to download the sidecar template from: $url"
-    if ! curl -fsS --no-progress-meter -o /home/ec2-user/sidecar.compose.yaml -L "$url" -H "Authorization: Bearer $access_token"; then
+    if ! ${curl} -fsS --no-progress-meter -o /home/ec2-user/sidecar.compose.yaml -L "$url" -H "Authorization: Bearer $access_token"; then
         echo "Unable to download compose file for version ${sidecar_version}, please make sure all parameters are correct"
         return 1
     fi
