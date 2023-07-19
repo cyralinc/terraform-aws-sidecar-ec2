@@ -161,7 +161,7 @@ variable "cloudwatch_log_group_name" {
 }
 
 variable "tls_skip_verify" {
-  description = "(Optional) Skip TLS verification when communicating with the control plane"
+  description = "(Optional) Skip TLS verification for HTTPS communication with the control plane and during sidecar initialization"
   type        = bool
   default     = false
 }
