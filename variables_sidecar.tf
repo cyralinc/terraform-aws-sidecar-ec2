@@ -165,3 +165,9 @@ variable "tls_skip_verify" {
   type        = bool
   default     = false
 }
+
+variable "recycle_enabled" {
+  description = "(Optional) Enable the recycle feature"
+  type        = bool
+  default     = true
+}
