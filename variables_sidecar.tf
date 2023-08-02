@@ -151,7 +151,7 @@ variable "sidecar_ports" {
 variable "metrics_port" {
   description = "Port which will respond with metrics on the sidecar"
   type        = number
-  default     = 9000
+  default     = 8888
 }
 
 variable "sidecar_version" {
@@ -169,4 +169,40 @@ variable "custom_user_data" {
   description = "Ancillary consumer supplied user-data script. Bash scripts must be added to a map as a value of the key `pre` and/or `post` denoting execution order with respect to sidecar installation. (Approx Input Size = 19KB)"
   type        = map(any)
   default     = { "pre" = "", "post" = "" }
+}
+
+variable "sidecar_tls_certificate_secret_arn" {
+  description = "(Optional) ARN of secret in AWS Secrets Manager that contains a certificate to terminate TLS connections."
+  type        = string
+  default     = ""
+}
+
+variable "sidecar_tls_certificate_role_arn" {
+  description = "(Optional) ARN of an AWS IAM Role to assume when reading the TLS certificate."
+  type        = string
+  default     = ""
+}
+
+variable "sidecar_ca_certificate_secret_arn" {
+  description = "(Optional) ARN of secret in AWS Secrets Manager that contains a CA certificate to sign sidecar-generated certs."
+  type        = string
+  default     = ""
+}
+
+variable "sidecar_ca_certificate_role_arn" {
+  description = "(Optional) ARN of an AWS IAM Role to assume when reading the CA certificate."
+  type        = string
+  default     = ""
+}
+
+variable "sidecar_custom_host_role" {
+  description = "(Optional) Name of an AWS IAM Role to attach to the EC2 instance profile."
+  type        = string
+  default     = ""
+}
+
+variable "cloudwatch_log_group_name" {
+  description = "(Optional) Cloudwatch log group name."
+  type        = string
+  default     = ""
 }
