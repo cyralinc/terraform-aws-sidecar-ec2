@@ -57,8 +57,8 @@ resource "aws_lambda_function" "self_signed_certificate" {
   description      = "Generates certificates for the sidecar when needed"
   role             = aws_iam_role.self_signed_certificate.arn
   runtime          = "python3.10"
-  filename         = data.archive_file.self_signed_certificate_lambda.output_path
-  source_code_hash = data.archive_file.self_signed_certificate_lambda.output_base64sha256
+  filename         = "${path.module}/files/self-signed-certificate-lambda.zip"
+  source_code_hash = "MzU1OGU5ODY5ZjIyNTEyODQ0N2JlZTdmNmJjYjZmMTY5MmRlNzA1Nw=="
   handler          = "index.handler"
   layers = [
     "arn:aws:lambda:${local.aws_region}:155826672581:layer:pyopenssl:1"
