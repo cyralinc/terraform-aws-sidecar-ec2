@@ -8,6 +8,8 @@ jobs:
     name: Check
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Check zip file
         run: |
           zip_sha=$(sha256sum files/self-signed-certificate-lambda.zip | awk '{print $1}')
