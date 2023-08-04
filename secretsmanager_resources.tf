@@ -46,19 +46,13 @@ resource "aws_secretsmanager_secret" "sidecar_custom_certificate" {
   kms_key_id              = var.secrets_kms_arn
 }
 
-data "archive_file" "self_signed_certificate_lambda" {
-  type        = "zip"
-  source_dir  = "${path.module}/files/self-signed-certificate-lambda"
-  output_path = "${path.module}/files/self-signed-certificate-lambda.zip"
-}
-
 resource "aws_lambda_function" "self_signed_certificate" {
   function_name    = "${local.name_prefix}-self_signed_certificate"
   description      = "Generates certificates for the sidecar when needed"
   role             = aws_iam_role.self_signed_certificate.arn
   runtime          = "python3.10"
-  filename         = data.archive_file.self_signed_certificate_lambda.output_path
-  source_code_hash = data.archive_file.self_signed_certificate_lambda.output_base64sha256
+  filename         = "${path.module}/files/self-signed-certificate-lambda.zip"
+  source_code_hash = file("${path.module}/files/lambda_zip_code_hash.txt")
   handler          = "index.handler"
   layers = [
     "arn:aws:lambda:${local.aws_region}:155826672581:layer:pyopenssl:1"
