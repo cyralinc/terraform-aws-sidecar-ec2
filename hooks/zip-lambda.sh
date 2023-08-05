@@ -1,13 +1,15 @@
 #!/bin/bash
 
-folder_to_zip="self-signed-certificate-lambda"
+file_to_zip="index.py"
 zip_file="self-signed-certificate-lambda.zip"
 hash_file="self-signed-certificate-lambda-hash.txt"
 
-cd "files"
+cd files/self-signed-certificate-lambda
 
 # create zip in specified path
-zip -r "$zip_file" "$folder_to_zip"
+zip "../$zip_file" "$file_to_zip"
+
+cd ..
 
 # calculate sha256 from zip file
 lambda_zip_code_hash=$(sha256sum "$zip_file" | awk '{print $1}')
