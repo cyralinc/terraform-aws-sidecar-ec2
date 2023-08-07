@@ -4,7 +4,7 @@ file_to_zip="index.py"
 zip_file="self-signed-certificate-lambda.zip"
 hash_file="self-signed-certificate-lambda-hash.txt"
 
-cd files/self-signed-certificate-lambda
+cd files/self-signed-certificate-lambda || exit
 
 # create zip in specified path
 zip "../$zip_file" "$file_to_zip"
@@ -18,7 +18,7 @@ lambda_zip_code_hash=$(sha256sum "$zip_file" | awk '{print $1}')
 echo "$lambda_zip_code_hash" > "$hash_file"
 
 # if hash changed, then zip changed too
-if [[ `git status --porcelain "$hash_file"` ]]; then
+if [[ $(git status --porcelain "$hash_file") ]]; then
     # add and commit changes
     git add $hash_file
     git add $zip_file
