@@ -120,8 +120,16 @@ variable "repositories_supported" {
 
 variable "custom_user_data" {
   description = "Ancillary consumer supplied user-data script. Bash scripts must be added to a map as a value of the key `pre`, `pre_sidecar_start`, `post` denoting execution order with respect to sidecar installation. (Approx Input Size = 19KB)"
-  type        = map(any)
-  default     = { "pre" = "", "pre_sidecar_start" = "", "post" = "" }
+  type = object({
+    pre               = string
+    pre_sidecar_start = string
+    post              = string
+  })
+  default = {
+    pre               = ""
+    pre_sidecar_start = ""
+    post              = ""
+  }
 }
 
 variable "sidecar_tls_certificate_secret_arn" {
