@@ -9,6 +9,3 @@ terraform.tfstate*
 
 # JetBrains
 .idea
-
-# lambda package
-files/*.zip
