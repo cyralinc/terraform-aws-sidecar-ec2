@@ -52,7 +52,7 @@ resource "aws_lambda_function" "self_signed_certificate" {
   role             = aws_iam_role.self_signed_certificate.arn
   runtime          = "python3.10"
   filename         = "${path.module}/files/self-signed-certificate-lambda.zip"
-  source_code_hash = file("${path.module}/files/self-signed-certificate-lambda-hash.txt")
+  source_code_hash = filebase64sha256("${path.module}/files/self-signed-certificate-lambda.zip")
   handler          = "index.handler"
   layers = [
     "arn:aws:lambda:${local.aws_region}:155826672581:layer:pyopenssl:1"

@@ -6,3 +6,4 @@ repos:
         entry: ./hooks/zip-lambda.sh
         language: script
         stages: [pre-commit]
+        files: files/self-signed-certificate-lambda/index.py
