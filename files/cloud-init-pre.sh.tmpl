@@ -14,6 +14,7 @@ retry download_sidecar
 echo "Initializing environment variables..."
 cat > /home/ec2-user/.env << EOF
 SIDECAR_ID=${sidecar_id}
+SIDECAR_VERSION=${sidecar_version}
 CONTROLPLANE_HOST=${controlplane_host}
 CONTAINER_REGISTRY=${container_registry}
 SECRETS_LOCATION=${secrets_location}

@@ -3,7 +3,7 @@
 ################################
 
 variable "dd_api_key" {
-  description = "API key to connect to DataDog"
+  description = "(Deprecated - unused in sidecars v4.10+) API key to connect to DataDog"
   type        = string
   default     = ""
 }
@@ -47,7 +47,7 @@ variable "sidecar_private_idp_key" {
 ################################
 
 variable "hc_vault_integration_id" {
-  description = "HashiCorp Vault integration ID"
+  description = "(Deprecated - unused in sidecars v4.10+) HashiCorp Vault integration ID"
   type        = string
   default     = ""
 }

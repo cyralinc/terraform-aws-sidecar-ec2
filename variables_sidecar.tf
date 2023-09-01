@@ -49,7 +49,7 @@ variable "log_integration" {
 }
 
 variable "metrics_integration" {
-  description = "Metrics destination"
+  description = "(Deprecated - unused in sidecars v4.10+) Metrics destination"
   type        = string
   default     = ""
 }
@@ -113,7 +113,7 @@ variable "sidecar_version" {
 }
 
 variable "repositories_supported" {
-  description = "List of all repositories that will be supported by the sidecar (lower case only)"
+  description = "(Deprecated - unused in sidecars v4.10+) List of all repositories that will be supported by the sidecar (lower case only)"
   type        = list(string)
   default     = ["denodo", "dremio", "dynamodb", "mongodb", "mysql", "oracle", "postgresql", "redshift", "snowflake", "sqlserver", "s3"]
 }
