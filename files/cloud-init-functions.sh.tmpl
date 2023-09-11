@@ -6,7 +6,7 @@ function package_install(){
 
 function docker_compose_install(){
     # Compose Setup
-    if [[ ${UseSingleContainer} == "true" ]]; then
+    if [[ ${use_single_container} == "true" ]]; then
         echo "Skipping Docker Compose Install, not required for single container"
     else
         sudo mkdir -p /usr/local/lib/docker/cli-plugins/
@@ -139,7 +139,7 @@ function get_token () {
 }
 
 function download_sidecar () {
-    if [[ ${UseSingleContainer} == "true" ]]; then
+    if [[ ${use_single_container} == "true" ]]; then
         echo "Skipping Download Sidecar Compose File, not required for single container"
     else
         local access_token url
@@ -203,7 +203,7 @@ function launch_single_container () {
 function launch () {
     echo "Starting sidecar..."
     cd /home/ec2-user
-    if [[ ${UseSingleContainer} == "true" ]]; then
+    if [[ ${use_single_container} == "true" ]]; then
         launch_single_container
     else
         retry docker compose -f sidecar.compose.yaml pull -q
