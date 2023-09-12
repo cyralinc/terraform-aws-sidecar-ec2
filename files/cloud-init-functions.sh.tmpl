@@ -156,10 +156,10 @@ function download_sidecar () {
             fi
         fi
         access_token=$(echo "$token" | jq -r .access_token)
-        url="https://${ControlPlane}/deploy/docker-compose?LogIntegration=@[.logIntegration]"
+        url="https://${controlplane_host}/deploy/docker-compose?TemplateVersion=${sidecar_version}&TemplateType=terraform&LogIntegration=${log_integration}&MetricsIntegration=${metrics_integration}&HCVaultIntegrationID=${hc_vault_integration_id}&WiresEnabled=${repositories_supported}"
         echo "Trying to download the sidecar template from: $url"
-        if ! ${curl} -fsS --no-progress-meter -o /home/ec2-user/sidecar.compose.yaml -L "$url" -H "Authorization: Bearer $access_token" ; then
-            echo "Unable to download compose file for version ${SidecarVersion}, please make sure all parameters are correct"
+        if ! ${curl} -fsS --no-progress-meter -o /home/ec2-user/sidecar.compose.yaml -L "$url" -H "Authorization: Bearer $access_token"; then
+            echo "Unable to download compose file for version ${sidecar_version}, please make sure all parameters are correct"
             return 1
         fi
     fi
@@ -192,7 +192,7 @@ containerCheck() {
 }
 
 function launch_single_container () {
-    SINGLE_CONTAINER_IMAGE=${ContainerRegistry}/cyral-sidecar:${SidecarVersion}
+    SINGLE_CONTAINER_IMAGE=${container_registry}/cyral-sidecar:${sidecar_version}
     retry docker pull $SINGLE_CONTAINER_IMAGE
     retry docker run -d --name sidecar --network=host --log-driver=local --log-opt max-size=500m --restart=unless-stopped --env-file .env $SINGLE_CONTAINER_IMAGE
     if ! containerCheck "sidecar"; then
