@@ -2,14 +2,22 @@
 mkdir -p /home/ec2-user/cyral/
 package_install
 docker_setup
-docker_compose_install
+if [[ ${use_single_container} == "true" ]]; then
+    echo "Skipping Docker Compose Install, not required for single container"
+else
+    docker_compose_install
+fi
 fetch_hostname
 update_nginx_resolver
 get_secret
 load_certs
 load_idp_certs
 registry_login
-retry download_sidecar
+if [[ ${use_single_container} == "true" ]]; then
+    echo "Skipping Download Sidecar Compose File, not required for single container"
+else
+    retry download_sidecar
+fi
 
 echo "Initializing environment variables..."
 cat > /home/ec2-user/.env << EOF

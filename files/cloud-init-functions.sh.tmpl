@@ -6,13 +6,9 @@ function package_install(){
 
 function docker_compose_install(){
     # Compose Setup
-    if [[ ${use_single_container} == "true" ]]; then
-        echo "Skipping Docker Compose Install, not required for single container"
-    else
-        sudo mkdir -p /usr/local/lib/docker/cli-plugins/
-        sudo ${curl} -SsfL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
-        sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-    fi
+    sudo mkdir -p /usr/local/lib/docker/cli-plugins/
+    sudo ${curl} -SsfL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+    sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 }
 
 function docker_setup(){
@@ -139,29 +135,25 @@ function get_token () {
 }
 
 function download_sidecar () {
-    if [[ ${use_single_container} == "true" ]]; then
-        echo "Skipping Download Sidecar Compose File, not required for single container"
-    else
-        local access_token url
-        echo "Downloading Sidecar Compose File..."
-        get_token "443"
+    local access_token url
+    echo "Downloading Sidecar Compose File..."
+    get_token "443"
+    if [[ $token_error -ne 0 ]]; then
+        error_443="$token"
+        get_token "8000"
         if [[ $token_error -ne 0 ]]; then
-            error_443="$token"
-            get_token "8000"
-            if [[ $token_error -ne 0 ]]; then
-                echo "Unable to retrieve token!!"
-                echo "Attempt on 443: $error_443"
-                echo "Attempt on 8000: $token"        
-                return 1
-            fi
-        fi
-        access_token=$(echo "$token" | jq -r .access_token)
-        url="https://${controlplane_host}/deploy/docker-compose?TemplateVersion=${sidecar_version}&TemplateType=terraform&LogIntegration=${log_integration}&MetricsIntegration=${metrics_integration}&HCVaultIntegrationID=${hc_vault_integration_id}&WiresEnabled=${repositories_supported}"
-        echo "Trying to download the sidecar template from: $url"
-        if ! ${curl} -fsS --no-progress-meter -o /home/ec2-user/sidecar.compose.yaml -L "$url" -H "Authorization: Bearer $access_token"; then
-            echo "Unable to download compose file for version ${sidecar_version}, please make sure all parameters are correct"
+            echo "Unable to retrieve token!!"
+            echo "Attempt on 443: $error_443"
+            echo "Attempt on 8000: $token"        
             return 1
         fi
+    fi
+    access_token=$(echo "$token" | jq -r .access_token)
+    url="https://${controlplane_host}/deploy/docker-compose?TemplateVersion=${sidecar_version}&TemplateType=terraform&LogIntegration=${log_integration}&MetricsIntegration=${metrics_integration}&HCVaultIntegrationID=${hc_vault_integration_id}&WiresEnabled=${repositories_supported}"
+    echo "Trying to download the sidecar template from: $url"
+    if ! ${curl} -fsS --no-progress-meter -o /home/ec2-user/sidecar.compose.yaml -L "$url" -H "Authorization: Bearer $access_token"; then
+        echo "Unable to download compose file for version ${sidecar_version}, please make sure all parameters are correct"
+        return 1
     fi
     return 0
 }
@@ -180,31 +172,30 @@ function registry_login () {
     fi
 }
 
-containerCheck() {
-    NEXT_WAIT_TIME=0
-    until [ $NEXT_WAIT_TIME -eq 5 ] || [ "$(eval docker inspect "$1" | jq -r -e '.[].RestartCount')" -ne 0 ]; do
+# Checks if the specified Docker container is running without restarts within 5 seconds
+function containerCheck () {
+    CONTAINER_NAME="$1"
+    WAIT_TIME=0
+    EXPECTED_WAIT_TIME=5
+    until [ $WAIT_TIME -eq $EXPECTED_WAIT_TIME ] || [ "$(eval docker inspect "$CONTAINER_NAME" | jq -r -e '.[].RestartCount')" -ne 0 ]; do
         printf "."
-        (( NEXT_WAIT_TIME++ ))
+        (( WAIT_TIME++ ))
         sleep 1
     done
     echo ""
-    [ "$NEXT_WAIT_TIME" -eq 5 ]
-}
-
-function launch_single_container () {
-    SINGLE_CONTAINER_IMAGE=${container_registry}/cyral-sidecar:${sidecar_version}
-    retry docker pull $SINGLE_CONTAINER_IMAGE
-    retry docker run -d --name sidecar --network=host --log-driver=local --log-opt max-size=500m --restart=unless-stopped --env-file .env $SINGLE_CONTAINER_IMAGE
-    if ! containerCheck "sidecar"; then
-        echo "--> Problem with sidecar! Inspect the logs to diagnose the issue. <--"
-    fi
+    [ "$WAIT_TIME" -eq $EXPECTED_WAIT_TIME ]
 }
 
 function launch () {
     echo "Starting sidecar..."
     cd /home/ec2-user
     if [[ ${use_single_container} == "true" ]]; then
-        launch_single_container
+        SINGLE_CONTAINER_IMAGE=${container_registry}/cyral-sidecar:${sidecar_version}
+        retry docker pull $SINGLE_CONTAINER_IMAGE
+        retry docker run -d --name sidecar --network=host --log-driver=local --log-opt max-size=500m --restart=unless-stopped --env-file .env $SINGLE_CONTAINER_IMAGE
+        if ! containerCheck "sidecar"; then
+            echo "--> Problem with sidecar! Inspect the logs to diagnose the issue. <--"
+        fi
     else
         retry docker compose -f sidecar.compose.yaml pull -q
         retry docker compose -f sidecar.compose.yaml up -d
