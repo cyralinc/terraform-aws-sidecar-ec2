@@ -162,3 +162,9 @@ variable "tls_skip_verify" {
   type        = bool
   default     = false
 }
+
+variable "use_single_container" {
+  description = "(Optional) Use single container for sidecar deployment"
+  type        = bool
+  default     = false
+}

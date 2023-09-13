@@ -172,9 +172,32 @@ function registry_login () {
     fi
 }
 
+# Checks if the specified Docker container is running without restarts within 5 seconds
+function containerCheck () {
+    CONTAINER_NAME="$1"
+    WAIT_TIME=0
+    EXPECTED_WAIT_TIME=5
+    until [ $WAIT_TIME -eq $EXPECTED_WAIT_TIME ] || [ "$(eval docker inspect "$CONTAINER_NAME" | jq -r -e '.[].RestartCount')" -ne 0 ]; do
+        printf "."
+        (( WAIT_TIME++ ))
+        sleep 1
+    done
+    echo ""
+    [ "$WAIT_TIME" -eq $EXPECTED_WAIT_TIME ]
+}
+
 function launch () {
     echo "Starting sidecar..."
     cd /home/ec2-user
-    retry docker compose -f sidecar.compose.yaml pull -q
-    retry docker compose -f sidecar.compose.yaml up -d
+    if [[ ${use_single_container} == "true" ]]; then
+        SINGLE_CONTAINER_IMAGE=${container_registry}/cyral-sidecar:${sidecar_version}
+        retry docker pull -q $SINGLE_CONTAINER_IMAGE
+        retry docker run -d --name sidecar --network=host --log-driver=local --log-opt max-size=500m --restart=unless-stopped --env-file .env $SINGLE_CONTAINER_IMAGE
+        if ! containerCheck "sidecar"; then
+            echo "--> Problem with sidecar! Inspect the logs to diagnose the issue. <--"
+        fi
+    else
+        retry docker compose -f sidecar.compose.yaml pull -q
+        retry docker compose -f sidecar.compose.yaml up -d
+    fi
 }
