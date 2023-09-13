@@ -18,6 +18,47 @@ if [ -z $SIDECAR_VERSION ]; then
     echo "Sidecar version is undefined."
     exit 1
   fi
+
+  # Create custom health check scripts
+  cat << EOF > /home/ec2-user/cyral/healthcheck.sh
+#!/usr/bin/env bash
+token=\$(${curl} -sf -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+instance_id=\$(${curl} -sf -H "X-aws-ec2-metadata-token: \$token" http://169.254.169.254/latest/meta-data/instance-id || echo "\$HOSTNAME")
+health=\$(${curl} -sf -X GET "http://localhost:9000/health")
+if [ \$? -ne 0 ]; then
+  echo "Error getting sidecar health"
+  exit 1
+fi
+recycle_status=\$(echo \$health | jq -r .components.recycle.status)
+if [ \$recycle_status == "degraded" ]; then
+  echo "Sidecar instance has been marked for recycling - setting EC2 health to 'Unhealthy'"
+  aws autoscaling set-instance-health --region ${aws_region} --instance-id \$instance_id --health-status Unhealthy
+fi
+EOF
+
+  cat << EOF > /etc/systemd/system/healthcheck.service
+[Unit]
+Description=Sidecar recycle EC2 health check
+[Service]
+ExecStart=/home/ec2-user/cyral/healthcheck.sh
+EOF
+
+  cat << EOF > /etc/systemd/system/healthcheck.timer
+[Unit]
+Description=Sidecar recycle EC2 health check every 30 sec
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=30
+AccuracySec=1
+[Install]
+WantedBy=timers.target
+EOF
+
+  # Start health check timer
+  chmod +x /home/ec2-user/cyral/healthcheck.sh
+  sudo systemctl enable healthcheck.timer
+  sudo systemctl daemon-reload
+  sudo systemctl start healthcheck.timer
 fi
 
 echo "Sidecar version: $SIDECAR_VERSION"
