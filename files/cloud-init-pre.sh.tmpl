@@ -7,6 +7,10 @@ if [ -z "${sidecar_version}"] then
   echo "Sidecar version is unset - version will be dynamically managed."
   IS_DYNAMIC_VERSION="true"
   get_sidecar_version
+  if [ $? -ne 0 ]; then
+    echo "Error getting sidecar version from Control Plane. Dynamic version support is only enabled for Control Planes >= v4.10"
+    exit 1
+  fi
 fi
 
 echo "Sidecar version: ${SIDECAR_VERSION}"

@@ -108,7 +108,7 @@ variable "sidecar_ports" {
 }
 
 variable "sidecar_version" {
-  description = "(Optional) Version of the sidecar. If unset, the version will be dynamically retrieved from the Control Plane."
+  description = "(Optional, but required for Control Planes < v4.10) The version of the sidecar. If unset and the Control Plane version is >= v4.10, the sidecar version will be dynamically retrieved from the Control Plane, otherwise an error will occur and this value must be provided."
   type        = string
   default     = ""
 }

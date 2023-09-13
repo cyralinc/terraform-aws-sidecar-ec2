@@ -149,6 +149,10 @@ function get_sidecar_version () {
     fi
     local access_token=$(echo "$token" | jq -r .access_token)
     local resp=$(${curl} --no-progress-meter --fail-with-body --request GET "https://${ControlPlane}/v2/sidecars/${SidecarId}" -H "Authorization: Bearer $access_token")
+    if [[ $? -ne 0 ]]; then
+        echo "Cannot determine sidecar version."
+        return 1
+    fi
     SIDECAR_VERSION=$(echo "$resp" | jq -r .sidecar.version)
 }
 
