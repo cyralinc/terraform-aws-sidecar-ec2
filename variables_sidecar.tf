@@ -1,7 +1,7 @@
 variable "container_registry" {
   description = "Address of the container registry where Cyral images are stored"
   type        = string
-  default     = "<PUBLIC_CYRAL_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com"
+  default     = "public.ecr.aws/cyral"
 }
 
 variable "container_registry_username" {
