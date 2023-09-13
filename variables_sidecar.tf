@@ -108,8 +108,9 @@ variable "sidecar_ports" {
 }
 
 variable "sidecar_version" {
-  description = "Version of the sidecar"
+  description = "(Optional) Version of the sidecar. If unset, the version will be dynamically retrieved from the Control Plane."
   type        = string
+  default     = ""
 }
 
 variable "repositories_supported" {

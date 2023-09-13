@@ -134,6 +134,24 @@ function get_token () {
     token_error=$(echo $?)
 }
 
+function get_sidecar_version () {
+    echo "Getting sidecar version from Control Plane..."
+    get_token "443"
+    if [[ $token_error -ne 0 ]]; then
+        error_443="$token"
+        get_token "8000"
+        if [[ $token_error -ne 0 ]]; then
+            echo "Unable to retrieve token!!"
+            echo "Attempt on 443: $error_443"
+            echo "Attempt on 8000: $token"
+            return 1
+        fi
+    fi
+    local access_token=$(echo "$token" | jq -r .access_token)
+    local resp=$(${curl} --no-progress-meter --fail-with-body --request GET "https://${ControlPlane}/v2/sidecars/${SidecarId}" -H "Authorization: Bearer $access_token")
+    SIDECAR_VERSION=$(echo "$resp" | jq -r .sidecar.version)
+}
+
 function download_sidecar () {
     local access_token url
     echo "Downloading Sidecar Compose File..."
@@ -144,7 +162,7 @@ function download_sidecar () {
         if [[ $token_error -ne 0 ]]; then
             echo "Unable to retrieve token!!"
             echo "Attempt on 443: $error_443"
-            echo "Attempt on 8000: $token"        
+            echo "Attempt on 8000: $token"
             return 1
         fi
     fi

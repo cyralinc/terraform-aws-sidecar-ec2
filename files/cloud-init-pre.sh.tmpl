@@ -1,5 +1,16 @@
 
 mkdir -p /home/ec2-user/cyral/
+
+# Get the latest sidecar version from the Control Plane if necessary.
+IS_DYNAMIC_VERSION="false"
+if [ -z "${sidecar_version}"] then
+  echo "Sidecar version is unset - version will be dynamically managed."
+  IS_DYNAMIC_VERSION="true"
+  get_sidecar_version
+fi
+
+echo "Sidecar version: ${SIDECAR_VERSION}"
+
 package_install
 docker_setup
 docker_compose_install
@@ -14,7 +25,9 @@ retry download_sidecar
 echo "Initializing environment variables..."
 cat > /home/ec2-user/.env << EOF
 SIDECAR_ID=${sidecar_id}
-SIDECAR_VERSION=${sidecar_version}
+SIDECAR_VERSION=$SIDECAR_VERSION
+IS_DYNAMIC_VERSION=$IS_DYNAMIC_VERSION
+IS_RECYCLABLE="true"
 CONTROLPLANE_HOST=${controlplane_host}
 CONTAINER_REGISTRY=${container_registry}
 SECRETS_LOCATION=${secrets_location}
