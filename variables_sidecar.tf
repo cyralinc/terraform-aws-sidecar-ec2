@@ -1,10 +1,7 @@
 variable "container_registry" {
   description = "Address of the container registry where Cyral images are stored"
   type        = string
-  validation {
-    condition     = length(var.container_registry) > 0
-    error_message = "The container registry must not be empty"
-  }
+  default     = "public.ecr.aws/cyral"
 }
 
 variable "container_registry_username" {

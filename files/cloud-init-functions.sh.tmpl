@@ -161,7 +161,7 @@ function download_sidecar () {
 function registry_login () {
     echo "Container Registry Login..."
     local key=$(echo "$secret" | jq -r 'select(.containerRegistryKey != null) | .containerRegistryKey' | base64 --decode)
-    if [[ ${container_registry} == *".amazonaws.com"* ]]; then
+    if [[ ${container_registry} == *"aws"* ]]; then
         echo "(login): Logging in to AWS ECR..."
         eval $(aws ecr --no-include-email get-login  --region ${aws_region})
     elif [ -n "$key" ]; then
