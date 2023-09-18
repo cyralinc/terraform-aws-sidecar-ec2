@@ -17,7 +17,8 @@ data "aws_iam_policy_document" "init_script_policy" {
   statement {
     actions = [
       "ec2:DescribeTags",
-      "autoscaling:CompleteLifecycleAction"
+      "autoscaling:CompleteLifecycleAction",
+      "autoscaling:SetInstanceHealth"
     ]
     resources = [
       "*"
