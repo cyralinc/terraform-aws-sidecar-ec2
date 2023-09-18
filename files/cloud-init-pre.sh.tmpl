@@ -2,6 +2,7 @@ mkdir -p /home/ec2-user/cyral/
 
 package_install
 get_secret
+fetch_hostname
 
 # Get the latest sidecar version from the Control Plane if necessary.
 IS_DYNAMIC_VERSION="false"
@@ -22,8 +23,6 @@ if [ -z $SIDECAR_VERSION ]; then
   # Create custom health check scripts
   cat << EOF > /home/ec2-user/cyral/healthcheck.sh
 #!/usr/bin/env bash
-token=\$(${curl} -sf -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-instance_id=\$(${curl} -sf -H "X-aws-ec2-metadata-token: \$token" http://169.254.169.254/latest/meta-data/instance-id || echo "\$HOSTNAME")
 health=\$(${curl} -sf -X GET "http://localhost:9000/health")
 if [ \$? -ne 0 ]; then
   echo "Error getting sidecar health"
@@ -32,7 +31,7 @@ fi
 recycle_status=\$(echo \$health | jq -r .components.recycle.status)
 if [ \$recycle_status == "degraded" ]; then
   echo "Sidecar instance has been marked for recycling - setting EC2 health to 'Unhealthy'"
-  aws autoscaling set-instance-health --region ${aws_region} --instance-id \$instance_id --health-status Unhealthy
+  aws autoscaling set-instance-health --region ${aws_region} --instance-id \$INSTANCE_ID --no-should-respect-grace-period --health-status Unhealthy
 fi
 EOF
 
@@ -40,6 +39,7 @@ EOF
 [Unit]
 Description=Sidecar recycle EC2 health check
 [Service]
+Environment="INSTANCE_ID=$INSTANCE_ID"
 ExecStart=/home/ec2-user/cyral/healthcheck.sh
 EOF
 
@@ -47,8 +47,8 @@ EOF
 [Unit]
 Description=Sidecar recycle EC2 health check every 30 sec
 [Timer]
-OnBootSec=1min
-OnUnitActiveSec=30
+OnBootSec=30
+OnUnitActiveSec=${recycle_healthcheck_interval_sec}
 AccuracySec=1
 [Install]
 WantedBy=timers.target
@@ -69,7 +69,6 @@ if [[ ${use_single_container} == "true" ]]; then
 else
     docker_compose_install
 fi
-fetch_hostname
 update_nginx_resolver
 load_certs
 load_idp_certs
