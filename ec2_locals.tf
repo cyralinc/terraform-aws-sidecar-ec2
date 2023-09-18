@@ -51,10 +51,10 @@ locals {
       var.sidecar_ca_certificate_secret_arn :
       aws_secretsmanager_secret.sidecar_ca_certificate.arn
     )
-    sidecar_ca_certificate_role_arn  = var.sidecar_ca_certificate_role_arn
-    tls_skip_verify                  = var.tls_skip_verify ? "tls-skip-verify" : "tls"
-    use_single_container             = var.use_single_container
-    recycle_healthcheck_interval_sec = var.recycle_healthcheck_interval_sec
+    sidecar_ca_certificate_role_arn   = var.sidecar_ca_certificate_role_arn
+    tls_skip_verify                   = var.tls_skip_verify ? "tls-skip-verify" : "tls"
+    use_single_container              = var.use_single_container
+    recycle_health_check_interval_sec = var.recycle_health_check_interval_sec
   }
 
   cloud_init_func = templatefile("${path.module}/files/cloud-init-functions.sh.tmpl", local.templatevars)

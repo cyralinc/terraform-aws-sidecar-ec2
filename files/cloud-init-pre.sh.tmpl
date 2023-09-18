@@ -48,7 +48,7 @@ EOF
 Description=Sidecar recycle EC2 health check every 30 sec
 [Timer]
 OnBootSec=30
-OnUnitActiveSec=${recycle_healthcheck_interval_sec}
+OnUnitActiveSec=${recycle_health_check_interval_sec}
 AccuracySec=1
 [Install]
 WantedBy=timers.target

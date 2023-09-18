@@ -170,7 +170,7 @@ variable "use_single_container" {
   default     = false
 }
 
-variable "recycle_healthcheck_interval_sec" {
+variable "recycle_health_check_interval_sec" {
   description = "(Optional) The interval (in seconds) in which the sidecar instance checks whether it has been marked or recycling."
   type        = number
   default     = 30
