@@ -9,6 +9,7 @@ locals {
   create_sidecar_custom_certificate_secret = var.sidecar_custom_certificate_account_id != ""
   sidecar_created_certificate_secret_name  = "/cyral/sidecars/${var.sidecar_id}/self-signed-certificate"
   sidecar_ca_certificate_secret_name       = "/cyral/sidecars/${var.sidecar_id}/ca-certificate"
+  sidecar_dns_name                         = var.sidecar_dns_name
 }
 
 resource "aws_secretsmanager_secret" "cyral-sidecar-secret" {
@@ -64,7 +65,7 @@ resource "aws_lambda_invocation" "self_signed_tls_certificate" {
   function_name = aws_lambda_function.self_signed_certificate.function_name
   input = jsonencode({
     SecretId        = aws_secretsmanager_secret.sidecar_created_certificate.id
-    Hostname        = local.sidecar_endpoint
+    Hostname        = local.sidecar_dns_name
     IsCACertificate = false
   })
 }
@@ -73,7 +74,7 @@ resource "aws_lambda_invocation" "self_signed_ca_certificate" {
   function_name = aws_lambda_function.self_signed_certificate.function_name
   input = jsonencode({
     SecretId        = aws_secretsmanager_secret.sidecar_ca_certificate.id
-    Hostname        = local.sidecar_endpoint
+    Hostname        = local.sidecar_dns_name
     IsCACertificate = true
   })
 }
