@@ -1,3 +1,13 @@
+## 4.2.2 (September 19, 2023)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Bug fixes:
+
+* ENG-12650: Fix Hostname for lambda invocation ([#85](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/85))
+
 ## 4.2.1 (August 8, 2023)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
@@ -6,10 +16,10 @@ See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2
 
 ### Bug fixes:
 
-*  fix: Remove need for zip hash code file ([#78](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/78))
-*  ENG-12327: Add consistency in case of `custom_user_data` variable does not contain all key
+* fix: Remove need for zip hash code file ([#78](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/78))
+* ENG-12327: Add consistency in case of `custom_user_data` variable does not contain all key
 s ([#77](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/77))
-*  ENG-12303: Refactor signed certificate lambda to be generated via pre-commit hook ([#76](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/76))
+* ENG-12303: Refactor signed certificate lambda to be generated via pre-commit hook ([#76](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/76))
 
 ## 4.2.0 (July 19, 2023)
 
