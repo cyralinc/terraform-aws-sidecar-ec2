@@ -9,3 +9,6 @@ terraform.tfstate*
 
 # JetBrains
 .idea
+
+# VSCode
+.DS_Store

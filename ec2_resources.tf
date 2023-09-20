@@ -159,9 +159,17 @@ resource "aws_security_group" "instance" {
   }
 }
 
+data "aws_lbs" "current" {
+}
+
 resource "aws_lb" "cyral-lb" {
-  # Core load balancer
-  name                             = "${local.name_prefix}-lb"
+  # If the LB already exists, use the name `<name_prefix>-lb`, otherwise use
+  # `<name_prefix>`. This avoids names greater than 64 characters in the
+  # self-signed certificates in some AWS regions. The reason to keep
+  # `<name_prefix>-lb` is to avoid recreating the LBs for existing sidecars.
+  name                             = length(
+      [ for s in data.aws_lbs.current.arns : s if can(regex("${local.name_prefix}-lb", s)) ]
+    ) > 0 ? "${local.name_prefix}-lb" : "${local.name_prefix}"
   internal                         = var.load_balancer_scheme == "internet-facing" ? false : true
   load_balancer_type               = "network"
   subnets                          = length(var.load_balancer_subnets) > 0 ? var.load_balancer_subnets : var.subnets

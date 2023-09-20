@@ -64,7 +64,7 @@ resource "aws_lambda_invocation" "self_signed_tls_certificate" {
   function_name = aws_lambda_function.self_signed_certificate.function_name
   input = jsonencode({
     SecretId        = aws_secretsmanager_secret.sidecar_created_certificate.id
-    Hostname        = var.sidecar_dns_name
+    Hostname        = local.sidecar_endpoint
     IsCACertificate = false
   })
 }
@@ -73,7 +73,7 @@ resource "aws_lambda_invocation" "self_signed_ca_certificate" {
   function_name = aws_lambda_function.self_signed_certificate.function_name
   input = jsonencode({
     SecretId        = aws_secretsmanager_secret.sidecar_ca_certificate.id
-    Hostname        = var.sidecar_dns_name
+    Hostname        = local.sidecar_endpoint
     IsCACertificate = true
   })
 }
