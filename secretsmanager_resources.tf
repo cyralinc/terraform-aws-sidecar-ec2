@@ -7,13 +7,14 @@ locals {
     sidecarPrivateIdpKey        = replace(var.sidecar_private_idp_key, "\n", "\\n")
   }
   create_sidecar_custom_certificate_secret = var.sidecar_custom_certificate_account_id != ""
+  sidecar_creds_secret_name                = var.secrets_location != "" ? var.secrets_location : "/cyral/sidecars/${var.sidecar_id}/secrets"
   sidecar_created_certificate_secret_name  = "/cyral/sidecars/${var.sidecar_id}/self-signed-certificate"
   sidecar_ca_certificate_secret_name       = "/cyral/sidecars/${var.sidecar_id}/ca-certificate"
 }
 
 resource "aws_secretsmanager_secret" "cyral-sidecar-secret" {
   count                   = var.deploy_secrets ? 1 : 0
-  name                    = var.secrets_location
+  name                    = local.sidecar_creds_secret_name
   recovery_window_in_days = 0
   kms_key_id              = var.secrets_kms_arn
 }

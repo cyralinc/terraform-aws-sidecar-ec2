@@ -152,29 +152,30 @@ variable "db_inbound_security_group" {
 }
 
 variable "monitoring_inbound_cidr" {
-  description = "Allowed CIDR block for health check and metric requests to the sidecar"
+  description = "Allowed CIDR block for health check and metric requests to the sidecar. If restricting the access, consider setting to the VPC CIDR or an equivalent to cover the assigned subnets as the load balancer performs health checks on the EC2 instances."
   type        = list(string)
 }
 
 variable "deploy_secrets" {
-  description = "Create the AWS Secrets Manager resource at secret_location using client_id, client_secret and container_registry_key"
+  description = "Create the AWS Secrets Manager resource at `secret_location` storing `client_id`, `client_secret` and `container_registry_key`."
   type        = bool
   default     = true
 }
 
 variable "secrets_location" {
-  description = "Location in AWS Secrets Manager to store client_id, client_secret and container_registry_key"
+  description = "Location in AWS Secrets Manager to store `client_id`, `client_secret` and `container_registry_key`. If unset, will assume `/cyral/sidecars/<SIDECAR_ID>/secrets`."
   type        = string
+  default     = ""
 }
 
 variable "secrets_kms_arn" {
-  description = "ARN of the KMS key used to encrypt/decrypt secrets. If not set, secrets will use the default KMS key."
+  description = "ARN of the KMS key used to encrypt/decrypt secrets. If unset, secrets will use the default KMS key."
   type        = string
   default     = ""
 }
 
 variable "ec2_ebs_kms_arn" {
-  description = "ARN of the KMS key used to encrypt/decrypt EBS volumes. If not set, EBS will use the default KMS key. Make sure the KMS key allows the principal `arn:aws:iam::ACCOUNT_NUMBER:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`, otherwise the ASG will not be able to launch the new instances."
+  description = "ARN of the KMS key used to encrypt/decrypt EBS volumes. If unset, EBS will use the default KMS key. Make sure the KMS key allows the principal `arn:aws:iam::ACCOUNT_NUMBER:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`, otherwise the ASG will not be able to launch the new instances."
   type        = string
   default     = ""
 }

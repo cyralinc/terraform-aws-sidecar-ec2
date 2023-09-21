@@ -11,24 +11,27 @@ module "cyral_sidecar" {
   source  = "cyralinc/sidecar-ec2/aws"  
   version = "~> 4.0" # terraform module version
 
-  sidecar_version = ""
   sidecar_id      = ""
+  control_plane   = ""
+  client_id          = ""
+  client_secret      = ""
+  
+  # Leave empty if you prefer to perform upgrades directly
+  # from the control plane.
+  sidecar_version = ""
 
-  control_plane = ""
-
-  # Considering MongoDB ports are from the range 27017 to 27021
-  sidecar_ports = [443, 3306, 5432, 27017, 27018, 27019, 27020, 27021]
+  # Considering MongoDB ports are from the range 27017 to 27019
+  sidecar_ports = [443, 3306, 5432, 27017, 27018, 27019]
 
   vpc_id  = ""
   subnets = [""]
 
+  # Inbound CIDR to SSH into the EC2 instances
   ssh_inbound_cidr        = ["0.0.0.0/0"]
+  # Inbound CIDR to access ports defined in `sidecar_ports`
   db_inbound_cidr         = ["0.0.0.0/0"]
+  # Inbound CIDR to monitor the EC2 instances (port 9000)
   monitoring_inbound_cidr = ["0.0.0.0/0"]
-
-  container_registry = ""
-  client_id          = ""
-  client_secret      = ""
 }
 ```
 **Note:**
@@ -47,7 +50,6 @@ Check the [upgrade notes](https://github.com/cyralinc/terraform-aws-sidecar-ec2/
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
-| <a name="requirement_archive"></a> [archive](#requirement\_archive) | 2.3.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.73.0 |
 | <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 4.0.4 |
 
@@ -55,7 +57,6 @@ Check the [upgrade notes](https://github.com/cyralinc/terraform-aws-sidecar-ec2/
 
 | Name | Version |
 |------|---------|
-| <a name="provider_archive"></a> [archive](#provider\_archive) | 2.3.0 |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.73.0 |
 
 ## Modules
@@ -91,7 +92,6 @@ No modules.
 | [aws_secretsmanager_secret.sidecar_custom_certificate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
 | [aws_secretsmanager_secret_version.cyral-sidecar-secret-version](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
 | [aws_security_group.instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
-| [archive_file.self_signed_certificate_lambda](https://registry.terraform.io/providers/hashicorp/archive/2.3.0/docs/data-sources/file) | data source |
 | [aws_ami.amazon_linux_2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_arn.cw_lg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/arn) | data source |
 | [aws_availability_zones.all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
@@ -101,6 +101,7 @@ No modules.
 | [aws_iam_policy_document.sidecar](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.sidecar_custom_certificate_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.sidecar_custom_certificate_secrets_manager](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_lbs.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/lbs) | data source |
 | [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
@@ -120,16 +121,16 @@ No modules.
 | <a name="input_client_secret"></a> [client\_secret](#input\_client\_secret) | The client secret assigned to the sidecar | `string` | n/a | yes |
 | <a name="input_cloudwatch_log_group_name"></a> [cloudwatch\_log\_group\_name](#input\_cloudwatch\_log\_group\_name) | (Optional) Cloudwatch log group name. | `string` | `""` | no |
 | <a name="input_cloudwatch_logs_retention"></a> [cloudwatch\_logs\_retention](#input\_cloudwatch\_logs\_retention) | Cloudwatch logs retention in days | `number` | `14` | no |
-| <a name="input_container_registry"></a> [container\_registry](#input\_container\_registry) | Address of the container registry where Cyral images are stored | `string` | n/a | yes |
-| <a name="input_container_registry_key"></a> [container\_registry\_key](#input\_container\_registry\_key) | Key provided by Cyral for authenticating on Cyral's container registry | `string` | `""` | no |
-| <a name="input_container_registry_username"></a> [container\_registry\_username](#input\_container\_registry\_username) | Username provided by Cyral for authenticating on Cyral's container registry | `string` | `""` | no |
+| <a name="input_container_registry"></a> [container\_registry](#input\_container\_registry) | Address of the container registry where Cyral images are stored. | `string` | `"public.ecr.aws/cyral"` | no |
+| <a name="input_container_registry_key"></a> [container\_registry\_key](#input\_container\_registry\_key) | Corresponding key for the user name provided to authenticate to the container registry. | `string` | `""` | no |
+| <a name="input_container_registry_username"></a> [container\_registry\_username](#input\_container\_registry\_username) | Username to authenticate to the container registry. | `string` | `""` | no |
 | <a name="input_control_plane"></a> [control\_plane](#input\_control\_plane) | Address of the control plane - <tenant>.cyral.com | `string` | n/a | yes |
 | <a name="input_custom_user_data"></a> [custom\_user\_data](#input\_custom\_user\_data) | Ancillary consumer supplied user-data script. Bash scripts must be added to a map as a value of the key `pre`, `pre_sidecar_start`, `post` denoting execution order with respect to sidecar installation. (Approx Input Size = 19KB) | `map(any)` | <pre>{<br>  "post": "",<br>  "pre": "",<br>  "pre_sidecar_start": ""<br>}</pre> | no |
 | <a name="input_db_inbound_cidr"></a> [db\_inbound\_cidr](#input\_db\_inbound\_cidr) | Allowed CIDR block for database access to the sidecar. Can't be combined with 'db\_inbound\_security\_group'. | `list(string)` | n/a | yes |
 | <a name="input_db_inbound_security_group"></a> [db\_inbound\_security\_group](#input\_db\_inbound\_security\_group) | Pre-existing security group IDs allowed to connect to db in the EC2 host. Can't be combined with 'db\_inbound\_cidr'. | `list(string)` | `[]` | no |
 | <a name="input_dd_api_key"></a> [dd\_api\_key](#input\_dd\_api\_key) | (Deprecated - unused in sidecars v4.10+) API key to connect to DataDog | `string` | `""` | no |
-| <a name="input_deploy_secrets"></a> [deploy\_secrets](#input\_deploy\_secrets) | Create the AWS Secrets Manager resource at secret\_location using client\_id, client\_secret and container\_registry\_key | `bool` | `true` | no |
-| <a name="input_ec2_ebs_kms_arn"></a> [ec2\_ebs\_kms\_arn](#input\_ec2\_ebs\_kms\_arn) | ARN of the KMS key used to encrypt/decrypt EBS volumes. If not set, EBS will use the default KMS key. Make sure the KMS key allows the principal `arn:aws:iam::ACCOUNT_NUMBER:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`, otherwise the ASG will not be able to launch the new instances. | `string` | `""` | no |
+| <a name="input_deploy_secrets"></a> [deploy\_secrets](#input\_deploy\_secrets) | Create the AWS Secrets Manager resource at `secret_location` storing `client_id`, `client_secret` and `container_registry_key`. | `bool` | `true` | no |
+| <a name="input_ec2_ebs_kms_arn"></a> [ec2\_ebs\_kms\_arn](#input\_ec2\_ebs\_kms\_arn) | ARN of the KMS key used to encrypt/decrypt EBS volumes. If unset, EBS will use the default KMS key. Make sure the KMS key allows the principal `arn:aws:iam::ACCOUNT_NUMBER:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`, otherwise the ASG will not be able to launch the new instances. | `string` | `""` | no |
 | <a name="input_enable_cross_zone_load_balancing"></a> [enable\_cross\_zone\_load\_balancing](#input\_enable\_cross\_zone\_load\_balancing) | Enable cross zone load balancing | `bool` | `true` | no |
 | <a name="input_hc_vault_integration_id"></a> [hc\_vault\_integration\_id](#input\_hc\_vault\_integration\_id) | (Deprecated - unused in sidecars v4.10+) HashiCorp Vault integration ID | `string` | `""` | no |
 | <a name="input_health_check_grace_period"></a> [health\_check\_grace\_period](#input\_health\_check\_grace\_period) | The grace period in seconds before the health check will terminate the instance | `number` | `600` | no |
@@ -146,13 +147,13 @@ No modules.
 | <a name="input_load_balancer_tls_ports"></a> [load\_balancer\_tls\_ports](#input\_load\_balancer\_tls\_ports) | List of ports that will have TLS terminated at load balancer level<br>(snowflake support, for example). If assigned, 'load\_balancer\_certificate\_arn' <br>must also be provided. This parameter must be a subset of 'sidecar\_ports'. | `list(number)` | `[]` | no |
 | <a name="input_log_integration"></a> [log\_integration](#input\_log\_integration) | Logs destination | `string` | `"cloudwatch"` | no |
 | <a name="input_metrics_integration"></a> [metrics\_integration](#input\_metrics\_integration) | (Deprecated - unused in sidecars v4.10+) Metrics destination | `string` | `""` | no |
-| <a name="input_monitoring_inbound_cidr"></a> [monitoring\_inbound\_cidr](#input\_monitoring\_inbound\_cidr) | Allowed CIDR block for health check and metric requests to the sidecar | `list(string)` | n/a | yes |
+| <a name="input_monitoring_inbound_cidr"></a> [monitoring\_inbound\_cidr](#input\_monitoring\_inbound\_cidr) | Allowed CIDR block for health check and metric requests to the sidecar. If restricting the access, consider setting to the VPC CIDR or an equivalent to cover the assigned subnets as the load balancer performs health checks on the EC2 instances. | `list(string)` | n/a | yes |
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Prefix for names of created resources in AWS. Maximum length is 24 characters. | `string` | `""` | no |
-| <a name="input_recycle_health_check_interval_sec"></a> [recycle\_healthcheck\_interval\_sec](#input\_recycle\_healthcheck\_interval\_sec) | (Optional) The interval (in seconds) in which the sidecar instance checks whether it has been marked or recycling. | `number` | `30` | no |
+| <a name="input_recycle_health_check_interval_sec"></a> [recycle\_health\_check\_interval\_sec](#input\_recycle\_health\_check\_interval\_sec) | (Optional) The interval (in seconds) in which the sidecar instance checks whether it has been marked or recycling. | `number` | `30` | no |
 | <a name="input_reduce_security_group_rules_count"></a> [reduce\_security\_group\_rules\_count](#input\_reduce\_security\_group\_rules\_count) | If set to `false`, each port in `sidecar_ports` will be used individually for each CIDR in `db_inbound_cidr` to create inbound rules in the sidecar security group, resulting in a number of inbound rules that is equal to the number of `sidecar_ports` * `db_inbound_cidr`. If set to `true`, the entire sidecar port range from `min(sidecar_ports)` to `max(sidecar_ports)` will be used to configure each inbound rule for each CIDR in `db_inbound_cidr` for the sidecar security group. Setting it to `true` can be useful if you need to use multiple sequential sidecar ports and different CIDRs for DB inbound (`db_inbound_cidr`) since it will significantly reduce the number of inbound rules and avoid hitting AWS quotas. As a side effect, it will open all the ports between `min(sidecar_ports)` and `max(sidecar_ports)` in the security group created by this module. | `bool` | `false` | no |
 | <a name="input_repositories_supported"></a> [repositories\_supported](#input\_repositories\_supported) | (Deprecated - unused in sidecars v4.10+) List of all repositories that will be supported by the sidecar (lower case only) | `list(string)` | <pre>[<br>  "denodo",<br>  "dremio",<br>  "dynamodb",<br>  "mongodb",<br>  "mysql",<br>  "oracle",<br>  "postgresql",<br>  "redshift",<br>  "snowflake",<br>  "sqlserver",<br>  "s3"<br>]</pre> | no |
-| <a name="input_secrets_kms_arn"></a> [secrets\_kms\_arn](#input\_secrets\_kms\_arn) | ARN of the KMS key used to encrypt/decrypt secrets. If not set, secrets will use the default KMS key. | `string` | `""` | no |
-| <a name="input_secrets_location"></a> [secrets\_location](#input\_secrets\_location) | Location in AWS Secrets Manager to store client\_id, client\_secret and container\_registry\_key | `string` | n/a | yes |
+| <a name="input_secrets_kms_arn"></a> [secrets\_kms\_arn](#input\_secrets\_kms\_arn) | ARN of the KMS key used to encrypt/decrypt secrets. If unset, secrets will use the default KMS key. | `string` | `""` | no |
+| <a name="input_secrets_location"></a> [secrets\_location](#input\_secrets\_location) | Location in AWS Secrets Manager to store `client_id`, `client_secret` and `container_registry_key`. If unset, will assume `/cyral/sidecars/<SIDECAR_ID>/secrets`. | `string` | `""` | no |
 | <a name="input_sidecar_ca_certificate_role_arn"></a> [sidecar\_ca\_certificate\_role\_arn](#input\_sidecar\_ca\_certificate\_role\_arn) | (Optional) ARN of an AWS IAM Role to assume when reading the CA certificate. | `string` | `""` | no |
 | <a name="input_sidecar_ca_certificate_secret_arn"></a> [sidecar\_ca\_certificate\_secret\_arn](#input\_sidecar\_ca\_certificate\_secret\_arn) | (Optional) ARN of secret in AWS Secrets Manager that contains a CA certificate to sign sidecar-generated certs. | `string` | `""` | no |
 | <a name="input_sidecar_custom_certificate_account_id"></a> [sidecar\_custom\_certificate\_account\_id](#input\_sidecar\_custom\_certificate\_account\_id) | (Optional) AWS Account ID where the custom certificate module will be deployed. | `string` | `""` | no |
@@ -161,7 +162,7 @@ No modules.
 | <a name="input_sidecar_dns_name"></a> [sidecar\_dns\_name](#input\_sidecar\_dns\_name) | (Optional) Fully qualified domain name that will be automatically created/updated to reference the sidecar LB | `string` | `""` | no |
 | <a name="input_sidecar_dns_overwrite"></a> [sidecar\_dns\_overwrite](#input\_sidecar\_dns\_overwrite) | (Optional) Update an existing DNS name informed in 'sidecar\_dns\_name' variable | `bool` | `false` | no |
 | <a name="input_sidecar_id"></a> [sidecar\_id](#input\_sidecar\_id) | Sidecar identifier | `string` | n/a | yes |
-| <a name="input_sidecar_ports"></a> [sidecar\_ports](#input\_sidecar\_ports) | List of ports allowed to connect to the sidecar. See also 'load\_balancer\_tls\_ports'. | `list(number)` | n/a | yes |
+| <a name="input_sidecar_ports"></a> [sidecar\_ports](#input\_sidecar\_ports) | List of ports allowed to connect to the sidecar through the load balancer and security group. The maximum number of ports is limited to Network Load Balancers quotas (listeners and target groups). See also 'load\_balancer\_tls\_ports'. Avoid port `9000` as it is reserved for instance monitoring. | `list(number)` | n/a | yes |
 | <a name="input_sidecar_private_idp_key"></a> [sidecar\_private\_idp\_key](#input\_sidecar\_private\_idp\_key) | (Optional) The private key used to sign SAML Assertions generated by the sidecar. Enter this value as a one-line string with literal new line characters (<br>) specifying the line breaks. | `string` | `""` | no |
 | <a name="input_sidecar_public_idp_certificate"></a> [sidecar\_public\_idp\_certificate](#input\_sidecar\_public\_idp\_certificate) | (Optional) The public certificate used to verify signatures for SAML Assertions generated by the sidecar. Enter this value as a one-line string with literal new line characters (<br>) specifying the line breaks. | `string` | `""` | no |
 | <a name="input_sidecar_tls_certificate_role_arn"></a> [sidecar\_tls\_certificate\_role\_arn](#input\_sidecar\_tls\_certificate\_role\_arn) | (Optional) ARN of an AWS IAM Role to assume when reading the TLS certificate. | `string` | `""` | no |
@@ -171,6 +172,7 @@ No modules.
 | <a name="input_ssh_inbound_security_group"></a> [ssh\_inbound\_security\_group](#input\_ssh\_inbound\_security\_group) | Pre-existing security group IDs allowed to ssh into the EC2 host. Can't be combined with 'ssh\_inbound\_cidr'. | `list(string)` | `[]` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | Subnets to add sidecar to (list of string) | `list(string)` | n/a | yes |
 | <a name="input_tls_skip_verify"></a> [tls\_skip\_verify](#input\_tls\_skip\_verify) | (Optional) Skip TLS verification for HTTPS communication with the control plane and during sidecar initialization | `bool` | `false` | no |
+| <a name="input_use_single_container"></a> [use\_single\_container](#input\_use\_single\_container) | (Optional) Use single container for sidecar deployment | `bool` | `false` | no |
 | <a name="input_volume_size"></a> [volume\_size](#input\_volume\_size) | Size of the sidecar disk | `number` | `15` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | AWS VPC ID to deploy sidecar to | `string` | n/a | yes |
 
