@@ -152,12 +152,12 @@ variable "db_inbound_security_group" {
 }
 
 variable "monitoring_inbound_cidr" {
-  description = "Allowed CIDR block for health check and metric requests to the sidecar"
+  description = "Allowed CIDR block for health check and metric requests to the sidecar. If restricting the access, consider setting to the VPC CIDR or an equivalent to cover the assigned subnets as the load balancer performs health checks on the EC2 instances."
   type        = list(string)
 }
 
 variable "deploy_secrets" {
-  description = "Create the AWS Secrets Manager resource at `secret_location` storing `client_id`, `client_secret` and `container_registry_key`"
+  description = "Create the AWS Secrets Manager resource at `secret_location` storing `client_id`, `client_secret` and `container_registry_key`."
   type        = bool
   default     = true
 }

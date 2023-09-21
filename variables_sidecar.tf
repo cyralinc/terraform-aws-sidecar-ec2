@@ -100,7 +100,7 @@ variable "sidecar_dns_overwrite" {
 ##########################################################################################################
 
 variable "sidecar_ports" {
-  description = "List of ports allowed to connect to the sidecar. See also 'load_balancer_tls_ports'. Please avoid port `9000` as it is reserved for instance monitoring."
+  description = "List of ports allowed to connect to the sidecar through the load balancer and security group. The maximum number of ports is limited to Network Load Balancers quotas (listeners and target groups). See also 'load_balancer_tls_ports'. Avoid port `9000` as it is reserved for instance monitoring."
   type        = list(number)
 }
 
