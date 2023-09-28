@@ -26,6 +26,7 @@ locals {
     sidecar_endpoint                      = local.sidecar_endpoint
     dd_api_key                            = var.dd_api_key
     aws_region                            = local.aws_region
+    aws_account_id                        = local.aws_account_id
     log_integration                       = var.log_integration
     metrics_integration                   = var.metrics_integration
     log_group_name                        = aws_cloudwatch_log_group.cyral-sidecar-lg.name
