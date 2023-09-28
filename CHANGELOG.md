@@ -1,3 +1,19 @@
+## 4.3.0 (October 6, 2023)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Features:
+
+* ENG-12268: Make container registry info optional ([#79](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/79))
+* ENG-11596: Deprecate unused variables in sidecar v4.10 ([#80](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/80))
+* ENG-12509: Add parameter to use single container sidecar ([#81](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/81))
+* ENG-12118/ENG-12121: Enable instance recycle and dynamically manage sidecar version ([#82](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/82))
+* ENG-12120: Add custom EC2 health check script ([#83](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/83))
+* Remove unused env vars ([#84](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/84))
+* Set default value for `secrets_location` ([#86](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/86))
+
 ## 4.2.2 (September 19, 2023)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
