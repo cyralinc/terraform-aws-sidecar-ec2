@@ -1,4 +1,9 @@
-# Cyral Sidecar AWS module for Terraform
+# Cyral sidecar module for AWS EC2
+
+Use this Terraform module to deploy a sidecar on AWS EC2 instances.
+
+Refer to the [quickstart guide](https://github.com/cyral-quickstart/quickstart-sidecar-terraform-aws-ec2#readme)
+for more information on how to use this module.
 
 ## Usage
 ```hcl
@@ -126,7 +131,7 @@ No modules.
 | <a name="input_container_registry_username"></a> [container\_registry\_username](#input\_container\_registry\_username) | Username to authenticate to the container registry. | `string` | `""` | no |
 | <a name="input_control_plane"></a> [control\_plane](#input\_control\_plane) | Address of the control plane - <tenant>.cyral.com | `string` | n/a | yes |
 | <a name="input_custom_user_data"></a> [custom\_user\_data](#input\_custom\_user\_data) | Ancillary consumer supplied user-data script. Bash scripts must be added to a map as a value of the key `pre`, `pre_sidecar_start`, `post` denoting execution order with respect to sidecar installation. (Approx Input Size = 19KB) | `map(any)` | <pre>{<br>  "post": "",<br>  "pre": "",<br>  "pre_sidecar_start": ""<br>}</pre> | no |
-| <a name="input_db_inbound_cidr"></a> [db\_inbound\_cidr](#input\_db\_inbound\_cidr) | Allowed CIDR block for database access to the sidecar. Can't be combined with 'db\_inbound\_security\_group'. | `list(string)` | n/a | yes |
+| <a name="input_db_inbound_cidr"></a> [db\_inbound\_cidr](#input\_db\_inbound\_cidr) | Allowed CIDR blocks for database access to the sidecar. Can't be combined with 'db\_inbound\_security\_group'. | `list(string)` | n/a | yes |
 | <a name="input_db_inbound_security_group"></a> [db\_inbound\_security\_group](#input\_db\_inbound\_security\_group) | Pre-existing security group IDs allowed to connect to db in the EC2 host. Can't be combined with 'db\_inbound\_cidr'. | `list(string)` | `[]` | no |
 | <a name="input_dd_api_key"></a> [dd\_api\_key](#input\_dd\_api\_key) | (Deprecated - unused in sidecars v4.10+) API key to connect to DataDog | `string` | `""` | no |
 | <a name="input_deploy_secrets"></a> [deploy\_secrets](#input\_deploy\_secrets) | Create the AWS Secrets Manager resource at `secret_location` storing `client_id`, `client_secret` and `container_registry_key`. | `bool` | `true` | no |
@@ -147,7 +152,7 @@ No modules.
 | <a name="input_load_balancer_tls_ports"></a> [load\_balancer\_tls\_ports](#input\_load\_balancer\_tls\_ports) | List of ports that will have TLS terminated at load balancer level<br>(snowflake support, for example). If assigned, 'load\_balancer\_certificate\_arn' <br>must also be provided. This parameter must be a subset of 'sidecar\_ports'. | `list(number)` | `[]` | no |
 | <a name="input_log_integration"></a> [log\_integration](#input\_log\_integration) | Logs destination | `string` | `"cloudwatch"` | no |
 | <a name="input_metrics_integration"></a> [metrics\_integration](#input\_metrics\_integration) | (Deprecated - unused in sidecars v4.10+) Metrics destination | `string` | `""` | no |
-| <a name="input_monitoring_inbound_cidr"></a> [monitoring\_inbound\_cidr](#input\_monitoring\_inbound\_cidr) | Allowed CIDR block for health check and metric requests to the sidecar. If restricting the access, consider setting to the VPC CIDR or an equivalent to cover the assigned subnets as the load balancer performs health checks on the EC2 instances. | `list(string)` | n/a | yes |
+| <a name="input_monitoring_inbound_cidr"></a> [monitoring\_inbound\_cidr](#input\_monitoring\_inbound\_cidr) | Allowed CIDR blocks for health check and metric requests to the sidecar. If restricting the access, consider setting to the VPC CIDR or an equivalent to cover the assigned subnets as the load balancer performs health checks on the EC2 instances. | `list(string)` | n/a | yes |
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Prefix for names of created resources in AWS. Maximum length is 24 characters. | `string` | `""` | no |
 | <a name="input_recycle_health_check_interval_sec"></a> [recycle\_health\_check\_interval\_sec](#input\_recycle\_health\_check\_interval\_sec) | (Optional) The interval (in seconds) in which the sidecar instance checks whether it has been marked or recycling. | `number` | `30` | no |
 | <a name="input_reduce_security_group_rules_count"></a> [reduce\_security\_group\_rules\_count](#input\_reduce\_security\_group\_rules\_count) | If set to `false`, each port in `sidecar_ports` will be used individually for each CIDR in `db_inbound_cidr` to create inbound rules in the sidecar security group, resulting in a number of inbound rules that is equal to the number of `sidecar_ports` * `db_inbound_cidr`. If set to `true`, the entire sidecar port range from `min(sidecar_ports)` to `max(sidecar_ports)` will be used to configure each inbound rule for each CIDR in `db_inbound_cidr` for the sidecar security group. Setting it to `true` can be useful if you need to use multiple sequential sidecar ports and different CIDRs for DB inbound (`db_inbound_cidr`) since it will significantly reduce the number of inbound rules and avoid hitting AWS quotas. As a side effect, it will open all the ports between `min(sidecar_ports)` and `max(sidecar_ports)` in the security group created by this module. | `bool` | `false` | no |
@@ -168,7 +173,7 @@ No modules.
 | <a name="input_sidecar_tls_certificate_role_arn"></a> [sidecar\_tls\_certificate\_role\_arn](#input\_sidecar\_tls\_certificate\_role\_arn) | (Optional) ARN of an AWS IAM Role to assume when reading the TLS certificate. | `string` | `""` | no |
 | <a name="input_sidecar_tls_certificate_secret_arn"></a> [sidecar\_tls\_certificate\_secret\_arn](#input\_sidecar\_tls\_certificate\_secret\_arn) | (Optional) ARN of secret in AWS Secrets Manager that contains a certificate to terminate TLS connections. | `string` | `""` | no |
 | <a name="input_sidecar_version"></a> [sidecar\_version](#input\_sidecar\_version) | (Optional, but required for Control Planes < v4.10) The version of the sidecar. If unset and the Control Plane version is >= v4.10, the sidecar version will be dynamically retrieved from the Control Plane, otherwise an error will occur and this value must be provided. | `string` | `""` | no |
-| <a name="input_ssh_inbound_cidr"></a> [ssh\_inbound\_cidr](#input\_ssh\_inbound\_cidr) | Allowed CIDR block for SSH access to the sidecar. Can't be combined with 'ssh\_inbound\_security\_group'. | `list(string)` | n/a | yes |
+| <a name="input_ssh_inbound_cidr"></a> [ssh\_inbound\_cidr](#input\_ssh\_inbound\_cidr) | Allowed CIDR blocks for SSH access to the sidecar. Can't be combined with 'ssh\_inbound\_security\_group'. | `list(string)` | n/a | yes |
 | <a name="input_ssh_inbound_security_group"></a> [ssh\_inbound\_security\_group](#input\_ssh\_inbound\_security\_group) | Pre-existing security group IDs allowed to ssh into the EC2 host. Can't be combined with 'ssh\_inbound\_cidr'. | `list(string)` | `[]` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | Subnets to add sidecar to (list of string) | `list(string)` | n/a | yes |
 | <a name="input_tls_skip_verify"></a> [tls\_skip\_verify](#input\_tls\_skip\_verify) | (Optional) Skip TLS verification for HTTPS communication with the control plane and during sidecar initialization | `bool` | `false` | no |

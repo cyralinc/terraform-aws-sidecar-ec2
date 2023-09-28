@@ -124,7 +124,7 @@ variable "volume_size" {
 }
 
 variable "ssh_inbound_cidr" {
-  description = "Allowed CIDR block for SSH access to the sidecar. Can't be combined with 'ssh_inbound_security_group'."
+  description = "Allowed CIDR blocks for SSH access to the sidecar. Can't be combined with 'ssh_inbound_security_group'."
   type        = list(string)
 }
 
@@ -135,7 +135,7 @@ variable "ssh_inbound_security_group" {
 }
 
 variable "db_inbound_cidr" {
-  description = "Allowed CIDR block for database access to the sidecar. Can't be combined with 'db_inbound_security_group'."
+  description = "Allowed CIDR blocks for database access to the sidecar. Can't be combined with 'db_inbound_security_group'."
   type        = list(string)
 }
 
@@ -152,7 +152,7 @@ variable "db_inbound_security_group" {
 }
 
 variable "monitoring_inbound_cidr" {
-  description = "Allowed CIDR block for health check and metric requests to the sidecar. If restricting the access, consider setting to the VPC CIDR or an equivalent to cover the assigned subnets as the load balancer performs health checks on the EC2 instances."
+  description = "Allowed CIDR blocks for health check and metric requests to the sidecar. If restricting the access, consider setting to the VPC CIDR or an equivalent to cover the assigned subnets as the load balancer performs health checks on the EC2 instances."
   type        = list(string)
 }
 

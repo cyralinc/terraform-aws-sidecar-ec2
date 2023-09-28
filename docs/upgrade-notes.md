@@ -1,5 +1,34 @@
 # Upgrade Notes
 
+## Upgrading from module 3.x.y to 4.0.0 or later
+
+### Removed variables
+
+- `elk_address` -- no longer used. Retrieved from the control plane when sidecar is running.
+- `elk_password` -- no longer used. Retrieved from the control plane when sidecar is running.
+- `elk_username` -- no longer used. Retrieved from the control plane when sidecar is running.
+- `healthcheck_inbound_cidr` -- use `monitoring_inbound_cidr` instead.
+- `healthcheck_port` -- fixed to port `9000`.
+- `metrics_inbound_cidr` -- use `monitoring_inbound_cidr` instead.
+- `metrics_port` -- fixed to port `9000`.
+- `mongodb_port_alloc_range_high` -- no longer used. Retrieved from the control plane when sidecar is running.
+- `mongodb_port_alloc_range_low` -- no longer used. Retrieved from the control plane when sidecar is running.
+- `mysql_multiplexed_port` -- no longer used. Retrieved from the control plane when sidecar is running.
+- `splunk_host` -- no longer used. Retrieved from the control plane when sidecar is running.
+- `splunk_index` -- no longer used. Retrieved from the control plane when sidecar is running.
+- `splunk_port` -- no longer used. Retrieved from the control plane when sidecar is running.
+- `splunk_tls` -- no longer used. Retrieved from the control plane when sidecar is running.
+- `splunk_token` -- no longer used. Retrieved from the control plane when sidecar is running.
+- `sumologic_host` -- no longer used. Retrieved from the control plane when sidecar is running.
+- `sumologic_uri` -- no longer used. Retrieved from the control plane when sidecar is running.
+
+### Deprecated variables
+
+- `dd_api_key` -- Unused in sidecars `v4.10+`. Will be removed in the next major version of this module.
+- `hc_vault_integration_id` -- Unused in sidecars `v4.10+`. Will be removed in the next major version of this module.
+- `metrics_integration` -- Unused in sidecars `v4.10+`. Will be removed in the next major version of this module.
+- `repositories_supported` -- Unused in sidecars `v4.10+`. Will be removed in the next major version of this module.
+
 ## Upgrading from module 2.x.y to 3.0.0 or later
 
 ### Deprecated variables
