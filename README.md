@@ -3,9 +3,31 @@
 Use this Terraform module to deploy a sidecar on AWS EC2 instances.
 
 Refer to the [quickstart guide](https://github.com/cyral-quickstart/quickstart-sidecar-terraform-aws-ec2#readme)
-for more information on how to use this module.
+for more information on how to use this module or upgrade your sidecar.
+
+## Architecture
+
+![Deployment architecture](images/aws_architecture.png)
+
+The elements shown in the architecture diagram above are deployed by this module.
+The module requires existing VPC and subnets in order to create the necessary
+components for the sidecar to run. In a high-level, these are the resources deployed:
+
+* EC2
+    * Auto scaling group (responsible for managing EC2 instances and EBS volumes)
+    * Network load balancer
+    * Security group
+* Secrets Manager
+    * Sidecar credentials
+    * Sidecar CA certificate
+    * Sidecar self-signed certificate
+* IAM
+    * Sidecar role
+* Cloudwatch
+    * Log group (optionally created)
 
 ## Usage
+
 ```hcl
 provider "aws" {
   # Define the target AWS region
@@ -48,6 +70,13 @@ module "cyral_sidecar" {
 ## Upgrade Notes
 
 Check the [upgrade notes](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/upgrade-notes.md) section if you are upgrading an existing sidecar.
+
+## Advanced
+
+Instructions for advanced deployment configurations are available for the following topics:
+
+* [Sidecar certificates](./docs/certificates.md)
+* [Sidecar instance metrics](./docs/metrics.md)
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
