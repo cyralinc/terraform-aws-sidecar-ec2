@@ -3,7 +3,7 @@
 Use this Terraform module to deploy a sidecar on AWS EC2 instances.
 
 Refer to the [quickstart guide](https://github.com/cyral-quickstart/quickstart-sidecar-terraform-aws-ec2#readme)
-for more information on how to use this module.
+for more information on how to use this module or upgrade your sidecar.
 
 ## Architecture
 
