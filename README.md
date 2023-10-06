@@ -67,9 +67,21 @@ module "cyral_sidecar" {
   `name_prefix`, please keep in mind that its length must be **at most 24
   characters**.
 
-## Upgrade Notes
+## Upgrade
 
-Check the [upgrade notes](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/upgrade-notes.md) section if you are upgrading an existing sidecar.
+This module supports [1-click upgrade](https://cyral.com/docs/sidecars/manage/upgrade#1-click-upgrade).
+
+To enable the 1-click upgrade feature, leave the variable `sidecar_version` empty and upgrade
+the sidecar from Cyral control plane.
+
+If you prefer to block upgrades from the Cyral control plane and use a **static version**, assign
+the desired sidecar version to `sidecar_version`. To upgrade your sidecar, update this parameter
+with the target version and run `terraform apply`.
+
+Learn more in the [sidecar upgrade procedures](https://cyral.com/docs/sidecars/manage/upgrade) page.
+
+See also the module's [upgrade notes](./docs/upgrade-notes.md) for specific
+instructions on how to upgrade this module from previous major versions.
 
 ## Advanced
 
