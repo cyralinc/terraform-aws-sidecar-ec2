@@ -7,7 +7,7 @@ for more information on how to use this module or upgrade your sidecar.
 
 ## Architecture
 
-![Deployment architecture](images/aws_architecture.png)
+![Deployment architecture](https://raw.githubusercontent.com/cyralinc/terraform-aws-sidecar-ec2/main/images/aws_architecture.png)
 
 The elements shown in the architecture diagram above are deployed by this module.
 The module requires existing VPC and subnets in order to create the necessary
