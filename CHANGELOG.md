@@ -1,4 +1,4 @@
-## 4.3.0 (October 6, 2023)
+## 4.3.0 (October 5, 2023)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
 
@@ -13,6 +13,7 @@ See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2
 * ENG-12120: Add custom EC2 health check script ([#83](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/83))
 * Remove unused env vars ([#84](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/84))
 * Set default value for `secrets_location` ([#86](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/86))
+* ENG-12285: Export values in launch template for forward-compatibility ([#87](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/87))
 
 ## 4.2.2 (September 19, 2023)
 
