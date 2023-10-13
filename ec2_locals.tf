@@ -1,10 +1,8 @@
-# Get AWS Partition, Region, and Account ID defined by the user in `provider` section.
-data "aws_partition" "current" {}
+# Get AWS Region and Account ID defined by the user in `provider` section.
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 locals {
-  aws_partition  = data.aws_partition.current.partition
   aws_region     = data.aws_region.current.name
   aws_account_id = data.aws_caller_identity.current.account_id
   sidecar_endpoint = (length(aws_route53_record.cyral-sidecar-dns-record) == 0 && length(var.sidecar_dns_name) > 0) ? (
@@ -36,7 +34,7 @@ locals {
     sidecar_public_idp_certificate        = var.sidecar_public_idp_certificate
     sidecar_private_idp_key               = var.sidecar_private_idp_key
     hc_vault_integration_id               = var.hc_vault_integration_id
-    sidecar_created_certificate_secret_id = aws_secretsmanager_secret.sidecar_created_certificate.arn
+    sidecar_created_certificate_secret_id = local.sidecar_created_certificate_secret_id
     load_balancer_tls_ports               = join(",", var.load_balancer_tls_ports)
     sidecar_version                       = var.sidecar_version
     repositories_supported                = join(",", var.repositories_supported)
@@ -44,7 +42,7 @@ locals {
     sidecar_tls_certificate_secret_arn = (
       var.sidecar_tls_certificate_secret_arn != "" ?
       var.sidecar_tls_certificate_secret_arn :
-      aws_secretsmanager_secret.sidecar_created_certificate.arn
+      local.sidecar_created_certificate_secret_id
     )
     sidecar_tls_certificate_role_arn = var.sidecar_tls_certificate_role_arn
     sidecar_ca_certificate_secret_arn = (
