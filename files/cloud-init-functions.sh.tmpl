@@ -97,8 +97,7 @@ function load_certs() {
     echo "Loading certificates..."
     local sidecar_tls_cert_secret_value sidecar_ca_cert_secret_value
     if ! sidecar_tls_cert_secret_value=$(get_secret_value "${sidecar_tls_certificate_secret_arn}" "${SidecarTLSCertificateRoleArn}"); then
-        echo "Unable to fetch shared TLS certificate"
-        echo "Warning: ${sidecar_tls_certificate_secret_arn}"
+        echo "WARNING: Unable to fetch shared TLS certificate from ${sidecar_tls_certificate_secret_arn} see error above"
     fi
     if ! sidecar_ca_cert_secret_value=$(get_secret_value "${sidecar_ca_certificate_secret_arn}" "${SidecarCACertificateRoleArn}"); then
         echo "WARNING: Unable to fetch shared CA certificate from ${sidecar_ca_certificate_secret_arn}" see error above.
