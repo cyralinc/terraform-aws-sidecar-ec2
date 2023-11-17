@@ -212,7 +212,7 @@ function launch () {
     echo "Starting sidecar..."
     cd /home/ec2-user
     if [[ ${use_single_container} == "true" ]]; then
-        SINGLE_CONTAINER_IMAGE=${container_registry}/cyral-sidecar:${sidecar_version}
+        SINGLE_CONTAINER_IMAGE=${container_registry}/cyral-sidecar:$SIDECAR_VERSION
         retry docker pull -q $SINGLE_CONTAINER_IMAGE
         retry docker run -d --name sidecar --network=host --log-driver=local --log-opt max-size=500m --restart=unless-stopped --env-file .env $SINGLE_CONTAINER_IMAGE
         if ! containerCheck "sidecar"; then
