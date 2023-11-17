@@ -1,3 +1,13 @@
+## 4.3.1 (November 17, 2023)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Bug fixes:
+
+* ENG-13003: Updating single container scripts ([#91](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/91))
+
 ## 4.3.0 (October 5, 2023)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
