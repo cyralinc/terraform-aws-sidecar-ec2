@@ -80,15 +80,15 @@ with the target version and run `terraform apply`.
 
 Learn more in the [sidecar upgrade procedures](https://cyral.com/docs/sidecars/manage/upgrade) page.
 
-See also the module's [upgrade notes](./docs/upgrade-notes.md) for specific
+See also the module's [upgrade notes](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/upgrade-notes.md) for specific
 instructions on how to upgrade this module from previous major versions.
 
 ## Advanced
 
 Instructions for advanced deployment configurations are available for the following topics:
 
-* [Sidecar certificates](./docs/certificates.md)
-* [Sidecar instance metrics](./docs/metrics.md)
+* [Sidecar certificates](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/certificates.md)
+* [Sidecar instance metrics](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/metrics.md)
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
