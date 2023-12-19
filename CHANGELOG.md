@@ -1,3 +1,13 @@
+## 4.3.3 (December 18, 2023)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Bug fixes:
+
+* Fix var name ([#93](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/93))
+
 ## 4.3.2 (December 18, 2023)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
