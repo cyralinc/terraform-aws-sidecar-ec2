@@ -25,7 +25,7 @@ output "aws_security_group_id" {
 
 output "sidecar_custom_certificate_secret_arn" {
   value = local.output_sidecar_custom_certificate_secret_arn ? (
-    aws_secretsmanager_secret.sidecar_custom_certificate[0].id
+    aws_secretsmanager_secret.custom_tls_certificate[0].id
     ) : (
     null
   )
