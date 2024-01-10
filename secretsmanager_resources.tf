@@ -28,14 +28,10 @@ locals {
   }
 
   previous_ca_secret_exists = length(data.aws_secretsmanager_secrets.previous_ca.arns) > 0
-  previous_ca_exists        = local.previous_ca_secret_exists ? (
-      data.aws_secretsmanager_secret_version.previous_ca_contents[0].secret_string != "" ? true : false
-  ) : false
+  previous_ca_exists        = local.previous_ca_secret_exists ? data.aws_secretsmanager_secret_version.previous_ca_contents[0].secret_string != "" : false
 
   previous_tls_cert_secret_exists = length(data.aws_secretsmanager_secrets.previous_tls_cert.arns) > 0
-  previous_tls_cert_exists        = local.previous_tls_cert_secret_exists ? (
-      data.aws_secretsmanager_secret_version.previous_tls_cert_contents[0].secret_string != "" ? true : false
-  ) : false
+  previous_tls_cert_exists        = local.previous_tls_cert_secret_exists ? data.aws_secretsmanager_secret_version.previous_tls_cert_contents[0].secret_string != "" : false
 }
 
 # TODO: Remove `moved` in next major
@@ -164,7 +160,7 @@ data "aws_secretsmanager_secret_version" "previous_ca_contents" {
 
 resource "aws_secretsmanager_secret_version" "self_signed_ca" {
   secret_id     = aws_secretsmanager_secret.self_signed_ca.id
-  secret_string = local.previous_ca_secret_exists ? data.aws_secretsmanager_secret_version.previous_ca_contents[0].secret_string : jsonencode(local.self_signed_ca_payload)
+  secret_string = local.previous_ca_exists ? data.aws_secretsmanager_secret_version.previous_ca_contents[0].secret_string : jsonencode(local.self_signed_ca_payload)
 }
 
 data "aws_secretsmanager_secrets" "previous_tls_cert" {
@@ -181,5 +177,5 @@ data "aws_secretsmanager_secret_version" "previous_tls_cert_contents" {
 
 resource "aws_secretsmanager_secret_version" "self_signed_tls_cert" {
   secret_id     = aws_secretsmanager_secret.self_signed_tls_cert.id
-  secret_string = local.previous_tls_cert_secret_exists ? data.aws_secretsmanager_secret_version.previous_tls_cert_contents[0].secret_string : jsonencode(local.self_signed_tls_cert_payload)
+  secret_string = local.previous_tls_cert_exists ? data.aws_secretsmanager_secret_version.previous_tls_cert_contents[0].secret_string : jsonencode(local.self_signed_tls_cert_payload)
 }
