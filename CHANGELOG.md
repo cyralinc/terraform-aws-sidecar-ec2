@@ -1,3 +1,14 @@
+## 4.4.0 (January 10, 2024)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Bug fixes:
+
+* ENG-13220: Replaces Lambda by TLS provider ([#94](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/94))
+* ENG:13220: Optionally create TLS resources ([#95](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/95))
+
 ## 4.3.3 (December 18, 2023)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
