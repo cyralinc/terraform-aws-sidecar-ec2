@@ -19,19 +19,21 @@ locals {
   self_signed_cert_validity_period_hours = 10 * 365 * 24
 
   self_signed_ca_payload = {
-    key  = tls_private_key.ca.private_key_pem
-    cert = tls_self_signed_cert.ca.cert_pem
+    key  = local.create_ca ? tls_private_key.ca[0].private_key_pem : ""
+    cert = local.create_ca ? tls_self_signed_cert.ca[0].cert_pem : ""
   }
   self_signed_tls_cert_payload = {
-    key  = tls_private_key.tls.private_key_pem
-    cert = tls_self_signed_cert.tls.cert_pem
+    key  = local.create_tls_cert ? tls_private_key.tls[0].private_key_pem : ""
+    cert = local.create_tls_cert ? tls_self_signed_cert.tls[0].cert_pem : ""
   }
 
   previous_ca_secret_exists = length(data.aws_secretsmanager_secrets.previous_ca.arns) > 0
   previous_ca_exists        = local.previous_ca_secret_exists ? data.aws_secretsmanager_secret_version.previous_ca_contents[0].secret_string != "" : false
+  create_ca                 = !local.previous_ca_exists
 
   previous_tls_cert_secret_exists = length(data.aws_secretsmanager_secrets.previous_tls_cert.arns) > 0
   previous_tls_cert_exists        = local.previous_tls_cert_secret_exists ? data.aws_secretsmanager_secret_version.previous_tls_cert_contents[0].secret_string != "" : false
+  create_tls_cert                 = !local.previous_tls_cert_exists
 }
 
 # TODO: Remove `moved` in next major
@@ -94,17 +96,20 @@ resource "aws_secretsmanager_secret" "custom_tls_certificate" {
 }
 
 resource "tls_private_key" "tls" {
+  count = local.create_tls_cert ? 1 : 0
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "tls_private_key" "ca" {
+  count = local.create_ca ? 1 : 0
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "tls_self_signed_cert" "tls" {
-  private_key_pem   = tls_private_key.tls.private_key_pem
+  count = local.create_tls_cert ? 1 : 0
+  private_key_pem   = tls_private_key.tls[0].private_key_pem
   is_ca_certificate = false
 
   subject {
@@ -125,7 +130,8 @@ resource "tls_self_signed_cert" "tls" {
 }
 
 resource "tls_self_signed_cert" "ca" {
-  private_key_pem   = tls_private_key.ca.private_key_pem
+  count = local.create_ca ? 1 : 0
+  private_key_pem   = tls_private_key.ca[0].private_key_pem
   is_ca_certificate = true
 
   subject {
