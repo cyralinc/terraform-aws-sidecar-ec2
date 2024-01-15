@@ -1,8 +1,8 @@
 # Configuring certificates for Terraform AWS EC2 sidecars
 
 You can use Cyral's default [sidecar-created
-certificate](https://cyral.com/docs/sidecars/certificates/overview#sidecar-created-certificate) or use a
-[custom certificate](https://cyral.com/docs/sidecars/certificates/overview#custom-certificate) to secure
+certificate](https://cyral.com/docs/sidecars/deployment/certificates#sidecar-created-certificate) or use a
+[custom certificate](https://cyral.com/docs/sidecars/deployment/certificates#custom-certificate) to secure
 the communications performed by the sidecar. In this page, we provide
 instructions on how to use a custom certificate.
 
@@ -10,7 +10,7 @@ instructions on how to use a custom certificate.
 
 You can use a certificate signed by you or the Certificate Authority of your
 choice. Provide the ARN of the certificate secrets to the sidecar module, as
-in the section [Provide custom certificate to the sidecar](#provide-custom-certificate-to-the-sidecar). 
+in the section [Provide custom certificate to the sidecar](#provide-custom-certificate-to-the-sidecar).
 Please make sure
 that the following requirements are met by your private key / certificate pair:
 
@@ -78,5 +78,5 @@ Where `{myCertBase64}` is your custom certificate, encoded in base64, and
 base64 encoding is an extra encoding over the PEM-encoded values.
 
 The choice between providing a `tls`, a `ca` secret or *both* will depend on the repositories
-used by your sidecar. See the certificate type used by each repository in the 
+used by your sidecar. See the certificate type used by each repository in the
 [sidecar certificates](https://cyral.com/docs/sidecars/deployment/certificates#sidecar-certificate-types) page.
