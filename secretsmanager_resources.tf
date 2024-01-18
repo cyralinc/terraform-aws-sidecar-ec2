@@ -61,8 +61,17 @@ resource "aws_secretsmanager_secret_version" "sidecar_secrets" {
   secret_string = jsonencode(local.sidecar_secrets)
 }
 
-
-################################# CA #################################
+# TODO: Remove `moved` in next major
+moved {
+  from = aws_secretsmanager_secret.sidecar_created_certificate
+  to   = aws_secretsmanager_secret.self_signed_tls_cert
+}
+resource "aws_secretsmanager_secret" "self_signed_tls_cert" {
+  name                    = local.self_signed_tls_cert_secret_name
+  description             = "Self-signed TLS certificate used by sidecar in case a custom certificate is not provided."
+  recovery_window_in_days = 0
+  kms_key_id              = var.secrets_kms_arn
+}
 
 # TODO: Remove `moved` in next major
 moved {
@@ -88,16 +97,36 @@ resource "aws_secretsmanager_secret" "custom_tls_certificate" {
   kms_key_id              = var.secrets_kms_arn
 }
 
-data "aws_secretsmanager_secrets" "previous_ca" {
-  filter {
-    name   = "name"
-    values = [local.self_signed_ca_secret_name]
-  }
+resource "tls_private_key" "tls" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
 }
 
 resource "tls_private_key" "ca" {
   algorithm = "RSA"
   rsa_bits  = 4096
+}
+
+
+resource "tls_self_signed_cert" "tls" {
+  private_key_pem   = tls_private_key.tls.private_key_pem
+  is_ca_certificate = false
+
+  subject {
+    country      = local.self_signed_cert_country
+    province     = local.self_signed_cert_province
+    locality     = local.self_signed_cert_locality
+    organization = local.self_signed_cert_organization
+    common_name  = local.sidecar_endpoint
+  }
+
+  validity_period_hours = local.self_signed_cert_validity_period_hours
+
+  allowed_uses = [
+    "key_encipherment",
+    "digital_signature",
+    "server_auth",
+  ]
 }
 
 resource "tls_self_signed_cert" "ca" {
@@ -122,6 +151,13 @@ resource "tls_self_signed_cert" "ca" {
   ]
 }
 
+data "aws_secretsmanager_secrets" "previous_ca" {
+  filter {
+    name   = "name"
+    values = [local.self_signed_ca_secret_name]
+  }
+}
+
 data "aws_secretsmanager_secret_version" "previous_ca_contents" {
   secret_id = aws_secretsmanager_secret.self_signed_ca.arn
 }
@@ -135,52 +171,11 @@ resource "aws_secretsmanager_secret_version" "self_signed_ca" {
   )
 }
 
-################################# TLS #################################
-
-# TODO: Remove `moved` in next major
-moved {
-  from = aws_secretsmanager_secret.sidecar_created_certificate
-  to   = aws_secretsmanager_secret.self_signed_tls_cert
-}
-resource "aws_secretsmanager_secret" "self_signed_tls_cert" {
-  name                    = local.self_signed_tls_cert_secret_name
-  description             = "Self-signed TLS certificate used by sidecar in case a custom certificate is not provided."
-  recovery_window_in_days = 0
-  kms_key_id              = var.secrets_kms_arn
-}
-
-
 data "aws_secretsmanager_secrets" "previous_tls_cert" {
   filter {
     name   = "name"
     values = [local.self_signed_tls_cert_secret_name]
   }
-}
-
-resource "tls_private_key" "tls" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "tls_self_signed_cert" "tls" {
-  private_key_pem   = tls_private_key.tls.private_key_pem
-  is_ca_certificate = false
-
-  subject {
-    country      = local.self_signed_cert_country
-    province     = local.self_signed_cert_province
-    locality     = local.self_signed_cert_locality
-    organization = local.self_signed_cert_organization
-    common_name  = local.sidecar_endpoint
-  }
-
-  validity_period_hours = local.self_signed_cert_validity_period_hours
-
-  allowed_uses = [
-    "key_encipherment",
-    "digital_signature",
-    "server_auth",
-  ]
 }
 
 data "aws_secretsmanager_secret_version" "previous_tls_cert_contents" {
