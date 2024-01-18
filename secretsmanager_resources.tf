@@ -18,22 +18,24 @@ locals {
   self_signed_cert_organization          = "Cyral Inc."
   self_signed_cert_validity_period_hours = 10 * 365 * 24
 
+  previous_ca_exists = (
+    length(data.aws_secretsmanager_secrets.previous_ca.arns) > 0 ?
+      data.aws_secretsmanager_secret_version.previous_ca_contents.secret_string != "" : false
+  )
+
+  previous_tls_cert_exists = (
+    length(data.aws_secretsmanager_secrets.previous_tls_cert.arns) > 0 ?
+      data.aws_secretsmanager_secret_version.previous_tls_cert_contents.secret_string != "" : false
+  )
+
   self_signed_ca_payload = {
-    key  = local.create_ca ? tls_private_key.ca[0].private_key_pem : ""
-    cert = local.create_ca ? tls_self_signed_cert.ca[0].cert_pem : ""
+    key  = !local.previous_ca_exists ? tls_private_key.ca.private_key_pem : ""
+    cert = !local.previous_ca_exists ? tls_self_signed_cert.ca.cert_pem : ""
   }
   self_signed_tls_cert_payload = {
-    key  = local.create_tls_cert ? tls_private_key.tls[0].private_key_pem : ""
-    cert = local.create_tls_cert ? tls_self_signed_cert.tls[0].cert_pem : ""
+    key  = !local.previous_tls_cert_exists ? tls_private_key.tls.private_key_pem : ""
+    cert = !local.previous_tls_cert_exists ? tls_self_signed_cert.tls.cert_pem : ""
   }
-
-  previous_ca_secret_exists = length(data.aws_secretsmanager_secrets.previous_ca.arns) > 0
-  previous_ca_exists        = local.previous_ca_secret_exists ? data.aws_secretsmanager_secret_version.previous_ca_contents[0].secret_string != "" : false
-  create_ca                 = !local.previous_ca_exists
-
-  previous_tls_cert_secret_exists = length(data.aws_secretsmanager_secrets.previous_tls_cert.arns) > 0
-  previous_tls_cert_exists        = local.previous_tls_cert_secret_exists ? data.aws_secretsmanager_secret_version.previous_tls_cert_contents[0].secret_string != "" : false
-  create_tls_cert                 = !local.previous_tls_cert_exists
 }
 
 # TODO: Remove `moved` in next major
@@ -59,17 +61,8 @@ resource "aws_secretsmanager_secret_version" "sidecar_secrets" {
   secret_string = jsonencode(local.sidecar_secrets)
 }
 
-# TODO: Remove `moved` in next major
-moved {
-  from = aws_secretsmanager_secret.sidecar_created_certificate
-  to   = aws_secretsmanager_secret.self_signed_tls_cert
-}
-resource "aws_secretsmanager_secret" "self_signed_tls_cert" {
-  name                    = local.self_signed_tls_cert_secret_name
-  description             = "Self-signed TLS certificate used by sidecar in case a custom certificate is not provided."
-  recovery_window_in_days = 0
-  kms_key_id              = var.secrets_kms_arn
-}
+
+################################# CA #################################
 
 # TODO: Remove `moved` in next major
 moved {
@@ -95,43 +88,20 @@ resource "aws_secretsmanager_secret" "custom_tls_certificate" {
   kms_key_id              = var.secrets_kms_arn
 }
 
-resource "tls_private_key" "tls" {
-  count = local.create_tls_cert ? 1 : 0
-  algorithm = "RSA"
-  rsa_bits  = 4096
+data "aws_secretsmanager_secrets" "previous_ca" {
+  filter {
+    name   = "name"
+    values = [local.self_signed_ca_secret_name]
+  }
 }
 
 resource "tls_private_key" "ca" {
-  count = local.create_ca ? 1 : 0
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
-resource "tls_self_signed_cert" "tls" {
-  count = local.create_tls_cert ? 1 : 0
-  private_key_pem   = tls_private_key.tls[0].private_key_pem
-  is_ca_certificate = false
-
-  subject {
-    country      = local.self_signed_cert_country
-    province     = local.self_signed_cert_province
-    locality     = local.self_signed_cert_locality
-    organization = local.self_signed_cert_organization
-    common_name  = local.sidecar_endpoint
-  }
-
-  validity_period_hours = local.self_signed_cert_validity_period_hours
-
-  allowed_uses = [
-    "key_encipherment",
-    "digital_signature",
-    "server_auth",
-  ]
-}
-
 resource "tls_self_signed_cert" "ca" {
-  count = local.create_ca ? 1 : 0
-  private_key_pem   = tls_private_key.ca[0].private_key_pem
+  private_key_pem   = tls_private_key.ca.private_key_pem
   is_ca_certificate = true
 
   subject {
@@ -152,22 +122,33 @@ resource "tls_self_signed_cert" "ca" {
   ]
 }
 
-data "aws_secretsmanager_secrets" "previous_ca" {
-  filter {
-    name   = "name"
-    values = [local.self_signed_ca_secret_name]
-  }
-}
-
 data "aws_secretsmanager_secret_version" "previous_ca_contents" {
-  count = local.previous_ca_secret_exists ? 1 : 0
-  secret_id = aws_secretsmanager_secret.self_signed_ca.id
+  secret_id = aws_secretsmanager_secret.self_signed_ca.arn
 }
 
 resource "aws_secretsmanager_secret_version" "self_signed_ca" {
   secret_id     = aws_secretsmanager_secret.self_signed_ca.id
-  secret_string = local.previous_ca_exists ? data.aws_secretsmanager_secret_version.previous_ca_contents[0].secret_string : jsonencode(local.self_signed_ca_payload)
+  secret_string = (
+    local.previous_ca_exists ?
+      data.aws_secretsmanager_secret_version.previous_ca_contents.secret_string :
+      jsonencode(local.self_signed_ca_payload)
+  )
 }
+
+################################# TLS #################################
+
+# TODO: Remove `moved` in next major
+moved {
+  from = aws_secretsmanager_secret.sidecar_created_certificate
+  to   = aws_secretsmanager_secret.self_signed_tls_cert
+}
+resource "aws_secretsmanager_secret" "self_signed_tls_cert" {
+  name                    = local.self_signed_tls_cert_secret_name
+  description             = "Self-signed TLS certificate used by sidecar in case a custom certificate is not provided."
+  recovery_window_in_days = 0
+  kms_key_id              = var.secrets_kms_arn
+}
+
 
 data "aws_secretsmanager_secrets" "previous_tls_cert" {
   filter {
@@ -176,12 +157,41 @@ data "aws_secretsmanager_secrets" "previous_tls_cert" {
   }
 }
 
+resource "tls_private_key" "tls" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "tls_self_signed_cert" "tls" {
+  private_key_pem   = tls_private_key.tls.private_key_pem
+  is_ca_certificate = false
+
+  subject {
+    country      = local.self_signed_cert_country
+    province     = local.self_signed_cert_province
+    locality     = local.self_signed_cert_locality
+    organization = local.self_signed_cert_organization
+    common_name  = local.sidecar_endpoint
+  }
+
+  validity_period_hours = local.self_signed_cert_validity_period_hours
+
+  allowed_uses = [
+    "key_encipherment",
+    "digital_signature",
+    "server_auth",
+  ]
+}
+
 data "aws_secretsmanager_secret_version" "previous_tls_cert_contents" {
-  count = local.previous_tls_cert_secret_exists ? 1 : 0
-  secret_id = aws_secretsmanager_secret.self_signed_tls_cert.id
+  secret_id = aws_secretsmanager_secret.self_signed_tls_cert.arn
 }
 
 resource "aws_secretsmanager_secret_version" "self_signed_tls_cert" {
   secret_id     = aws_secretsmanager_secret.self_signed_tls_cert.id
-  secret_string = local.previous_tls_cert_exists ? data.aws_secretsmanager_secret_version.previous_tls_cert_contents[0].secret_string : jsonencode(local.self_signed_tls_cert_payload)
+  secret_string = (
+    local.previous_tls_cert_exists ?
+      data.aws_secretsmanager_secret_version.previous_tls_cert_contents.secret_string :
+      jsonencode(local.self_signed_tls_cert_payload)
+  )
 }
