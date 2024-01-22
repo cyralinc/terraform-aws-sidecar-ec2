@@ -43,7 +43,7 @@ data "aws_iam_policy_document" "init_script_policy" {
     ]
     resources = compact([
       "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:/cyral/*",
-      "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:${local.sidecar_secrets_secret_name}*"
+      "arn:${data.aws_arn.cw_lg.partition}:secretsmanager:${data.aws_arn.cw_lg.region}:${data.aws_arn.cw_lg.account}:secret:${local.sidecar_creds_secret_name}*"
     ])
   }
 
@@ -180,7 +180,7 @@ data "aws_iam_policy_document" "sidecar_custom_certificate_secrets_manager" {
     actions = [
       "secretsmanager:GetSecretValue",
     ]
-    resources = [aws_secretsmanager_secret.custom_tls_certificate[0].id]
+    resources = [aws_secretsmanager_secret.sidecar_custom_certificate[0].id]
   }
 }
 
