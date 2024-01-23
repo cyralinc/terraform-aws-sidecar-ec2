@@ -36,7 +36,7 @@ locals {
     sidecar_public_idp_certificate        = var.sidecar_public_idp_certificate
     sidecar_private_idp_key               = var.sidecar_private_idp_key
     hc_vault_integration_id               = var.hc_vault_integration_id
-    sidecar_created_certificate_secret_id = aws_secretsmanager_secret.sidecar_created_certificate.arn
+    sidecar_created_certificate_secret_id = aws_secretsmanager_secret.self_signed_tls_cert.arn
     load_balancer_tls_ports               = join(",", var.load_balancer_tls_ports)
     sidecar_version                       = var.sidecar_version
     repositories_supported                = join(",", var.repositories_supported)
@@ -44,13 +44,13 @@ locals {
     sidecar_tls_certificate_secret_arn = (
       var.sidecar_tls_certificate_secret_arn != "" ?
       var.sidecar_tls_certificate_secret_arn :
-      aws_secretsmanager_secret.sidecar_created_certificate.arn
+      aws_secretsmanager_secret.self_signed_tls_cert.arn
     )
     sidecar_tls_certificate_role_arn = var.sidecar_tls_certificate_role_arn
     sidecar_ca_certificate_secret_arn = (
       var.sidecar_ca_certificate_secret_arn != "" ?
       var.sidecar_ca_certificate_secret_arn :
-      aws_secretsmanager_secret.sidecar_ca_certificate.arn
+      aws_secretsmanager_secret.self_signed_ca.arn
     )
     sidecar_ca_certificate_role_arn   = var.sidecar_ca_certificate_role_arn
     tls_skip_verify                   = var.tls_skip_verify ? "tls-skip-verify" : "tls"

@@ -180,7 +180,7 @@ data "aws_iam_policy_document" "sidecar_custom_certificate_secrets_manager" {
     actions = [
       "secretsmanager:GetSecretValue",
     ]
-    resources = [aws_secretsmanager_secret.sidecar_custom_certificate[0].id]
+    resources = [aws_secretsmanager_secret.custom_tls_certificate[0].id]
   }
 }
 
