@@ -109,7 +109,7 @@ function load_certs() {
 }
 
 function load_idp_certs() {
-    echo "Loading IDP certificates..."
+    echo "Loading IdP certificates..."
     SIDECAR_IDP_PUBLIC_CERT="$(echo "$secret" | jq -r .sidecarPublicIdpCertificate)"
     SIDECAR_IDP_PRIVATE_KEY="$(echo "$secret" | jq -r .sidecarPrivateIdpKey)"
 }
