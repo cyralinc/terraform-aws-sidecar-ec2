@@ -11,4 +11,4 @@ terraform.tfstate*
 .idea
 
 # VSCode
-*.DS_Store
+**/.DS_Store
