@@ -6,8 +6,8 @@ locals {
     sidecarPublicIdpCertificate = replace(var.sidecar_public_idp_certificate, "\n", "\\n")
     sidecarPrivateIdpKey        = replace(var.sidecar_private_idp_key, "\n", "\\n")
   }
-  create_sidecar_custom_certificate_secret = var.sidecar_custom_certificate_account_id != ""
-  sidecar_secrets_secret_name                = var.secrets_location != "" ? var.secrets_location : "/cyral/sidecars/${var.sidecar_id}/secrets"
+  create_custom_tls_certificate_secret = var.sidecar_custom_certificate_account_id != ""
+  sidecar_secrets_secret_name          = var.secrets_location != "" ? var.secrets_location : "/cyral/sidecars/${var.sidecar_id}/secrets"
   
   self_signed_ca_secret_name       = "/cyral/sidecars/${var.sidecar_id}/ca-certificate"
   self_signed_tls_cert_secret_name = "/cyral/sidecars/${var.sidecar_id}/self-signed-certificate"
@@ -114,7 +114,7 @@ moved {
   to   = aws_secretsmanager_secret.custom_tls_certificate
 }
 resource "aws_secretsmanager_secret" "custom_tls_certificate" {
-  count                   = local.create_sidecar_custom_certificate_secret ? 1 : 0
+  count                   = local.create_custom_tls_certificate_secret ? 1 : 0
   name                    = "/cyral/sidecars/certificate/${local.name_prefix}"
   description             = "Custom certificate used by Cyral sidecar for TLS. This secret will be controlled by the Sidecar Custom Certificate module."
   recovery_window_in_days = 0
