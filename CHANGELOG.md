@@ -1,3 +1,13 @@
+## 4.5.0 (March 8, 2024)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Features:
+
+* Optionally deploy load balancer ([#100](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/100))
+
 ## 4.4.1 (January 23, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
