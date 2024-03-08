@@ -178,7 +178,7 @@ resource "aws_lb" "cyral-lb" {
 }
 
 resource "aws_lb_target_group" "cyral-sidecar-tg" {
-  for_each = var.deploy_load_balancer ? { for port in var.sidecar_ports : tostring(port) => port } : { for i in [] : "" => 0 }
+  for_each = var.deploy_load_balancer ? { for port in var.sidecar_ports : tostring(port) => port } : {}
   name     = "${local.name_prefix}-${each.value}"
   port     = each.value
   protocol = "TCP"
@@ -197,7 +197,7 @@ resource "aws_lb_target_group" "cyral-sidecar-tg" {
 
 resource "aws_lb_listener" "cyral-sidecar-lb-ls" {
   # Listener for load balancer - all existing sidecar ports
-  for_each          = var.deploy_load_balancer ? { for port in var.sidecar_ports : tostring(port) => port } : { for i in [] : "" => 0 }
+  for_each          = var.deploy_load_balancer ? { for port in var.sidecar_ports : tostring(port) => port } : {}
   load_balancer_arn = aws_lb.cyral-lb[0].arn
   port              = each.value
 
