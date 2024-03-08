@@ -67,12 +67,12 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
     version = aws_launch_template.cyral_sidecar_lt.latest_version
   }
   vpc_zone_identifier       = var.subnets
-  min_size                  = var.asg_min
-  desired_capacity          = var.asg_desired
-  max_size                  = var.asg_max
+  min_size                  = var.deploy_load_balancer ? var.asg_min : 0
+  desired_capacity          = var.deploy_load_balancer ? var.asg_desired : 1
+  max_size                  = var.deploy_load_balancer ? var.asg_max : 1
   health_check_grace_period = var.health_check_grace_period
   health_check_type         = "EC2"
-  target_group_arns         = [for tg in aws_lb_target_group.cyral-sidecar-tg : tg.id]
+  target_group_arns         = var.deploy_load_balancer ? [for tg in aws_lb_target_group.cyral-sidecar-tg : tg.id] : []
 
   tag {
     key                 = "Name"
@@ -163,6 +163,7 @@ data "aws_lbs" "current" {
 }
 
 resource "aws_lb" "cyral-lb" {
+  count = var.deploy_load_balancer ? 1 : 0
   # If the LB already exists, use the name `<name_prefix>-lb`, otherwise use
   # `<name_prefix>`. This avoids names greater than 64 characters in the
   # self-signed certificates in some AWS regions. The reason to keep
@@ -177,7 +178,7 @@ resource "aws_lb" "cyral-lb" {
 }
 
 resource "aws_lb_target_group" "cyral-sidecar-tg" {
-  for_each = { for port in var.sidecar_ports : tostring(port) => port }
+  for_each = var.deploy_load_balancer ? { for port in var.sidecar_ports : tostring(port) => port } : {}
   name     = "${local.name_prefix}-${each.value}"
   port     = each.value
   protocol = "TCP"
@@ -196,8 +197,8 @@ resource "aws_lb_target_group" "cyral-sidecar-tg" {
 
 resource "aws_lb_listener" "cyral-sidecar-lb-ls" {
   # Listener for load balancer - all existing sidecar ports
-  for_each          = { for port in var.sidecar_ports : tostring(port) => port }
-  load_balancer_arn = aws_lb.cyral-lb.arn
+  for_each          = var.deploy_load_balancer ? { for port in var.sidecar_ports : tostring(port) => port } : {}
+  load_balancer_arn = aws_lb.cyral-lb[0].arn
   port              = each.value
 
   # Snowflake listeners use TLS and the provided certificate

@@ -156,6 +156,12 @@ variable "monitoring_inbound_cidr" {
   type        = list(string)
 }
 
+variable "deploy_load_balancer" {
+  description = "Deploy or not the load balancer and target groups. This option makes the ASG have only one replica, irrelevant of the Asg Min Max and Desired"
+  type        = bool
+  default     = true
+}
+
 variable "deploy_secrets" {
   description = "Create the AWS Secrets Manager resource at `secret_location` storing `client_id`, `client_secret` and `container_registry_key`."
   type        = bool

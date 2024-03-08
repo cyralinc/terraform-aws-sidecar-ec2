@@ -7,11 +7,13 @@ locals {
   aws_partition  = data.aws_partition.current.partition
   aws_region     = data.aws_region.current.name
   aws_account_id = data.aws_caller_identity.current.account_id
-  sidecar_endpoint = (length(aws_route53_record.cyral-sidecar-dns-record) == 0 && length(var.sidecar_dns_name) > 0) ? (
-    var.sidecar_dns_name
-    ) : (
-    length(aws_route53_record.cyral-sidecar-dns-record) == 1 ? aws_route53_record.cyral-sidecar-dns-record[0].fqdn : aws_lb.cyral-lb.dns_name
-  )
+  sidecar_endpoint = var.deploy_load_balancer ? (
+    (length(aws_route53_record.cyral-sidecar-dns-record) == 0 && length(var.sidecar_dns_name) > 0) ? (
+      var.sidecar_dns_name
+      ) : (
+      length(aws_route53_record.cyral-sidecar-dns-record) == 1 ? aws_route53_record.cyral-sidecar-dns-record[0].fqdn : aws_lb.cyral-lb[0].dns_name
+    )
+  ) : ""
   curl                      = var.tls_skip_verify ? "curl -k" : "curl"
   name_prefix               = var.name_prefix == "" ? "cyral-${substr(lower(var.sidecar_id), -6, -1)}" : var.name_prefix
   cloudwatch_log_group_name = var.cloudwatch_log_group_name == "" ? local.name_prefix : var.cloudwatch_log_group_name

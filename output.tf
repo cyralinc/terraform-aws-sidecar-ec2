@@ -9,7 +9,7 @@ output "sidecar_dns" {
 }
 
 output "sidecar_load_balancer_dns" {
-  value       = aws_lb.cyral-lb.dns_name
+  value       = var.deploy_load_balancer ? aws_lb.cyral-lb[0].dns_name : null
   description = "Sidecar load balancer DNS endpoint"
 }
 

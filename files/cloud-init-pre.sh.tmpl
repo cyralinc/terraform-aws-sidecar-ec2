@@ -79,6 +79,16 @@ else
     retry download_sidecar
 fi
 
+CYRAL_SIDECAR_ENDPOINT="${sidecar_endpoint}"
+if [ -z "$CYRAL_SIDECAR_ENDPOINT" ]; then
+    CYRAL_SIDECAR_ENDPOINT=$(curl --fail --silent --max-time 1 \
+        -H "X-aws-ec2-metadata-token: $(curl --max-time 1 --fail --silent \
+        -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")" \
+        http://169.254.169.254/latest/meta-data/public-ipv4 || (hostname -I 2>/dev/null || echo "manually-set-endpoint") | awk '{print $1}')
+fi
+
+echo "Sidecar endpoint: $CYRAL_SIDECAR_ENDPOINT"
+
 echo "Initializing environment variables..."
 cat > /home/ec2-user/.env << EOF
 SIDECAR_VERSION=$SIDECAR_VERSION
@@ -87,7 +97,7 @@ IS_RECYCLABLE=true
 CONTROLPLANE_HOST=${controlplane_host}
 CONTAINER_REGISTRY=${container_registry}
 SECRETS_LOCATION=${secrets_location}
-SIDECAR_ENDPOINT=${sidecar_endpoint}
+SIDECAR_ENDPOINT=$CYRAL_SIDECAR_ENDPOINT
 CLOUD_PROVIDER=AWS
 AWS_REGION=${aws_region}
 AWS_ACCOUNT_ID=${aws_account_id}
@@ -114,7 +124,7 @@ CYRAL_SIDECAR_ID=${sidecar_id}
 CYRAL_SIDECAR_CLIENT_ID=$${SIDECAR_CLIENT_ID}
 CYRAL_SIDECAR_CLIENT_SECRET=$${SIDECAR_CLIENT_SECRET}
 CYRAL_CONTROL_PLANE=${controlplane_host}
-CYRAL_SIDECAR_ENDPOINT=${sidecar_endpoint}
+CYRAL_SIDECAR_ENDPOINT=$CYRAL_SIDECAR_ENDPOINT
 CYRAL_SIDECAR_VERSION=$SIDECAR_VERSION
 CYRAL_DEPLOYMENT_PROPERTIES='{ "account-id": "${aws_account_id}","region": "${aws_region}" }'
 
