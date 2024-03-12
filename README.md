@@ -89,6 +89,7 @@ Instructions for advanced deployment configurations are available for the follow
 
 * [Sidecar certificates](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/certificates.md)
 * [Sidecar instance metrics](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/metrics.md)
+* [Enable the S3 File Browser](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/s3-browser.md)
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
