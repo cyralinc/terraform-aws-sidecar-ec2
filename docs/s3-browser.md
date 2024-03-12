@@ -73,6 +73,7 @@ resource "aws_iam_role_policy_attachment" "s3_role_policy_attachment" {
   role       = aws_iam_role.s3_role.name
   policy_arn = aws_iam_policy.s3_access_policy.arn
 }
+```
 
 For more details about the S3 File Browser configuration, check the 
 [Enable the S3 File Browser](https://cyral.com/docs/how-to/enable-s3-browser) 
