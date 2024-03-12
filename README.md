@@ -87,6 +87,7 @@ instructions on how to upgrade this module from previous major versions.
 
 Instructions for advanced deployment configurations are available for the following topics:
 
+* [Enable the S3 File Browser](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/s3-browser.md)
 * [Sidecar certificates](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/certificates.md)
 * [Sidecar instance metrics](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/metrics.md)
 
