@@ -9,7 +9,7 @@ To configure the sidecar to work on the S3 File Browser, set the following param
   
   # Custom DNS name (CNAME) related changes
   sidecar_dns_hosted_zone_id = "<AWS_ROUTE_53_ZONE_ID>"
-  sidecar_dns_name = "<CNAME>" # ex: "www.sidecar-custom-name.com"
+  sidecar_dns_name = "<CNAME>" # ex: "sidecar.custom-domain.com"
   ```
 
 If `sidecar_dns_hosted_zone_id` is omitted, the `sidecar_dns_name` won’t
