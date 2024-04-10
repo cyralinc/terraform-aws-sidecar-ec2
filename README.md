@@ -15,7 +15,7 @@ components for the sidecar to run. In a high-level, these are the resources depl
 
 * EC2
     * Auto scaling group (responsible for managing EC2 instances and EBS volumes)
-    * Network load balancer
+    * Network load balancer (optional)
     * Security group
 * Secrets Manager
     * Sidecar credentials
@@ -24,7 +24,7 @@ components for the sidecar to run. In a high-level, these are the resources depl
 * IAM
     * Sidecar role
 * Cloudwatch
-    * Log group (optionally created)
+    * Log group (optional)
 
 ## Usage
 
