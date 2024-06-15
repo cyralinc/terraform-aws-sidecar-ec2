@@ -1,3 +1,17 @@
+## 4.5.2 (June 15, 2024)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Enhancements:
+
+* ENG-13783: Adds environment variables for sidecar exporter configuration ([#104](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/104))
+
+### Documentation:
+
+* Update docs for optional LB deployment ([#103](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/103))
+
 ## 4.5.1 (April 6, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
