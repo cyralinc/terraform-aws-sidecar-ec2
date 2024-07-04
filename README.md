@@ -164,7 +164,8 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_additional_security_groups"></a> [additional\_security\_groups](#input\_additional\_security\_groups) | Additional security groups to attach to sidecar instances | `list(string)` | `[]` | no |
+| <a name="input_additional_security_groups"></a> [additional\_security\_groups](#input\_additional\_security\_groups) | List of the IDs of the additional security groups that will be attached to the sidecar instances. If providing<br>`additional_target_groups`, use this parameter to provide security groups with the inbound rules to allow<br>inbound traffic from the target groups to the instances. | `list(string)` | `[]` | no |
+| <a name="input_additional_target_groups"></a> [additional\_target\_groups](#input\_additional\_target\_groups) | List of the ARNs of the additional target groups that will be attached to the sidecar instances. Use it in<br>conjunction with `additional_security_groups` to provide the inbound rules for the ports associated with <br>them, otherwise the incoming traffic from the target groups will not be allowed to access the EC2 instances. | `list(string)` | `[]` | no |
 | <a name="input_ami_id"></a> [ami\_id](#input\_ami\_id) | Amazon Linux 2 AMI ID for sidecar EC2 instances. The default behavior is to use the latest version.<br>In order to define a new image, provide the desired image id. | `string` | `""` | no |
 | <a name="input_asg_count"></a> [asg\_count](#input\_asg\_count) | Set to 1 to enable the ASG, 0 to disable. Only for debugging. | `number` | `1` | no |
 | <a name="input_asg_desired"></a> [asg\_desired](#input\_asg\_desired) | The desired number of hosts to create in the auto scaling group | `number` | `1` | no |

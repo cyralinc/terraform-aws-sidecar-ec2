@@ -72,7 +72,7 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
   max_size                  = var.deploy_load_balancer ? var.asg_max : 1
   health_check_grace_period = var.health_check_grace_period
   health_check_type         = "EC2"
-  target_group_arns         = var.deploy_load_balancer ? [for tg in aws_lb_target_group.cyral-sidecar-tg : tg.id] : []
+  target_group_arns         = var.deploy_load_balancer ? concat([for tg in aws_lb_target_group.cyral-sidecar-tg : tg.id], var.additional_target_groups) : var.additional_target_groups
 
   tag {
     key                 = "Name"
