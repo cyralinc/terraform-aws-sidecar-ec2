@@ -175,6 +175,7 @@ resource "aws_lb" "cyral-lb" {
   load_balancer_type               = "network"
   subnets                          = length(var.load_balancer_subnets) > 0 ? var.load_balancer_subnets : var.subnets
   enable_cross_zone_load_balancing = var.enable_cross_zone_load_balancing
+  security_groups                  = var.load_balancer_security_groups
 }
 
 resource "aws_lb_target_group" "cyral-sidecar-tg" {
