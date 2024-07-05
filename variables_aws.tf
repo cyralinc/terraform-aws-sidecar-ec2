@@ -193,7 +193,21 @@ variable "associate_public_ip_address" {
 }
 
 variable "additional_security_groups" {
-  description = "Additional security groups to attach to sidecar instances"
+  description = <<EOF
+List of the IDs of the additional security groups that will be attached to the sidecar instances. If providing
+`additional_target_groups`, use this parameter to provide security groups with the inbound rules to allow
+inbound traffic from the target groups to the instances.
+EOF
+  type        = list(string)
+  default     = []
+}
+
+variable "additional_target_groups" {
+  description = <<EOF
+List of the ARNs of the additional target groups that will be attached to the sidecar instances. Use it in
+conjunction with `additional_security_groups` to provide the inbound rules for the ports associated with 
+them, otherwise the incoming traffic from the target groups will not be allowed to access the EC2 instances.
+EOF
   type        = list(string)
   default     = []
 }
