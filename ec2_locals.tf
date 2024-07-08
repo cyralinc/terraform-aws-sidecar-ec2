@@ -11,7 +11,7 @@ locals {
     (length(aws_route53_record.cyral-sidecar-dns-record) == 0 && length(var.sidecar_dns_name) > 0) ? (
       var.sidecar_dns_name
       ) : (
-      length(aws_route53_record.cyral-sidecar-dns-record) == 1 ? aws_route53_record.cyral-sidecar-dns-record[0].fqdn : aws_lb.cyral-lb[0].dns_name
+      length(aws_route53_record.cyral-sidecar-dns-record) == 1 ? aws_route53_record.cyral-sidecar-dns-record[0].fqdn : aws_lb.lb[0].dns_name
     )
   ) : ""
   curl                      = var.tls_skip_verify ? "curl -k" : "curl"

@@ -9,7 +9,12 @@ data "aws_ami" "amazon_linux_2" {
   owners = ["amazon"]
 }
 
-resource "aws_launch_template" "cyral_sidecar_lt" {
+# TODO: Remove `moved` in next major
+moved {
+  from = aws_launch_template.cyral_sidecar_lt
+  to   = aws_launch_template.lt
+}
+resource "aws_launch_template" "lt" {
   # Launch configuration for sidecar instances that will run containers
   name          = "${local.name_prefix}-LT"
   image_id      = var.ami_id != "" ? var.ami_id : data.aws_ami.amazon_linux_2.id
@@ -58,13 +63,16 @@ EOT
   }
 }
 
-resource "aws_autoscaling_group" "cyral-sidecar-asg" {
-  # Autoscaling group of immutable sidecar instances
-  count = var.asg_count
+# TODO: Remove `moved` in next major
+moved {
+  from = aws_autoscaling_group.cyral-sidecar-asg
+  to   = aws_autoscaling_group.asg
+}
+resource "aws_autoscaling_group" "asg" {
   name  = "${local.name_prefix}-asg"
   launch_template {
-    id      = aws_launch_template.cyral_sidecar_lt.id
-    version = aws_launch_template.cyral_sidecar_lt.latest_version
+    id      = aws_launch_template.lt.id
+    version = aws_launch_template.lt.latest_version
   }
   vpc_zone_identifier       = var.subnets
   min_size                  = var.asg_min
@@ -72,7 +80,7 @@ resource "aws_autoscaling_group" "cyral-sidecar-asg" {
   max_size                  = var.asg_max
   health_check_grace_period = var.health_check_grace_period
   health_check_type         = "EC2"
-  target_group_arns         = var.deploy_load_balancer ? concat([for tg in aws_lb_target_group.cyral-sidecar-tg : tg.id], var.additional_target_groups) : var.additional_target_groups
+  target_group_arns         = var.deploy_load_balancer ? concat([for tg in aws_lb_target_group.tg : tg.id], var.additional_target_groups) : var.additional_target_groups
 
   tag {
     key                 = "Name"
@@ -162,7 +170,13 @@ resource "aws_security_group" "instance" {
 data "aws_lbs" "current" {
 }
 
-resource "aws_lb" "cyral-lb" {
+
+# TODO: Remove `moved` in next major
+moved {
+  from = aws_lb.cyral-lb
+  to   = aws_lb.lb
+}
+resource "aws_lb" "lb" {
   count = var.deploy_load_balancer ? 1 : 0
   # If the LB already exists, use the name `<name_prefix>-lb`, otherwise use
   # `<name_prefix>`. This avoids names greater than 64 characters in the
@@ -178,7 +192,12 @@ resource "aws_lb" "cyral-lb" {
   security_groups                  = var.load_balancer_security_groups
 }
 
-resource "aws_lb_target_group" "cyral-sidecar-tg" {
+# TODO: Remove `moved` in next major
+moved {
+  from = aws_lb_target_group.cyral-sidecar-tg
+  to   = aws_lb_target_group.tg
+}
+resource "aws_lb_target_group" "tg" {
   for_each = var.deploy_load_balancer ? { for port in var.sidecar_ports : tostring(port) => port } : {}
   name     = "${local.name_prefix}-${each.value}"
   port     = each.value
@@ -196,10 +215,15 @@ resource "aws_lb_target_group" "cyral-sidecar-tg" {
   }
 }
 
-resource "aws_lb_listener" "cyral-sidecar-lb-ls" {
+# TODO: Remove `moved` in next major
+moved {
+  from = aws_lb_listener.cyral-sidecar-lb-ls
+  to   = aws_lb_listener.ls
+}
+resource "aws_lb_listener" "ls" {
   # Listener for load balancer - all existing sidecar ports
   for_each          = var.deploy_load_balancer ? { for port in var.sidecar_ports : tostring(port) => port } : {}
-  load_balancer_arn = aws_lb.cyral-lb[0].arn
+  load_balancer_arn = aws_lb.lb[0].arn
   port              = each.value
 
   # Snowflake listeners use TLS and the provided certificate
@@ -208,7 +232,7 @@ resource "aws_lb_listener" "cyral-sidecar-lb-ls" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.cyral-sidecar-tg[each.key].arn
+    target_group_arn = aws_lb_target_group.tg[each.key].arn
   }
   # Lifecycle control added as part of a TG name that was performed
   # to make sidecars deployed using previous versions of the module
@@ -217,7 +241,7 @@ resource "aws_lb_listener" "cyral-sidecar-lb-ls" {
   # the TG name change.
   lifecycle {
     replace_triggered_by = [
-      aws_lb_target_group.cyral-sidecar-tg[each.key].name
+      aws_lb_target_group.tg[each.key].name
     ]
   }
 }
