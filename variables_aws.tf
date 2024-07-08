@@ -86,14 +86,30 @@ variable "subnets" {
   type        = list(string)
 }
 
+variable "load_balancer_security_groups" {
+  description = <<EOF
+List of the IDs of the additional security groups that will be attached to the load balancer.
+Parameter has no effect in case `deploy_load_balancer = false`.
+EOF
+  type        = list(string)
+  default     = []
+}
+
 variable "load_balancer_subnets" {
-  description = "Subnets to add load balancer to. If not provided, the load balancer will assume the subnets specified in the `subnets` parameter."
+  description = <<EOF
+Subnets to add load balancer to. If not provided, the load balancer will assume the subnets
+specified in the `subnets` parameter.
+Parameter has no effect in case `deploy_load_balancer = false`.
+EOF
   type        = list(string)
   default     = []
 }
 
 variable "load_balancer_scheme" {
-  description = "EC2 network load balancer scheme ('internal' or 'internet-facing')"
+  description = <<EOF
+EC2 network load balancer scheme (`internal` or `internet-facing`)
+Parameter has no effect in case `deploy_load_balancer = false`.
+EOF
   type        = string
   default     = "internal"
 }
