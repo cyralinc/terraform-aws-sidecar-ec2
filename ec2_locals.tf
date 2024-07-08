@@ -31,7 +31,7 @@ locals {
     aws_account_id                        = local.aws_account_id
     log_integration                       = var.log_integration
     metrics_integration                   = var.metrics_integration
-    log_group_name                        = aws_cloudwatch_log_group.cyral-sidecar-lg.name
+    log_group_name                        = aws_cloudwatch_log_group.lg.name
     secrets_location                      = local.sidecar_secrets_secret_name
     idp_sso_login_url                     = var.idp_sso_login_url
     idp_certificate                       = var.idp_certificate
