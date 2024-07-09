@@ -1,3 +1,15 @@
+## 4.6.0 (July 9, 2024)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Features:
+
+* ENG-14157: Add support for additional target groups ([#105](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/105))
+* ENG-13936: Add new variable 'load_balancer_security_groups' ([#106](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/106))
+* ENG-13935: Add output variables for AWS resources ARNs ([#107](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/107))
+
 ## 4.5.2 (June 15, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
