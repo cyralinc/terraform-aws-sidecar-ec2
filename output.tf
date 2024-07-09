@@ -4,7 +4,7 @@ locals {
 }
 
 output "autoscaling_group_arn" {
-  value       = aws_autoscaling_group.asg.arn
+  value       = aws_autoscaling_group.asg[0].arn
   description = "Auto scaling group ARN"
 }
 

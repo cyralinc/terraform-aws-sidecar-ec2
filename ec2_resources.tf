@@ -69,6 +69,8 @@ moved {
   to   = aws_autoscaling_group.asg
 }
 resource "aws_autoscaling_group" "asg" {
+  # TODO: Remove `count` in next major
+  count = 1
   name  = "${local.name_prefix}-asg"
   launch_template {
     id      = aws_launch_template.lt.id
