@@ -116,8 +116,8 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_autoscaling_group.cyral-sidecar-asg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group) | resource |
-| [aws_cloudwatch_log_group.cyral-sidecar-lg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
+| [aws_autoscaling_group.asg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group) | resource |
+| [aws_cloudwatch_log_group.lg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_iam_instance_profile.sidecar_profile](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_policy.init_script_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.sidecar_custom_certificate_secrets_manager](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
@@ -130,10 +130,10 @@ No modules.
 | [aws_lambda_function.self_signed_certificate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function) | resource |
 | [aws_lambda_invocation.self_signed_ca_certificate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_invocation) | resource |
 | [aws_lambda_invocation.self_signed_tls_certificate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_invocation) | resource |
-| [aws_launch_template.cyral_sidecar_lt](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
-| [aws_lb.cyral-lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb) | resource |
-| [aws_lb_listener.cyral-sidecar-lb-ls](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener) | resource |
-| [aws_lb_target_group.cyral-sidecar-tg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) | resource |
+| [aws_launch_template.lt](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
+| [aws_lb.lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb) | resource |
+| [aws_lb_listener.ls](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener) | resource |
+| [aws_lb_target_group.tg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) | resource |
 | [aws_route53_record.cyral-sidecar-dns-record](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_secretsmanager_secret.custom_tls_certificate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
 | [aws_secretsmanager_secret.self_signed_ca](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
@@ -167,7 +167,7 @@ No modules.
 | <a name="input_additional_security_groups"></a> [additional\_security\_groups](#input\_additional\_security\_groups) | List of the IDs of the additional security groups that will be attached to the sidecar instances. If providing<br>`additional_target_groups`, use this parameter to provide security groups with the inbound rules to allow<br>inbound traffic from the target groups to the instances. | `list(string)` | `[]` | no |
 | <a name="input_additional_target_groups"></a> [additional\_target\_groups](#input\_additional\_target\_groups) | List of the ARNs of the additional target groups that will be attached to the sidecar instances. Use it in<br>conjunction with `additional_security_groups` to provide the inbound rules for the ports associated with <br>them, otherwise the incoming traffic from the target groups will not be allowed to access the EC2 instances. | `list(string)` | `[]` | no |
 | <a name="input_ami_id"></a> [ami\_id](#input\_ami\_id) | Amazon Linux 2 AMI ID for sidecar EC2 instances. The default behavior is to use the latest version.<br>In order to define a new image, provide the desired image id. | `string` | `""` | no |
-| <a name="input_asg_count"></a> [asg\_count](#input\_asg\_count) | Set to 1 to enable the ASG, 0 to disable. Only for debugging. | `number` | `1` | no |
+| <a name="input_asg_count"></a> [asg\_count](#input\_asg\_count) | (Deprecated) Set to 1 to enable the ASG, 0 to disable. Only for debugging. | `number` | `1` | no |
 | <a name="input_asg_desired"></a> [asg\_desired](#input\_asg\_desired) | The desired number of hosts to create in the auto scaling group | `number` | `1` | no |
 | <a name="input_asg_max"></a> [asg\_max](#input\_asg\_max) | The maximum number of hosts to create in the auto scaling group | `number` | `3` | no |
 | <a name="input_asg_min"></a> [asg\_min](#input\_asg\_min) | The minimum number of hosts to create in the auto scaling group | `number` | `1` | no |
@@ -238,11 +238,18 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_aws_cloudwatch_log_group_name"></a> [aws\_cloudwatch\_log\_group\_name](#output\_aws\_cloudwatch\_log\_group\_name) | Name of the CloudWatch log group where sidecar logs are stored. |
+| <a name="output_autoscaling_group_arn"></a> [autoscaling\_group\_arn](#output\_autoscaling\_group\_arn) | Auto scaling group ARN |
+| <a name="output_aws_cloudwatch_log_group_name"></a> [aws\_cloudwatch\_log\_group\_name](#output\_aws\_cloudwatch\_log\_group\_name) | Name of the CloudWatch log group where sidecar logs are stored |
 | <a name="output_aws_iam_role_arn"></a> [aws\_iam\_role\_arn](#output\_aws\_iam\_role\_arn) | Sidecar IAM role ARN |
 | <a name="output_aws_security_group_id"></a> [aws\_security\_group\_id](#output\_aws\_security\_group\_id) | Sidecar security group id |
-| <a name="output_sidecar_custom_certificate_role_arn"></a> [sidecar\_custom\_certificate\_role\_arn](#output\_sidecar\_custom\_certificate\_role\_arn) | IAM role ARN to use in the Sidecar Custom Certificate modules. |
-| <a name="output_sidecar_custom_certificate_secret_arn"></a> [sidecar\_custom\_certificate\_secret\_arn](#output\_sidecar\_custom\_certificate\_secret\_arn) | Secret ARN to use in the Sidecar Custom Certificate modules. |
+| <a name="output_custom_tls_certificate_secret_arn"></a> [custom\_tls\_certificate\_secret\_arn](#output\_custom\_tls\_certificate\_secret\_arn) | Sidecar custom certificate secret ARN |
+| <a name="output_launch_template_arn"></a> [launch\_template\_arn](#output\_launch\_template\_arn) | Launch template ARN |
+| <a name="output_load_balancer_arn"></a> [load\_balancer\_arn](#output\_load\_balancer\_arn) | Load balancer ARN |
+| <a name="output_self_signed_ca_cert_secret_arn"></a> [self\_signed\_ca\_cert\_secret\_arn](#output\_self\_signed\_ca\_cert\_secret\_arn) | Sidecar self signed CA certificate secret ARN |
+| <a name="output_self_signed_tls_cert_secret_arn"></a> [self\_signed\_tls\_cert\_secret\_arn](#output\_self\_signed\_tls\_cert\_secret\_arn) | Sidecar self signed TLS certificate secret ARN |
+| <a name="output_sidecar_credentials_secret_arn"></a> [sidecar\_credentials\_secret\_arn](#output\_sidecar\_credentials\_secret\_arn) | Sidecar secret ARN |
+| <a name="output_sidecar_custom_certificate_role_arn"></a> [sidecar\_custom\_certificate\_role\_arn](#output\_sidecar\_custom\_certificate\_role\_arn) | IAM role ARN to use in the Sidecar Custom Certificate modules |
+| <a name="output_sidecar_custom_certificate_secret_arn"></a> [sidecar\_custom\_certificate\_secret\_arn](#output\_sidecar\_custom\_certificate\_secret\_arn) | Secret ARN to use in the Sidecar Custom Certificate modules |
 | <a name="output_sidecar_dns"></a> [sidecar\_dns](#output\_sidecar\_dns) | Sidecar DNS endpoint |
 | <a name="output_sidecar_load_balancer_dns"></a> [sidecar\_load\_balancer\_dns](#output\_sidecar\_load\_balancer\_dns) | Sidecar load balancer DNS endpoint |
 <!-- END_TF_DOCS -->

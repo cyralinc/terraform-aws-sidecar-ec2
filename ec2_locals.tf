@@ -11,7 +11,7 @@ locals {
     (length(aws_route53_record.cyral-sidecar-dns-record) == 0 && length(var.sidecar_dns_name) > 0) ? (
       var.sidecar_dns_name
       ) : (
-      length(aws_route53_record.cyral-sidecar-dns-record) == 1 ? aws_route53_record.cyral-sidecar-dns-record[0].fqdn : aws_lb.cyral-lb[0].dns_name
+      length(aws_route53_record.cyral-sidecar-dns-record) == 1 ? aws_route53_record.cyral-sidecar-dns-record[0].fqdn : aws_lb.lb[0].dns_name
     )
   ) : ""
   curl                      = var.tls_skip_verify ? "curl -k" : "curl"
@@ -31,7 +31,7 @@ locals {
     aws_account_id                        = local.aws_account_id
     log_integration                       = var.log_integration
     metrics_integration                   = var.metrics_integration
-    log_group_name                        = aws_cloudwatch_log_group.cyral-sidecar-lg.name
+    log_group_name                        = aws_cloudwatch_log_group.lg.name
     secrets_location                      = local.sidecar_secrets_secret_name
     idp_sso_login_url                     = var.idp_sso_login_url
     idp_certificate                       = var.idp_certificate

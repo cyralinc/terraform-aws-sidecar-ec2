@@ -9,7 +9,7 @@ locals {
 # where the resources are actually deployed. This prevents issues with
 # deployment pipelines that runs on AWS and deploys to different accounts.
 data "aws_arn" "cw_lg" {
-  arn = aws_cloudwatch_log_group.cyral-sidecar-lg.arn
+  arn = aws_cloudwatch_log_group.lg.arn
 }
 
 data "aws_iam_policy_document" "init_script_policy" {
@@ -32,7 +32,7 @@ data "aws_iam_policy_document" "init_script_policy" {
       "logs:PutLogEvents"
     ]
     resources = [
-      "${aws_cloudwatch_log_group.cyral-sidecar-lg.arn}:*"
+      "${aws_cloudwatch_log_group.lg.arn}:*"
     ]
   }
 

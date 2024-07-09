@@ -4,6 +4,6 @@ resource "aws_route53_record" "cyral-sidecar-dns-record" {
   name            = var.sidecar_dns_name
   type            = "CNAME"
   ttl             = "300"
-  records         = [aws_lb.cyral-lb[0].dns_name]
+  records         = [aws_lb.lb[0].dns_name]
   allow_overwrite = var.sidecar_dns_overwrite
 }

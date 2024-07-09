@@ -8,7 +8,7 @@ EOF
 }
 
 variable "asg_count" {
-  description = "Set to 1 to enable the ASG, 0 to disable. Only for debugging."
+  description = "(Deprecated) Set to 1 to enable the ASG, 0 to disable. Only for debugging."
   type        = number
   default     = 1
 }
