@@ -1,6 +1,12 @@
 # Advanced networking configurations
 
 It is possible to deploy the sidecar module to different networking configurations to attend different needs.
+A common scenario is to adjust the load balancer and EC2 instances exposure to the internet or even expand
+the number of available inbound ports in a load balancer beyound the standard AWS limits. See the following
+sections to learn how to set up the necessary parameters on different scenarios.
+
+## Public vs private networking
+
 For testing and evaluation purposes, it is very common that customers will deploy a public sidecar
 (public load balancer and public instances), but this is not a recommended approach for a production
 environment. In production, typically customers will deploy an entirely private sidecar (private load 
@@ -13,7 +19,7 @@ All resources outlined below are expected to live in the same VPC, meaning that 
 `vpc_id` will correspond to the ID of the VPC of all subnets used throughout the deployment 
 configuration.
 
-## Public load balancer and public EC2 instances
+### Public load balancer and public EC2 instances
 
 To deploy an entirely public sidecar, use the following parameters:
 
@@ -23,7 +29,7 @@ and have a route to an internet gateway to enable internet access.
 * `load_balancer_scheme`: set to `"internet-facing"`.
 * `associate_public_ip_address` set to `true`.
 
-## Private load balancer and private EC2 instances
+### Private load balancer and private EC2 instances
 
 To deploy an entirely private sidecar, use the following parameters:
 
@@ -33,11 +39,10 @@ through a NAT gateway.
 * `load_balancer_scheme`: set to `"internal"` (this is the default value).
 * `associate_public_ip_address` set to `false` (this is the default value).
 
-## Public load balancer and private EC2 instances
+### Public load balancer and private EC2 instances
 
 To deploy a public load balancer and private EC2 instances, use the following parameters:
 
-`subnets` and `load_balancer_subnets`.
 * `subnets`: provide private subnets in the same VPC. These subnets will be used only for the EC2
 instances. All the provided subnets must have a route to the internet through a NAT gateway.
 * `load_balancer_subnets`: provide public subnets in the same VPC and the same AZs as those in
@@ -48,3 +53,20 @@ public subnets in the same AZs for this parameter. Failing to provide matching s
 cause the target group to not be able to route the traffic to the EC2 instances.
 * `load_balancer_scheme`: set to `"internet-facing"`.
 * `associate_public_ip_address` set to `false` (this is the default value).
+
+## Increase the number of inbound ports
+
+AWS has a hard limit of 50 listeners per network load balancer. This means that if your goal is
+to have more than 50 inbound ports on your sidecar load balacer, you need to create new load
+balancers other than the default LB created by the module or even manage all LBs yourself.
+This module will accept external target groups that can be attached to the auto scaling group
+created by the module. You can provide these target groups from different load balancers by
+using the following parameters:
+
+* `additional_target_groups`: provide a list of ARNs of target groups associated to one or more
+load balancers created outside of this module.
+* `additional_security_groups`: provide a list of security groups IDs that will be attached to the
+EC2 instances. These security groups must have the inbound rules to open the ports available in
+the target groups assigned to `additional_target_groups`.
+* `deploy_load_balancer`: you may optionally set it to `false` to avoid the creation of this
+module's default load balancer and manage all load balancers yourself.
