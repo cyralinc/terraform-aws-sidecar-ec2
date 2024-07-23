@@ -8,7 +8,7 @@ locals {
   }
   create_custom_tls_certificate_secret = var.sidecar_custom_certificate_account_id != ""
   sidecar_secrets_secret_name          = var.secrets_location != "" ? var.secrets_location : "/cyral/sidecars/${var.sidecar_id}/secrets"
-  
+
   self_signed_ca_secret_name       = "/cyral/sidecars/${var.sidecar_id}/ca-certificate"
   self_signed_tls_cert_secret_name = "/cyral/sidecars/${var.sidecar_id}/self-signed-certificate"
 
@@ -71,6 +71,7 @@ resource "aws_secretsmanager_secret" "sidecar_secrets" {
   name                    = local.sidecar_secrets_secret_name
   recovery_window_in_days = 0
   kms_key_id              = var.secrets_kms_arn
+  tags                    = var.custom_tags
 }
 
 # TODO: Remove `moved` in next major
@@ -94,6 +95,7 @@ resource "aws_secretsmanager_secret" "self_signed_tls_cert" {
   description             = "Self-signed TLS certificate used by sidecar in case a custom certificate is not provided."
   recovery_window_in_days = 0
   kms_key_id              = var.secrets_kms_arn
+  tags                    = var.custom_tags
 }
 
 # TODO: Remove `moved` in next major
@@ -106,6 +108,7 @@ resource "aws_secretsmanager_secret" "self_signed_ca" {
   description             = "CA certificate used by sidecar in case a custom CA certificate is not provided."
   recovery_window_in_days = 0
   kms_key_id              = var.secrets_kms_arn
+  tags                    = var.custom_tags
 }
 
 # TODO: Remove `moved` in next major
@@ -119,10 +122,11 @@ resource "aws_secretsmanager_secret" "custom_tls_certificate" {
   description             = "Custom certificate used by Cyral sidecar for TLS. This secret will be controlled by the Sidecar Custom Certificate module."
   recovery_window_in_days = 0
   kms_key_id              = var.secrets_kms_arn
+  tags                    = var.custom_tags
 }
 
 resource "aws_lambda_function" "self_signed_certificate" {
-  count = local.deploy_lambda ? 1 : 0
+  count            = local.deploy_lambda ? 1 : 0
   function_name    = "${local.name_prefix}-self_signed_certificate"
   description      = "Generates certificates for the sidecar when needed"
   role             = aws_iam_role.self_signed_certificate.arn
@@ -134,10 +138,11 @@ resource "aws_lambda_function" "self_signed_certificate" {
     "arn:aws:lambda:${local.aws_region}:155826672581:layer:pyopenssl:1"
   ]
   timeout = 120
+  tags    = var.custom_tags
 }
 
 resource "aws_lambda_invocation" "self_signed_tls_certificate" {
-  count = local.deploy_lambda ? 1 : 0
+  count         = local.deploy_lambda ? 1 : 0
   function_name = aws_lambda_function.self_signed_certificate[0].function_name
   input = jsonencode({
     SecretId        = aws_secretsmanager_secret.self_signed_tls_cert.id
@@ -147,7 +152,7 @@ resource "aws_lambda_invocation" "self_signed_tls_certificate" {
 }
 
 resource "aws_lambda_invocation" "self_signed_ca_certificate" {
-  count = local.deploy_lambda ? 1 : 0
+  count         = local.deploy_lambda ? 1 : 0
   function_name = aws_lambda_function.self_signed_certificate[0].function_name
   input = jsonencode({
     SecretId        = aws_secretsmanager_secret.self_signed_ca.id
@@ -158,19 +163,19 @@ resource "aws_lambda_invocation" "self_signed_ca_certificate" {
 
 
 resource "tls_private_key" "tls" {
-  count = local.deploy_lambda ? 0 : 1
+  count     = local.deploy_lambda ? 0 : 1
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "tls_private_key" "ca" {
-  count = local.deploy_lambda ? 0 : 1
+  count     = local.deploy_lambda ? 0 : 1
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "tls_self_signed_cert" "tls" {
-  count = local.deploy_lambda ? 0 : 1
+  count             = local.deploy_lambda ? 0 : 1
   private_key_pem   = tls_private_key.tls[0].private_key_pem
   is_ca_certificate = false
 
@@ -192,7 +197,7 @@ resource "tls_self_signed_cert" "tls" {
 }
 
 resource "tls_self_signed_cert" "ca" {
-  count = local.deploy_lambda ? 0 : 1
+  count             = local.deploy_lambda ? 0 : 1
   private_key_pem   = tls_private_key.ca[0].private_key_pem
   is_ca_certificate = true
 
@@ -215,13 +220,13 @@ resource "tls_self_signed_cert" "ca" {
 }
 
 resource "aws_secretsmanager_secret_version" "self_signed_ca" {
-  count = local.deploy_lambda ? 0 : 1
+  count         = local.deploy_lambda ? 0 : 1
   secret_id     = aws_secretsmanager_secret.self_signed_ca.id
   secret_string = jsonencode(local.self_signed_ca_payload)
 }
 
 resource "aws_secretsmanager_secret_version" "self_signed_tls_cert" {
-  count = local.deploy_lambda ? 0 : 1
+  count         = local.deploy_lambda ? 0 : 1
   secret_id     = aws_secretsmanager_secret.self_signed_tls_cert.id
   secret_string = jsonencode(local.self_signed_tls_cert_payload)
 }

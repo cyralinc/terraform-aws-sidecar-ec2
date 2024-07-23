@@ -41,6 +41,12 @@ variable "asg_min_healthy_percentage" {
   }
 }
 
+variable "custom_tags" {
+  description = "Custom tags to be added to all AWS resources created"
+  type        = map(any)
+  default     = {}
+}
+
 variable "enable_cross_zone_load_balancing" {
   description = "Enable cross zone load balancing"
   type        = bool

@@ -102,6 +102,15 @@ resource "aws_autoscaling_group" "asg" {
     propagate_at_launch = true
   }
 
+  dynamic "tag" {
+    for_each = var.custom_tags
+    content {
+      key                 = tag.key
+      propagate_at_launch = true
+      value               = tag.value
+    }
+  }
+
   # Delete existing hosts before starting a new one
   lifecycle {
     create_before_destroy = false
@@ -118,6 +127,7 @@ resource "aws_autoscaling_group" "asg" {
 resource "aws_security_group" "instance" {
   name   = "${local.name_prefix}-instance"
   vpc_id = var.vpc_id
+  tags   = var.custom_tags
 
   # Allow SSH inbound
   dynamic "ingress" {
@@ -192,6 +202,7 @@ resource "aws_lb" "lb" {
   subnets                          = length(var.load_balancer_subnets) > 0 ? var.load_balancer_subnets : var.subnets
   enable_cross_zone_load_balancing = var.enable_cross_zone_load_balancing
   security_groups                  = var.load_balancer_security_groups
+  tags                             = var.custom_tags
 }
 
 # TODO: Remove `moved` in next major
@@ -200,17 +211,18 @@ moved {
   to   = aws_lb_target_group.tg
 }
 resource "aws_lb_target_group" "tg" {
-  for_each = var.deploy_load_balancer ? { for port in var.sidecar_ports : tostring(port) => port } : {}
-  name     = "${local.name_prefix}-${each.value}"
-  port     = each.value
-  protocol = "TCP"
-  vpc_id   = var.vpc_id
+  for_each             = var.deploy_load_balancer ? { for port in var.sidecar_ports : tostring(port) => port } : {}
+  name                 = "${local.name_prefix}-${each.value}"
+  port                 = each.value
+  protocol             = "TCP"
+  vpc_id               = var.vpc_id
+  tags                 = var.custom_tags
+  deregistration_delay = 0
   health_check {
     port     = 9000
     protocol = "HTTP"
     path     = "/health"
   }
-  deregistration_delay = 0
   stickiness {
     enabled = contains(var.load_balancer_sticky_ports, each.value) ? true : false
     type    = "source_ip"
@@ -231,6 +243,8 @@ resource "aws_lb_listener" "ls" {
   # Snowflake listeners use TLS and the provided certificate
   protocol        = contains(var.load_balancer_tls_ports, tonumber(each.value)) ? "TLS" : "TCP"
   certificate_arn = contains(var.load_balancer_tls_ports, tonumber(each.value)) ? var.load_balancer_certificate_arn : null
+
+  tags = var.custom_tags
 
   default_action {
     type             = "forward"
