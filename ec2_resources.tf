@@ -241,6 +241,8 @@ resource "aws_lb_listener" "ls" {
   port              = each.value
 
   # Snowflake listeners use TLS and the provided certificate
+  certificate_arn = contains(var.load_balancer_tls_ports, tonumber(each.value)) ? var.load_balancer_certificate_arn : null
+
   protocol = contains(var.load_balancer_tls_ports, tonumber(each.value)) ? "TLS" : "TCP"
 
   tags = var.custom_tags
