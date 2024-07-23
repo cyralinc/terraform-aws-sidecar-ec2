@@ -132,6 +132,7 @@ resource "aws_iam_instance_profile" "sidecar_profile" {
   count = local.create_sidecar_role ? 1 : 0
   name  = "${local.name_prefix}-sidecar_profile"
   role  = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.sidecar_custom_host_role
+  tags  = var.custom_tags
 }
 
 resource "aws_iam_role" "sidecar_role" {
@@ -139,6 +140,7 @@ resource "aws_iam_role" "sidecar_role" {
   name               = "${local.name_prefix}-sidecar_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar.json
+  tags               = var.custom_tags
 }
 
 resource "aws_iam_policy" "init_script_policy" {
@@ -146,6 +148,7 @@ resource "aws_iam_policy" "init_script_policy" {
   path        = "/"
   description = "Allow EC2 to update ASG when init complete"
   policy      = data.aws_iam_policy_document.init_script_policy.json
+  tags        = var.custom_tags
 }
 
 resource "aws_iam_role_policy_attachment" "init_script_policy" {
@@ -189,6 +192,7 @@ resource "aws_iam_role" "sidecar_custom_certificate" {
   name               = "${local.name_prefix}-sidecar_custom_certificate_lambda_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.sidecar_custom_certificate_assume_role[0].json
+  tags               = var.custom_tags
 }
 
 resource "aws_iam_policy" "sidecar_custom_certificate_secrets_manager" {
@@ -196,6 +200,7 @@ resource "aws_iam_policy" "sidecar_custom_certificate_secrets_manager" {
   name   = "${local.name_prefix}-sidecar_custom_certificate_sm"
   path   = "/"
   policy = data.aws_iam_policy_document.sidecar_custom_certificate_secrets_manager[0].json
+  tags   = var.custom_tags
 }
 
 resource "aws_iam_role_policy_attachment" "sidecar_custom_certificate" {
@@ -207,6 +212,7 @@ resource "aws_iam_role_policy_attachment" "sidecar_custom_certificate" {
 resource "aws_iam_role" "self_signed_certificate" {
   name = "${local.name_prefix}-self_signed_certificate_role"
   path = "/"
+  tags = var.custom_tags
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
