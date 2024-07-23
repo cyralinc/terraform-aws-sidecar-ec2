@@ -1,3 +1,13 @@
+## 4.7.0 (July 23, 2024)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Features:
+
+* ENG-12761: Add variable to control custom tags ([#108](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/108))
+
 ## 4.6.0 (July 9, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
