@@ -9,7 +9,7 @@ result. Currently, each "wire" service has a default memory limit of 512MB while
 other services are limited to 128MB.
 
 Users can override the default memory limits if desired by setting various 
-environment variables. These can be set as part of the`custom_user_data` input
+environment variables. These can be set as part of the `custom_user_data` input
 parameter (detailed below).
 
 ## Environment Variables
