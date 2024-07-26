@@ -234,6 +234,7 @@ No modules.
 | <a name="input_tls_skip_verify"></a> [tls\_skip\_verify](#input\_tls\_skip\_verify) | (Optional) Skip TLS verification for HTTPS communication with the control plane and during sidecar initialization | `bool` | `false` | no |
 | <a name="input_use_single_container"></a> [use\_single\_container](#input\_use\_single\_container) | (Optional) Use single container for sidecar deployment | `bool` | `false` | no |
 | <a name="input_volume_size"></a> [volume\_size](#input\_volume\_size) | Size of the sidecar disk | `number` | `15` | no |
+| <a name="input_volume_type"></a> [volume\_type](#input\_volume\_type) | Type of the sidecar disk | `string` | `"gp2"` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | AWS VPC ID to deploy sidecar to | `string` | n/a | yes |
 
 ## Outputs
