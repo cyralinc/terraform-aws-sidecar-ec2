@@ -1,3 +1,13 @@
+## 4.8.0 (July 26, 2024)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Features:
+
+* Add variable volume_type ([#110](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/110))
+
 ## 4.7.1 (July 25, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
