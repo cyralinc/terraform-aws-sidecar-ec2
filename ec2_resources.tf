@@ -45,7 +45,7 @@ resource "aws_launch_template" "lt" {
       encrypted             = true
       kms_key_id            = var.ec2_ebs_kms_arn
       volume_size           = var.volume_size
-      volume_type           = "gp2"
+      volume_type           = var.volume_type
     }
   }
   user_data = base64encode(<<-EOT

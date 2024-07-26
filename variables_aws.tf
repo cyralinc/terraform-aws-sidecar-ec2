@@ -145,6 +145,13 @@ variable "volume_size" {
   default     = 15
 }
 
+variable "volume_type" {
+  description = "Type of the sidecar disk"
+  type        = string
+  // TODO Change to "gp3" in the next major
+  default     = "gp2"
+}
+
 variable "ssh_inbound_cidr" {
   description = "Allowed CIDR blocks for SSH access to the sidecar. Can't be combined with 'ssh_inbound_security_group'."
   type        = list(string)
