@@ -148,6 +148,7 @@ variable "volume_size" {
 variable "volume_type" {
   description = "Type of the sidecar disk"
   type        = string
+  // TODO Change to "gp3" in the next major
   default     = "gp2"
 }
 
