@@ -58,7 +58,7 @@ locals {
   # v5 of this module we should remove the lambda completely and just
   # rely on the TLS provider to create the self-signed certificates.
   # We should be able to 
-  deploy_lambda = contains(local.lambda_regions, local.aws_region)
+  deploy_lambda = var.deploy_certificate_lambda ? contains(local.lambda_regions, local.aws_region) : false
 }
 
 # TODO: Remove `moved` in next major
