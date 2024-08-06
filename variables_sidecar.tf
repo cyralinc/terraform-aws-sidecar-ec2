@@ -122,6 +122,12 @@ variable "custom_user_data" {
   default     = { "pre" = "", "pre_sidecar_start" = "", "post" = "" }
 }
 
+variable "deploy_certificate_lambda" {
+  description = "This is used to tell if the TLS provider should be used or if default certificates should be created by a lambda."
+  type        = bool
+  default     = true
+}
+
 variable "sidecar_tls_certificate_secret_arn" {
   description = "(Optional) ARN of secret in AWS Secrets Manager that contains a certificate to terminate TLS connections."
   type        = string
