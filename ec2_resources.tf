@@ -20,6 +20,7 @@ resource "aws_launch_template" "lt" {
   image_id      = var.ami_id != "" ? var.ami_id : data.aws_ami.amazon_linux_2.id
   instance_type = var.instance_type
   key_name      = var.key_name
+  tags          = var.custom_tags
   iam_instance_profile {
     # instance profile name should be the same as sidecar_custom_host_role when a custom role is provided
     name = local.create_sidecar_role ? aws_iam_instance_profile.sidecar_profile[0].name : var.sidecar_custom_host_role
