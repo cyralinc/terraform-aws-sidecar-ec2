@@ -93,7 +93,7 @@ variable "subnets" {
 }
 
 variable "launch_template_tags_resource_types" {
-  description = "The resource types to set custom tags for during launch"
+  description = "Set of resource types to be used to add custom tags to the launch template. See also `custom_tags`."
   type        = set(string)
   default     = ["instance", "volume", "network-interface"]
 }
