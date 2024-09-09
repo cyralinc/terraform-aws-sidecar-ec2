@@ -47,7 +47,7 @@ variable "sidecar_private_idp_key" {
 ################################
 
 variable "hc_vault_integration_id" {
-  description = "(Deprecated - unused in sidecars v4.10+) HashiCorp Vault integration ID"
+  description = "(Deprecated - unused in sidecars `v4.10+`) HashiCorp Vault integration ID. For control planes `v4.16+`, use parameter `vault_integration_id` in the resource `cyral_sidecar` in our Terraform provider. [Learn more](https://registry.terraform.io/providers/cyralinc/cyral/latest/docs/resources/sidecar)."
   type        = string
   default     = ""
 }
