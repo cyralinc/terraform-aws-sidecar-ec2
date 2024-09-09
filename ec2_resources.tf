@@ -64,7 +64,7 @@ EOT
   }
 
   dynamic "tag_specifications" {
-    for_each = var.custom_tags != {} ? var.launch_template_tags_resource_types : []
+    for_each = length(var.custom_tags) > 0 ? var.launch_template_tags_resource_types : []
     content {
       resource_type = tag_specifications.key
       tags          = var.custom_tags
