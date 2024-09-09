@@ -62,6 +62,14 @@ EOT
   lifecycle {
     create_before_destroy = true
   }
+
+  dynamic "tag_specifications" {
+    for_each = length(var.custom_tags) > 0 ? var.launch_template_tags_resource_types : []
+    content {
+      resource_type = tag_specifications.key
+      tags          = var.custom_tags
+    }
+  }
 }
 
 # TODO: Remove `moved` in next major
