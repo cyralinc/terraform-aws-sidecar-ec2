@@ -92,6 +92,12 @@ variable "subnets" {
   type        = list(string)
 }
 
+variable "launch_template_tags_resource_types" {
+  description = "The resource types to set custom tags for during launch"
+  type        = set(string)
+  default     = ["instance", "volume", "network-interface"]
+}
+
 variable "load_balancer_security_groups" {
   description = <<EOF
 List of the IDs of the additional security groups that will be attached to the load balancer.

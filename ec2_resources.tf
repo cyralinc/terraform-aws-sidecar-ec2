@@ -64,7 +64,7 @@ EOT
   }
 
   dynamic "tag_specifications" {
-    for_each = toset(["instance", "volume", "network-interface"])
+    for_each = var.launch_template_tags_resource_types
     content {
       resource_type = tag_specifications.key
       tags          = var.custom_tags
