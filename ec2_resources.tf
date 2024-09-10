@@ -67,7 +67,7 @@ EOT
     for_each = var.launch_template_tags_resource_types
     content {
       resource_type = tag_specifications.key
-      tags          = merge(var.custom_tags, {"Name" = "${local.name_prefix}-instance"})
+      tags          = merge(var.custom_tags, {"Name" = "${local.name_prefix}-${tag_specifications.key}"})
     }
   }
 }
