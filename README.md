@@ -88,11 +88,11 @@ instructions on how to upgrade this module from previous major versions.
 Instructions for advanced deployment configurations are available for the following topics:
 
 * [Advanced networking configuration](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/networking.md)
+* [Customer initialization scripts](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/custom-user-data.md)
 * [Enable the S3 File Browser](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/s3-browser.md)
 * [Memory limits](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/memlim.md)
 * [Sidecar certificates](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/certificates.md)
 * [Sidecar instance metrics](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/metrics.md)
-* [Custom user-data scripts](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/custom-user-data.md)
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
