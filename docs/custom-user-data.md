@@ -1,6 +1,6 @@
 # Setting custom user-data scripts
 
-In Amazon EC2, user-data is a script or set of instructions provided during instance launch to automate tasks like software installation or configuration. It runs once when the instance is first provisioned.
+In an Amazon EC2 Launch Template, `user-data` is a script or set of instructions provided during instance launch to automate tasks like software installation or configuration. It runs once when the EC2 instance is first provisioned.
 
 This module supports custom user-data injection through the `custom_user_data` variable. By using this variable, you can inject your own script to customize instance provisioning according to your specific requirements. This variable is a map with three keys: `pre`, `pre_sidecar_start`, and `post`, indicating the execution order relative to sidecar installation. The `pre` script runs before any sidecar components are installed, `pre_sidecar_start` runs immediately before the sidecar starts, and `post` is executed after the sidecar installation is complete.
 
