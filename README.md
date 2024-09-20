@@ -92,6 +92,7 @@ Instructions for advanced deployment configurations are available for the follow
 * [Memory limits](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/memlim.md)
 * [Sidecar certificates](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/certificates.md)
 * [Sidecar instance metrics](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/metrics.md)
+* [Custom user-data scripts](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/custom-user-data.md)
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
