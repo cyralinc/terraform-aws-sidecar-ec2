@@ -36,7 +36,7 @@ provider "aws" {
 
 module "cyral_sidecar" {
   source  = "cyralinc/sidecar-ec2/aws"  
-  version = "~> 4.0" # terraform module version
+  version = "~> 5.0" # terraform module version
 
   sidecar_id      = ""
   control_plane   = ""
