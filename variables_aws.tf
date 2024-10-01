@@ -48,9 +48,9 @@ variable "enable_cross_zone_load_balancing" {
 }
 
 variable "health_check_grace_period" {
-  description = "The grace period in seconds before the health check will terminate the instance"
+  description = "The minimum amount of time (in seconds) to keep a new instance in service before terminating it if it's found to be unhealthy"
   type        = number
-  default     = 600
+  default     = 300
 }
 
 variable "instance_type" {
