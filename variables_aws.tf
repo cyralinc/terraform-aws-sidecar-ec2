@@ -7,12 +7,6 @@ EOF
   default     = ""
 }
 
-variable "asg_count" {
-  description = "(Deprecated) Set to 1 to enable the ASG, 0 to disable. Only for debugging."
-  type        = number
-  default     = 1
-}
-
 variable "asg_min" {
   description = "The minimum number of hosts to create in the auto scaling group"
   type        = number
@@ -154,8 +148,7 @@ variable "volume_size" {
 variable "volume_type" {
   description = "Type of the sidecar disk"
   type        = string
-  // TODO Change to "gp3" in the next major
-  default     = "gp2"
+  default     = "gp3"
 }
 
 variable "ssh_inbound_cidr" {

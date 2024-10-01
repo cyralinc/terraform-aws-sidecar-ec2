@@ -9,11 +9,6 @@ data "aws_ami" "amazon_linux_2" {
   owners = ["amazon"]
 }
 
-# TODO: Remove `moved` in next major
-moved {
-  from = aws_launch_template.cyral_sidecar_lt
-  to   = aws_launch_template.lt
-}
 resource "aws_launch_template" "lt" {
   # Launch configuration for sidecar instances that will run containers
   name          = "${local.name_prefix}-LT"
@@ -72,14 +67,7 @@ EOT
   }
 }
 
-# TODO: Remove `moved` in next major
-moved {
-  from = aws_autoscaling_group.cyral-sidecar-asg
-  to   = aws_autoscaling_group.asg
-}
 resource "aws_autoscaling_group" "asg" {
-  # TODO: Remove `count` in next major
-  count = 1
   name  = "${local.name_prefix}-asg"
   launch_template {
     id      = aws_launch_template.lt.id
@@ -192,11 +180,6 @@ data "aws_lbs" "current" {
 }
 
 
-# TODO: Remove `moved` in next major
-moved {
-  from = aws_lb.cyral-lb
-  to   = aws_lb.lb
-}
 resource "aws_lb" "lb" {
   count = var.deploy_load_balancer ? 1 : 0
   # If the LB already exists, use the name `<name_prefix>-lb`, otherwise use
@@ -214,11 +197,6 @@ resource "aws_lb" "lb" {
   tags                             = var.custom_tags
 }
 
-# TODO: Remove `moved` in next major
-moved {
-  from = aws_lb_target_group.cyral-sidecar-tg
-  to   = aws_lb_target_group.tg
-}
 resource "aws_lb_target_group" "tg" {
   for_each             = var.deploy_load_balancer ? { for port in var.sidecar_ports : tostring(port) => port } : {}
   name                 = "${local.name_prefix}-${each.value}"
@@ -238,11 +216,6 @@ resource "aws_lb_target_group" "tg" {
   }
 }
 
-# TODO: Remove `moved` in next major
-moved {
-  from = aws_lb_listener.cyral-sidecar-lb-ls
-  to   = aws_lb_listener.ls
-}
 resource "aws_lb_listener" "ls" {
   # Listener for load balancer - all existing sidecar ports
   for_each          = var.deploy_load_balancer ? { for port in var.sidecar_ports : tostring(port) => port } : {}

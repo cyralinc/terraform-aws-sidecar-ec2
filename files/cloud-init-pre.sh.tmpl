@@ -64,20 +64,10 @@ fi
 echo "Sidecar version: $SIDECAR_VERSION"
 
 docker_setup
-if [[ ${use_single_container} == "true" ]]; then
-    echo "Skipping Docker Compose Install, not required for single container"
-else
-    docker_compose_install
-fi
 update_nginx_resolver
 load_certs
 load_idp_certs
 registry_login
-if [[ ${use_single_container} == "true" ]]; then
-    echo "Skipping Download Sidecar Compose File, not required for single container"
-else
-    retry download_sidecar
-fi
 
 CYRAL_SIDECAR_ENDPOINT="${sidecar_endpoint}"
 if [ -z "$CYRAL_SIDECAR_ENDPOINT" ]; then
@@ -102,11 +92,9 @@ CLOUD_PROVIDER=AWS
 AWS_REGION=${aws_region}
 AWS_ACCOUNT_ID=${aws_account_id}
 INSTANCE_ID=$INSTANCE_ID
-DD_API_KEY=${dd_api_key}
 LOG_GROUP_NAME=${log_group_name}
 
 LOG_INTEGRATION=${log_integration}
-METRICS_INTEGRATION=${metrics_integration}
 TLS_SKIP_VERIFY=${tls_skip_verify}
 
 NGINX_RESOLVER=$NGINX_RESOLVER
@@ -115,8 +103,6 @@ IDP_CERTIFICATE=${replace(idp_certificate, "\n", "\\n")}
 
 SIDECAR_IDP_PUBLIC_CERT=$SIDECAR_IDP_PUBLIC_CERT
 SIDECAR_IDP_PRIVATE_KEY=$SIDECAR_IDP_PRIVATE_KEY
-
-HCVAULT_INTEGRATION_ID=${hc_vault_integration_id}
 
 LOAD_BALANCER_TLS_PORTS=${load_balancer_tls_ports}
 
@@ -128,6 +114,8 @@ CYRAL_SIDECAR_ENDPOINT=$CYRAL_SIDECAR_ENDPOINT
 CYRAL_SIDECAR_VERSION=$SIDECAR_VERSION
 CYRAL_SIDECAR_DEPLOYMENT_PROPERTIES='{ \"account-id\": \"${aws_account_id}\",\"region\": \"${aws_region}\",\"deployment-type\": \"terraform-ec2\"}'
 CYRAL_SIDECAR_CLOUD_PROVIDER=aws
+
+CYRAL_REPOSITORIES_SUPPORTED=${repositories_supported}
 
 CYRAL_CERTIFICATE_MANAGER_TLS_KEY=$${SIDECAR_TLS_KEY}
 CYRAL_CERTIFICATE_MANAGER_TLS_CERT=$${SIDECAR_TLS_CERT}

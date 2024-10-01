@@ -4,13 +4,6 @@ function package_install(){
     yum install -y aws-cfn-bootstrap wget ec2-instance-connect docker jq
 }
 
-function docker_compose_install(){
-    # Compose Setup
-    sudo mkdir -p /usr/local/lib/docker/cli-plugins/
-    sudo ${curl} -SsfL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
-    sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-}
-
 function docker_setup(){
     echo "Configuring Docker..."
     sudo usermod -a -G docker ec2-user
@@ -156,30 +149,6 @@ function get_sidecar_version () {
     SIDECAR_VERSION=$(echo "$resp" | jq -r '.sidecar.version // empty')
 }
 
-function download_sidecar () {
-    local access_token url
-    echo "Downloading Sidecar Compose File..."
-    get_token "443"
-    if [[ $token_error -ne 0 ]]; then
-        error_443="$token"
-        get_token "8000"
-        if [[ $token_error -ne 0 ]]; then
-            echo "Unable to retrieve token!!"
-            echo "Attempt on 443: $error_443"
-            echo "Attempt on 8000: $token"
-            return 1
-        fi
-    fi
-    access_token=$(echo "$token" | jq -r .access_token)
-    url="https://${controlplane_host}/deploy/docker-compose?TemplateType=terraform&LogIntegration=${log_integration}&MetricsIntegration=${metrics_integration}&HCVaultIntegrationID=${hc_vault_integration_id}&WiresEnabled=${repositories_supported}&TemplateVersion=$SIDECAR_VERSION"
-    echo "Trying to download the sidecar template from: $url"
-    if ! ${curl} -fsS --no-progress-meter -o /home/ec2-user/sidecar.compose.yaml -L "$url" -H "Authorization: Bearer $access_token"; then
-        echo "Unable to download compose file for version $SIDECAR_VERSION, please make sure all parameters are correct"
-        return 1
-    fi
-    return 0
-}
-
 function registry_login () {
     echo "Container Registry Login..."
     local key=$(echo "$secret" | jq -r 'select(.containerRegistryKey != null) | .containerRegistryKey' | base64 --decode)
@@ -211,15 +180,10 @@ function containerCheck () {
 function launch () {
     echo "Starting sidecar..."
     cd /home/ec2-user
-    if [[ ${use_single_container} == "true" ]]; then
-        SINGLE_CONTAINER_IMAGE=${container_registry}/cyral-sidecar:$SIDECAR_VERSION
-        retry docker pull -q $SINGLE_CONTAINER_IMAGE
-        retry docker run -d --name sidecar --network=host --log-driver=local --log-opt max-size=500m --restart=unless-stopped --env-file .env $SINGLE_CONTAINER_IMAGE
-        if ! containerCheck "sidecar"; then
-            echo "--> Problem with sidecar! Inspect the logs to diagnose the issue. <--"
-        fi
-    else
-        retry docker compose -f sidecar.compose.yaml pull -q
-        retry docker compose -f sidecar.compose.yaml up -d
+    SINGLE_CONTAINER_IMAGE=${container_registry}/cyral-sidecar:$SIDECAR_VERSION
+    retry docker pull -q $SINGLE_CONTAINER_IMAGE
+    retry docker run -d --name sidecar --network=host --log-driver=local --log-opt max-size=500m --restart=unless-stopped --env-file .env $SINGLE_CONTAINER_IMAGE
+    if ! containerCheck "sidecar"; then
+        echo "--> Problem with sidecar! Inspect the logs to diagnose the issue. <--"
     fi
 }
