@@ -39,12 +39,6 @@ variable "iam_policies" {
   default     = []
 }
 
-variable "log_integration" {
-  description = "Logs destination"
-  type        = string
-  default     = "cloudwatch"
-}
-
 variable "name_prefix" {
   description = "Prefix for names of created resources in AWS. Maximum length is 24 characters."
   type        = string
