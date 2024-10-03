@@ -26,7 +26,10 @@ def handler(event, context):
       logger.error('SecretId is empty')
       return {'statusCode': 400}
 
-    hostname = event.get('Hostname', CERT_DEFAULT_HOST)
+    hostname = event.get('Hostname')
+    if not hostname:
+      hostname = CERT_DEFAULT_HOST
+
     is_ca_certificate = event.get('IsCACertificate', False)
     update_secret_if_needed(secret_id, hostname, is_ca_certificate)
     return {'statusCode': 200}
