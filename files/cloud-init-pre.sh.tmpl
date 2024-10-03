@@ -89,6 +89,8 @@ fi
 
 echo "Sidecar endpoint: $CYRAL_SIDECAR_ENDPOINT"
 
+IDP_CERTIFICATE="${replace(idp_certificate, "\n", "\\n")}"
+
 echo "Initializing environment variables..."
 cat > /home/ec2-user/.env << EOF
 IS_DYNAMIC_VERSION=$IS_DYNAMIC_VERSION
@@ -100,7 +102,7 @@ LOG_GROUP_NAME=${log_group_name}
 
 TLS_SKIP_VERIFY=${tls_skip_verify}
 
-CYRAL_IDP_CERTIFICATE=${replace(idp_certificate, "\n", "\\n")}
+CYRAL_IDP_CERTIFICATE=$IDP_CERTIFICATE
 CYRAL_NGINX_RESOLVER=$NGINX_RESOLVER
 CYRAL_SSO_LOGIN_URL=${idp_sso_login_url}
 
@@ -127,7 +129,7 @@ CYRAL_SIDECAR_VERSION=$SIDECAR_VERSION
 
 CYRAL_REPOSITORIES_SUPPORTED=${repositories_supported}
 
-###########################################################
+############
 # Clean up in next major release:
 SIDECAR_VERSION=$SIDECAR_VERSION
 CONTROLPLANE_HOST=${controlplane_host}
@@ -143,7 +145,7 @@ METRICS_INTEGRATION=${metrics_integration}
 
 NGINX_RESOLVER=$NGINX_RESOLVER
 SSO_LOGIN_URL=${idp_sso_login_url}
-IDP_CERTIFICATE=${replace(idp_certificate, "\n", "\\n")}
+IDP_CERTIFICATE=$IDP_CERTIFICATE
 
 SIDECAR_IDP_PUBLIC_CERT=$SIDECAR_IDP_PUBLIC_CERT
 SIDECAR_IDP_PRIVATE_KEY=$SIDECAR_IDP_PRIVATE_KEY
@@ -156,5 +158,5 @@ CYRAL_CERTIFICATE_MANAGER_TLS_KEY=$${SIDECAR_TLS_KEY}
 CYRAL_CERTIFICATE_MANAGER_TLS_CERT=$${SIDECAR_TLS_CERT}
 CYRAL_CERTIFICATE_MANAGER_CA_KEY=$${SIDECAR_CA_KEY}
 CYRAL_CERTIFICATE_MANAGER_CA_CERT=$${SIDECAR_CA_CERT}
-###########################################################
+############
 EOF
