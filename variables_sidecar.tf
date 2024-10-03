@@ -173,7 +173,7 @@ variable "tls_skip_verify" {
 variable "use_single_container" {
   description = "(Optional) Use single container for sidecar deployment"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "recycle_health_check_interval_sec" {
