@@ -1,3 +1,17 @@
+## 4.10.1 (October 3, 2024)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Bug fixes:
+
+* ENG-14393: Fix lambda, environment variables and deprecation ([#119](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/119)
+
+### Documentation:
+
+* Add example of custom_user_data usage ([#117](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/117)
+
 ## 4.10.0 (September 17, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
