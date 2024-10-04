@@ -39,7 +39,7 @@ output "self_signed_tls_cert_secret_arn" {
 }
 
 output "secret_arn" {
-  value       = local.deploy_sidecar_secret ? aws_secretsmanager_secret.sidecar_secrets[0].arn : null
+  value       = local.secret_arn
   description = "Sidecar secret ARN"
 }
 

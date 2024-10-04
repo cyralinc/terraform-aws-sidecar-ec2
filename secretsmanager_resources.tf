@@ -8,8 +8,8 @@ locals {
     idpCertificate              = replace(var.idp_certificate, "\n", "\\n")
   }
 
-  deploy_sidecar_secret = var.secret_name == ""
-  sidecar_secret_arn    = local.deploy_sidecar_secret ? aws_secretsmanager_secret.sidecar_secrets.arn : var.secret_arn
+  deploy_sidecar_secret = var.secret_arn == ""
+  secret_arn    = local.deploy_sidecar_secret ? aws_secretsmanager_secret.sidecar_secrets.arn : var.secret_arn
 
   self_signed_cert_country               = "US"
   self_signed_cert_province              = "CA"

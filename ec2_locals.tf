@@ -34,24 +34,24 @@ locals {
     name_prefix                       = local.name_prefix
     recycle_health_check_interval_sec = var.recycle_health_check_interval_sec
     repositories_supported            = join(",", var.repositories_supported)
+    secret_arn                        = local.secret_arn
+    secret_role_arn                   = var.secret_role_arn
     sidecar_endpoint                  = local.sidecar_endpoint
     sidecar_id                        = var.sidecar_id
-    sidecar_secret_arn                = local.sidecar_secret_arn
-    sidecar_secret_role_arn           = var.secret_role_arn
-    sidecar_tls_certificate_secret_arn = (
-      var.sidecar_tls_certificate_secret_arn != "" ?
-      var.sidecar_tls_certificate_secret_arn :
-      aws_secretsmanager_secret.self_signed_tls_cert.arn
-    )
-    sidecar_tls_certificate_role_arn = var.sidecar_tls_certificate_role_arn
+    sidecar_ca_certificate_role_arn   = var.sidecar_ca_certificate_role_arn
     sidecar_ca_certificate_secret_arn = (
       var.sidecar_ca_certificate_secret_arn != "" ?
       var.sidecar_ca_certificate_secret_arn :
       aws_secretsmanager_secret.self_signed_ca.arn
     )
-    sidecar_ca_certificate_role_arn = var.sidecar_ca_certificate_role_arn
-    sidecar_version                 = var.sidecar_version
-    tls_skip_verify                 = var.tls_skip_verify ? "tls-skip-verify" : "tls"
+    sidecar_tls_certificate_role_arn = var.sidecar_tls_certificate_role_arn
+    sidecar_tls_certificate_secret_arn = (
+      var.sidecar_tls_certificate_secret_arn != "" ?
+      var.sidecar_tls_certificate_secret_arn :
+      aws_secretsmanager_secret.self_signed_tls_cert.arn
+    )
+    sidecar_version = var.sidecar_version
+    tls_skip_verify = var.tls_skip_verify ? "tls-skip-verify" : "tls"
   }
 
   cloud_init_func = templatefile("${path.module}/files/cloud-init-functions.sh.tmpl", local.templatevars)

@@ -77,8 +77,8 @@ function get_secret_value() {
 
 function get_secret(){
     echo "Fetching Secret..."
-    if ! secret=$(get_secret_value "${sidecar_secret_arn}" "${sidecar_secret_role_arn}"); then
-        echo "ERROR: Unable to fetch sidecar secrets from ${sidecar_secret_arn} see error above"
+    if ! secret=$(get_secret_value "${secret_arn}" "${secret_role_arn}"); then
+        echo "ERROR: Unable to fetch sidecar secrets from ${secret_arn} see error above"
         exit 1
     fi
     SIDECAR_CLIENT_ID=$(echo "$secret" | jq -r .clientId)
