@@ -5,33 +5,22 @@ locals {
     containerRegistryKey        = var.container_registry_key
     sidecarPublicIdpCertificate = replace(var.sidecar_public_idp_certificate, "\n", "\\n")
     sidecarPrivateIdpKey        = replace(var.sidecar_private_idp_key, "\n", "\\n")
-    idp_certificate             = var.idp_certificate
+    idpCertificate              = replace(var.idp_certificate, "\n", "\\n")
   }
-  deploy_sidecar_secret = var.secret_name == ""
-  sidecar_secret_name   = local.deploy_sidecar_secret ? "/cyral/sidecars/${var.sidecar_id}/secrets" : var.secret_name
 
-  self_signed_ca_secret_name       = "/cyral/sidecars/${var.sidecar_id}/ca-certificate"
-  self_signed_tls_cert_secret_name = "/cyral/sidecars/${var.sidecar_id}/self-signed-certificate"
+  deploy_sidecar_secret = var.secret_name == ""
+  sidecar_secret_arn    = local.deploy_sidecar_secret ? aws_secretsmanager_secret.sidecar_secrets.arn : var.secret_arn
 
   self_signed_cert_country               = "US"
   self_signed_cert_province              = "CA"
   self_signed_cert_locality              = "Redwood City"
   self_signed_cert_organization          = "Cyral Inc."
   self_signed_cert_validity_period_hours = 10 * 365 * 24
-
-  self_signed_ca_payload = {
-    key  = tls_private_key.ca.private_key_pem
-    cert = tls_self_signed_cert.ca.cert_pem
-  }
-  self_signed_tls_cert_payload = {
-    key  = tls_private_key.tls.private_key_pem
-    cert = tls_self_signed_cert.tls.cert_pem
-  }
 }
 
 resource "aws_secretsmanager_secret" "sidecar_secrets" {
   count                   = local.deploy_sidecar_secret ? 1 : 0
-  name                    = local.sidecar_secret_name
+  name                    = "/cyral/sidecars/${var.sidecar_id}/secrets"
   recovery_window_in_days = 0
   kms_key_id              = var.secrets_kms_arn
   tags                    = var.custom_tags
@@ -44,7 +33,7 @@ resource "aws_secretsmanager_secret_version" "sidecar_secrets" {
 }
 
 resource "aws_secretsmanager_secret" "self_signed_tls_cert" {
-  name                    = local.self_signed_tls_cert_secret_name
+  name                    = "/cyral/sidecars/${var.sidecar_id}/self-signed-certificate"
   description             = "Self-signed TLS certificate used by sidecar in case a custom certificate is not provided."
   recovery_window_in_days = 0
   kms_key_id              = var.secrets_kms_arn
@@ -52,7 +41,7 @@ resource "aws_secretsmanager_secret" "self_signed_tls_cert" {
 }
 
 resource "aws_secretsmanager_secret" "self_signed_ca" {
-  name                    = local.self_signed_ca_secret_name
+  name                    = "/cyral/sidecars/${var.sidecar_id}/ca-certificate"
   description             = "CA certificate used by sidecar in case a custom CA certificate is not provided."
   recovery_window_in_days = 0
   kms_key_id              = var.secrets_kms_arn
@@ -113,11 +102,17 @@ resource "tls_self_signed_cert" "ca" {
 }
 
 resource "aws_secretsmanager_secret_version" "self_signed_ca" {
-  secret_id     = aws_secretsmanager_secret.self_signed_ca.id
-  secret_string = jsonencode(local.self_signed_ca_payload)
+  secret_id = aws_secretsmanager_secret.self_signed_ca.id
+  secret_string = jsonencode({
+    key  = tls_private_key.ca.private_key_pem
+    cert = tls_self_signed_cert.ca.cert_pem
+  })
 }
 
 resource "aws_secretsmanager_secret_version" "self_signed_tls_cert" {
-  secret_id     = aws_secretsmanager_secret.self_signed_tls_cert.id
-  secret_string = jsonencode(local.self_signed_tls_cert_payload)
+  secret_id = aws_secretsmanager_secret.self_signed_tls_cert.id
+  secret_string = jsonencode({
+    key  = tls_private_key.tls.private_key_pem
+    cert = tls_self_signed_cert.tls.cert_pem
+  })
 }

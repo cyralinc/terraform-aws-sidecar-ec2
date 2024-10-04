@@ -190,8 +190,14 @@ variable "deploy_load_balancer" {
   default     = true
 }
 
-variable "secret_name" {
-  description = "Name of the AWS Secrets Manager secret used to store `client_id`, `client_secret`, `container_registry_key`. If unset, will assume `/cyral/sidecars/<SIDECAR_ID>/secrets`."
+variable "secret_arn" {
+  description = "Full ARN of the AWS Secrets Manager secret used to store the sidecar secrets. If unset, sidecar will manage its own secret. See the topic `Bring Your Own Secret` in the `Advanced` documentation section."
+  type        = string
+  default     = ""
+}
+
+variable "secret_role_arn" {
+  description = "(Optional) ARN of an AWS IAM Role to assume when reading the secret informed in `secret_arn`."
   type        = string
   default     = ""
 }

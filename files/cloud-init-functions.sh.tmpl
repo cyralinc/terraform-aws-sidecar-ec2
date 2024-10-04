@@ -77,9 +77,8 @@ function get_secret_value() {
 
 function get_secret(){
     echo "Fetching Secret..."
-    if ! secret=$(aws secretsmanager get-secret-value --secret-id "${sidecar_secret_name}" --query SecretString --output text --region "${aws_region}" 2>&1); then
-        echo "Unable to fetch secret ${sidecar_secret_name}"
-        echo "Error: $secret"
+    if ! secret=$(get_secret_value "${sidecar_secret_arn}" "${sidecar_secret_role_arn}"); then
+        echo "ERROR: Unable to fetch sidecar secrets from ${sidecar_secret_arn} see error above"
         exit 1
     fi
     SIDECAR_CLIENT_ID=$(echo "$secret" | jq -r .clientId)
@@ -103,6 +102,7 @@ function load_certs() {
 
 function load_idp_certs() {
     echo "Loading IDP certificates..."
+    IDP_CERTIFICATE="$(echo "$secret" | jq -r .idpCertificate)"
     SIDECAR_IDP_PUBLIC_CERT="$(echo "$secret" | jq -r .sidecarPublicIdpCertificate)"
     SIDECAR_IDP_PRIVATE_KEY="$(echo "$secret" | jq -r .sidecarPrivateIdpKey)"
 }

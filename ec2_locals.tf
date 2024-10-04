@@ -21,22 +21,23 @@ locals {
   cloudwatch_log_group_name = var.cloudwatch_log_group_name == "" ? local.name_prefix : var.cloudwatch_log_group_name
 
   templatevars = {
-    sidecar_id                            = var.sidecar_id
-    name_prefix                           = local.name_prefix
-    controlplane_host                     = var.control_plane
-    container_registry                    = var.container_registry
-    container_registry_username           = var.container_registry_username
-    curl                                  = local.curl
-    sidecar_endpoint                      = local.sidecar_endpoint
-    aws_region                            = local.aws_region
-    aws_account_id                        = local.aws_account_id
-    log_group_name                        = aws_cloudwatch_log_group.lg.name
-    sidecar_secret_name                   = local.sidecar_secret_name
-    idp_sso_login_url                     = var.idp_sso_login_url
-    load_balancer_tls_ports               = join(",", var.load_balancer_tls_ports)
-    sidecar_version                       = var.sidecar_version
-    repositories_supported                = join(",", var.repositories_supported)
-    cloudwatch_log_group_name             = local.cloudwatch_log_group_name
+    aws_account_id                    = local.aws_account_id
+    aws_region                        = local.aws_region
+    controlplane_host                 = var.control_plane
+    container_registry                = var.container_registry
+    container_registry_username       = var.container_registry_username
+    cloudwatch_log_group_name         = local.cloudwatch_log_group_name
+    curl                              = local.curl
+    idp_sso_login_url                 = var.idp_sso_login_url
+    load_balancer_tls_ports           = join(",", var.load_balancer_tls_ports)
+    log_group_name                    = aws_cloudwatch_log_group.lg.name
+    name_prefix                       = local.name_prefix
+    recycle_health_check_interval_sec = var.recycle_health_check_interval_sec
+    repositories_supported            = join(",", var.repositories_supported)
+    sidecar_endpoint                  = local.sidecar_endpoint
+    sidecar_id                        = var.sidecar_id
+    sidecar_secret_arn                = local.sidecar_secret_arn
+    sidecar_secret_role_arn           = var.secret_role_arn
     sidecar_tls_certificate_secret_arn = (
       var.sidecar_tls_certificate_secret_arn != "" ?
       var.sidecar_tls_certificate_secret_arn :
@@ -48,9 +49,9 @@ locals {
       var.sidecar_ca_certificate_secret_arn :
       aws_secretsmanager_secret.self_signed_ca.arn
     )
-    sidecar_ca_certificate_role_arn   = var.sidecar_ca_certificate_role_arn
-    tls_skip_verify                   = var.tls_skip_verify ? "tls-skip-verify" : "tls"
-    recycle_health_check_interval_sec = var.recycle_health_check_interval_sec
+    sidecar_ca_certificate_role_arn = var.sidecar_ca_certificate_role_arn
+    sidecar_version                 = var.sidecar_version
+    tls_skip_verify                 = var.tls_skip_verify ? "tls-skip-verify" : "tls"
   }
 
   cloud_init_func = templatefile("${path.module}/files/cloud-init-functions.sh.tmpl", local.templatevars)
