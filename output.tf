@@ -38,8 +38,8 @@ output "self_signed_tls_cert_secret_arn" {
   description = "Sidecar self signed TLS certificate secret ARN"
 }
 
-output "sidecar_credentials_secret_arn" {
-  value       = var.deploy_secrets ? aws_secretsmanager_secret.sidecar_secrets[0].arn : null
+output "secret_arn" {
+  value       = local.deploy_sidecar_secret ? aws_secretsmanager_secret.sidecar_secrets[0].arn : null
   description = "Sidecar secret ARN"
 }
 

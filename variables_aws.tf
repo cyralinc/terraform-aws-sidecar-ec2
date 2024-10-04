@@ -190,14 +190,8 @@ variable "deploy_load_balancer" {
   default     = true
 }
 
-variable "deploy_secrets" {
-  description = "Create the AWS Secrets Manager resource at `secret_location` storing `client_id`, `client_secret` and `container_registry_key`."
-  type        = bool
-  default     = true
-}
-
-variable "secrets_location" {
-  description = "Location in AWS Secrets Manager to store `client_id`, `client_secret` and `container_registry_key`. If unset, will assume `/cyral/sidecars/<SIDECAR_ID>/secrets`."
+variable "secret_name" {
+  description = "Name of the AWS Secrets Manager secret used to store `client_id`, `client_secret`, `container_registry_key`. If unset, will assume `/cyral/sidecars/<SIDECAR_ID>/secrets`."
   type        = string
   default     = ""
 }

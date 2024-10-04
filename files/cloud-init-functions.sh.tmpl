@@ -77,8 +77,8 @@ function get_secret_value() {
 
 function get_secret(){
     echo "Fetching Secret..."
-    if ! secret=$(aws secretsmanager get-secret-value --secret-id "${secrets_location}" --query SecretString --output text --region "${aws_region}" 2>&1); then
-        echo "Unable to fetch secret ${secrets_location}"
+    if ! secret=$(aws secretsmanager get-secret-value --secret-id "${sidecar_secret_name}" --query SecretString --output text --region "${aws_region}" 2>&1); then
+        echo "Unable to fetch secret ${sidecar_secret_name}"
         echo "Error: $secret"
         exit 1
     fi

@@ -31,12 +31,8 @@ locals {
     aws_region                            = local.aws_region
     aws_account_id                        = local.aws_account_id
     log_group_name                        = aws_cloudwatch_log_group.lg.name
-    secrets_location                      = local.sidecar_secrets_secret_name
+    sidecar_secret_name                   = local.sidecar_secret_name
     idp_sso_login_url                     = var.idp_sso_login_url
-    idp_certificate                       = var.idp_certificate
-    sidecar_public_idp_certificate        = var.sidecar_public_idp_certificate
-    sidecar_private_idp_key               = var.sidecar_private_idp_key
-    sidecar_created_certificate_secret_id = aws_secretsmanager_secret.self_signed_tls_cert.arn
     load_balancer_tls_ports               = join(",", var.load_balancer_tls_ports)
     sidecar_version                       = var.sidecar_version
     repositories_supported                = join(",", var.repositories_supported)
