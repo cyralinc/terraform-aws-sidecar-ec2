@@ -15,19 +15,28 @@ with the following format:
     "clientSecret":"",
     "containerRegistryKey":"",
     "idpCertificate":"",
-    "sidecarPublicIdpCertificate":"",
-    "sidecarPrivateIdpKey":""
+    "sidecarPrivateIdpKey":"",
+    "sidecarPublicIdpCertificate":""
 }
 ```
+
+| Attribute                     | Required | Format |
+| :---------------------------- | :------: | ------ |
+| `clientId`                    | Yes      | String |
+| `clientSecret`                | Yes      | String |
+| `containerRegistryKey`        | No       | String - Base64 encoded |
+| `idpCertificate`              | No       | String - new lines escaped (`replace(<CERTIFICATE_CONTENTS>, "\n", "\\n")`) |
+| `sidecarPrivateIdpKey`        | No       | String - new lines escaped (`replace(<CERTIFICATE_CONTENTS>, "\n", "\\n")`) |
+| `sidecarPublicIdpCertificate` | No       | String - new lines escaped (`replace(<CERTIFICATE_CONTENTS>, "\n", "\\n")`) |
 
 Make sure to call the Terraform function `replace(<CERTIFICATE_CONTENTS>, "\n", "\\n")`
 to escape the new lines in the parameters `idpCertificate`,
 `sidecarPublicIdpCertificate` and `sidecarPrivateIdpKey` before storing them on
 your secret.
 
-In case you are creating this secret in a different account, make sure to use
-the input parameter `secret_role_arn` to provide the ARN of the role that will
-be assumed in order to read the secret.
+In case you are creating this secret in a different account, use the input
+parameter `secret_role_arn` to provide the ARN of the role that will be
+assumed in order to read the secret.
 
 See also:
 
