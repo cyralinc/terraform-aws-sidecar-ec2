@@ -1,5 +1,5 @@
 locals {
-  sidecar_secrets = {
+  sidecar_secret = {
     clientId                    = var.client_id
     clientSecret                = var.client_secret
     containerRegistryKey        = var.container_registry_key
@@ -9,7 +9,7 @@ locals {
   }
 
   deploy_sidecar_secret = var.secret_arn == ""
-  secret_arn    = local.deploy_sidecar_secret ? aws_secretsmanager_secret.sidecar_secrets.arn : var.secret_arn
+  secret_arn    = local.deploy_sidecar_secret ? aws_secretsmanager_secret.sidecar_secrets[0].arn : var.secret_arn
 
   self_signed_cert_country               = "US"
   self_signed_cert_province              = "CA"
@@ -29,7 +29,7 @@ resource "aws_secretsmanager_secret" "sidecar_secrets" {
 resource "aws_secretsmanager_secret_version" "sidecar_secrets" {
   count         = local.deploy_sidecar_secret ? 1 : 0
   secret_id     = aws_secretsmanager_secret.sidecar_secrets[0].id
-  secret_string = jsonencode(local.sidecar_secrets)
+  secret_string = jsonencode(local.sidecar_secret)
 }
 
 resource "aws_secretsmanager_secret" "self_signed_tls_cert" {

@@ -17,8 +17,8 @@ resource "aws_launch_template" "lt" {
   key_name      = var.key_name
   tags          = var.custom_tags
   iam_instance_profile {
-    # instance profile name should be the same as sidecar_custom_host_role when a custom role is provided
-    name = local.create_sidecar_role ? aws_iam_instance_profile.sidecar_profile[0].name : var.sidecar_custom_host_role
+    # instance profile name should be the same as custom_host_role when a custom role is provided
+    name = local.create_sidecar_role ? aws_iam_instance_profile.sidecar_profile[0].name : var.custom_host_role
   }
   network_interfaces {
     device_index                = 0

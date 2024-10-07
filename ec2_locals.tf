@@ -9,8 +9,8 @@ locals {
   aws_account_id = data.aws_caller_identity.current.account_id
 
   sidecar_endpoint = var.deploy_load_balancer ? (
-    (length(aws_route53_record.cyral-sidecar-dns-record) == 0 && length(var.sidecar_dns_name) > 0) ? (
-      var.sidecar_dns_name
+    (length(aws_route53_record.cyral-sidecar-dns-record) == 0 && length(var.dns_name) > 0) ? (
+      var.dns_name
       ) : (
       length(aws_route53_record.cyral-sidecar-dns-record) == 1 ? aws_route53_record.cyral-sidecar-dns-record[0].fqdn : aws_lb.lb[0].dns_name
     )
@@ -38,16 +38,16 @@ locals {
     secret_role_arn                   = var.secret_role_arn
     sidecar_endpoint                  = local.sidecar_endpoint
     sidecar_id                        = var.sidecar_id
-    sidecar_ca_certificate_role_arn   = var.sidecar_ca_certificate_role_arn
-    sidecar_ca_certificate_secret_arn = (
-      var.sidecar_ca_certificate_secret_arn != "" ?
-      var.sidecar_ca_certificate_secret_arn :
+    ca_certificate_role_arn   = var.ca_certificate_role_arn
+    ca_certificate_secret_arn = (
+      var.ca_certificate_secret_arn != "" ?
+      var.ca_certificate_secret_arn :
       aws_secretsmanager_secret.self_signed_ca.arn
     )
-    sidecar_tls_certificate_role_arn = var.sidecar_tls_certificate_role_arn
-    sidecar_tls_certificate_secret_arn = (
-      var.sidecar_tls_certificate_secret_arn != "" ?
-      var.sidecar_tls_certificate_secret_arn :
+    tls_certificate_role_arn = var.tls_certificate_role_arn
+    tls_certificate_secret_arn = (
+      var.tls_certificate_secret_arn != "" ?
+      var.tls_certificate_secret_arn :
       aws_secretsmanager_secret.self_signed_tls_cert.arn
     )
     sidecar_version = var.sidecar_version

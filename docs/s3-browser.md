@@ -8,11 +8,11 @@ To configure the sidecar to work on the S3 File Browser, set the following param
   load_balancer_certificate_arn = "arn:aws:acm:<REGION>:<AWS_ACCOUNT>:certificate/<CERTIFICATE_ID>"
   
   # Custom DNS name (CNAME) related changes
-  sidecar_dns_hosted_zone_id = "<AWS_ROUTE_53_ZONE_ID>"
-  sidecar_dns_name = "<CNAME>" # ex: "sidecar.custom-domain.com"
+  dns_hosted_zone_id = "<AWS_ROUTE_53_ZONE_ID>"
+  dns_name = "<CNAME>" # ex: "sidecar.custom-domain.com"
   ```
 
-If `sidecar_dns_hosted_zone_id` is omitted, the `sidecar_dns_name` won’t
+If `dns_hosted_zone_id` is omitted, the `dns_name` won’t
 be automatically created in Route53 and the CNAME will need to be
 created after the deployment. See [Add a CNAME or A record for
 the sidecar](https://cyral.com/docs/sidecars/manage/alias).

@@ -38,9 +38,17 @@ sidecar.
 - `aws_cloudwatch_log_group_name` -> `cloudwatch_log_group_name`
 - `aws_iam_role_arn` -> `iam_role_arn`
 - `aws_security_group_id` -> `security_group_id`
-- `sidecar_dns` -> `dns`
+- `sidecar_ca_certificate_role_arn` -> `ca_certificate_role_arn`
+- `sidecar_ca_certificate_secret_arn` -> `ca_certificate_secret_arn`
 - `sidecar_credentials_secret_arn` -> `secret_arn`
+- `sidecar_custom_host_role` -> `custom_host_role`
+- `sidecar_dns_hosted_zone_id` -> `dns_hosted_zone_id`
+- `sidecar_dns` -> `dns`
+- `sidecar_dns_name` -> `dns_name`
 - `sidecar_load_balancer_dns` -> `load_balancer_dns`
+- `sidecar_tls_certificate_role_arn` -> `tls_certificate_role_arn`
+- `sidecar_tls_certificate_secret_arn` -> `tls_certificate_secret_arn`
+
 
 ## Upgrading from module v3 to v4
 

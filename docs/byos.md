@@ -25,11 +25,11 @@ with the following format:
 | `clientId`                    | Yes      | String |
 | `clientSecret`                | Yes      | String |
 | `containerRegistryKey`        | No       | String - Base64 encoded |
-| `idpCertificate`              | No       | String - new lines escaped (`replace(<CERTIFICATE_CONTENTS>, "\n", "\\n")`) |
-| `sidecarPrivateIdpKey`        | No       | String - new lines escaped (`replace(<CERTIFICATE_CONTENTS>, "\n", "\\n")`) |
-| `sidecarPublicIdpCertificate` | No       | String - new lines escaped (`replace(<CERTIFICATE_CONTENTS>, "\n", "\\n")`) |
+| `idpCertificate`              | No       | String - new lines escaped (`replace(var.yourCertificate, "\n", "\\n")`) |
+| `sidecarPrivateIdpKey`        | No       | String - new lines escaped (`replace(var.yourCertificate, "\n", "\\n")`) |
+| `sidecarPublicIdpCertificate` | No       | String - new lines escaped (`replace(var.yourCertificate, "\n", "\\n")`) |
 
-Make sure to call the Terraform function `replace(<CERTIFICATE_CONTENTS>, "\n", "\\n")`
+Make sure to call the Terraform function `replace(var.yourCertificate, "\n", "\\n")`
 to escape the new lines in the parameters `idpCertificate`,
 `sidecarPublicIdpCertificate` and `sidecarPrivateIdpKey` before storing them on
 your secret.

@@ -1,6 +1,6 @@
 locals {
   create_kms_policy              = var.ec2_ebs_kms_arn != "" || var.secrets_kms_arn != ""
-  create_sidecar_role            = var.sidecar_custom_host_role == ""
+  create_sidecar_role            = var.custom_host_role == ""
 }
 
 # Gets the ARN from a resource that is deployed by this module in order to
@@ -47,49 +47,49 @@ data "aws_iam_policy_document" "init_script_policy" {
   }
 
   dynamic "statement" {
-    for_each = (var.sidecar_tls_certificate_secret_arn != "" && var.sidecar_tls_certificate_role_arn == "") ? [1] : []
+    for_each = (var.tls_certificate_secret_arn != "" && var.tls_certificate_role_arn == "") ? [1] : []
     content {
       actions = [
         "secretsmanager:GetSecretValue"
       ]
       resources = compact([
-        var.sidecar_tls_certificate_secret_arn,
+        var.tls_certificate_secret_arn,
       ])
     }
   }
 
   dynamic "statement" {
-    for_each = (var.sidecar_ca_certificate_secret_arn != "" && var.sidecar_ca_certificate_role_arn == "") ? [1] : []
+    for_each = (var.ca_certificate_secret_arn != "" && var.ca_certificate_role_arn == "") ? [1] : []
     content {
       actions = [
         "secretsmanager:GetSecretValue"
       ]
       resources = compact([
-        var.sidecar_ca_certificate_secret_arn,
+        var.ca_certificate_secret_arn,
       ])
     }
   }
 
   dynamic "statement" {
-    for_each = (var.sidecar_tls_certificate_secret_arn != "" && var.sidecar_tls_certificate_role_arn != "") ? [1] : []
+    for_each = (var.tls_certificate_secret_arn != "" && var.tls_certificate_role_arn != "") ? [1] : []
     content {
       actions = [
         "sts:AssumeRole"
       ]
       resources = compact([
-        var.sidecar_tls_certificate_role_arn,
+        var.tls_certificate_role_arn,
       ])
     }
   }
 
   dynamic "statement" {
-    for_each = (var.sidecar_ca_certificate_secret_arn != "" && var.sidecar_ca_certificate_role_arn != "") ? [1] : []
+    for_each = (var.ca_certificate_secret_arn != "" && var.ca_certificate_role_arn != "") ? [1] : []
     content {
       actions = [
         "sts:AssumeRole"
       ]
       resources = compact([
-        var.sidecar_ca_certificate_role_arn,
+        var.ca_certificate_role_arn,
       ])
     }
   }
@@ -130,7 +130,7 @@ data "aws_iam_policy_document" "sidecar" {
 resource "aws_iam_instance_profile" "sidecar_profile" {
   count = local.create_sidecar_role ? 1 : 0
   name  = "${local.name_prefix}-sidecar_profile"
-  role  = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.sidecar_custom_host_role
+  role  = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.custom_host_role
   tags  = var.custom_tags
 }
 
@@ -151,12 +151,12 @@ resource "aws_iam_policy" "init_script_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "init_script_policy" {
-  role       = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.sidecar_custom_host_role
+  role       = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.custom_host_role
   policy_arn = aws_iam_policy.init_script_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "user_policies" {
   count      = length(var.iam_policies)
-  role       = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.sidecar_custom_host_role
+  role       = local.create_sidecar_role ? aws_iam_role.sidecar_role[0].name : var.custom_host_role
   policy_arn = var.iam_policies[count.index]
 }

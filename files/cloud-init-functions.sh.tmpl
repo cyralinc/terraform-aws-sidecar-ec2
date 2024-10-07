@@ -87,17 +87,17 @@ function get_secret(){
 
 function load_certs() {
     echo "Loading certificates..."
-    local sidecar_tls_cert_secret_value sidecar_ca_cert_secret_value
-    if ! sidecar_tls_cert_secret_value=$(get_secret_value "${sidecar_tls_certificate_secret_arn}" "${sidecar_tls_certificate_role_arn}"); then
-        echo "WARNING: Unable to fetch shared TLS certificate from ${sidecar_tls_certificate_secret_arn} see error above"
+    local tls_cert_secret_value ca_cert_secret_value
+    if ! tls_cert_secret_value=$(get_secret_value "${tls_certificate_secret_arn}" "${tls_certificate_role_arn}"); then
+        echo "WARNING: Unable to fetch shared TLS certificate from ${tls_certificate_secret_arn} see error above"
     fi
-    if ! sidecar_ca_cert_secret_value=$(get_secret_value "${sidecar_ca_certificate_secret_arn}" "${sidecar_ca_certificate_role_arn}"); then
-        echo "WARNING: Unable to fetch shared CA certificate from ${sidecar_ca_certificate_secret_arn}" see error above.
+    if ! ca_cert_secret_value=$(get_secret_value "${ca_certificate_secret_arn}" "${ca_certificate_role_arn}"); then
+        echo "WARNING: Unable to fetch shared CA certificate from ${ca_certificate_secret_arn}" see error above.
     fi
-    SIDECAR_TLS_KEY=$(echo "$sidecar_tls_cert_secret_value" | extract_key_from_json_input)
-    SIDECAR_TLS_CERT=$(echo "$sidecar_tls_cert_secret_value" | extract_cert_from_json_input)
-    SIDECAR_CA_KEY=$(echo "$sidecar_ca_cert_secret_value" | extract_key_from_json_input)
-    SIDECAR_CA_CERT=$(echo "$sidecar_ca_cert_secret_value" | extract_cert_from_json_input)
+    SIDECAR_TLS_KEY=$(echo "$tls_cert_secret_value" | extract_key_from_json_input)
+    SIDECAR_TLS_CERT=$(echo "$tls_cert_secret_value" | extract_cert_from_json_input)
+    SIDECAR_CA_KEY=$(echo "$ca_cert_secret_value" | extract_key_from_json_input)
+    SIDECAR_CA_CERT=$(echo "$ca_cert_secret_value" | extract_cert_from_json_input)
 }
 
 function load_idp_certs() {
