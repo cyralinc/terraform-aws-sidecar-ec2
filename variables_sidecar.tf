@@ -18,14 +18,16 @@ variable "container_registry_key" {
 }
 
 variable "client_id" {
-  description = "The client id assigned to the sidecar"
+  description = "(Optional) The client id assigned to the sidecar. If not provided, must provide a secret containing the respective client id using `secret_arn`."
   type        = string
+  default     = ""
 }
 
 variable "client_secret" {
-  description = "The client secret assigned to the sidecar"
+  description = "(Optional) The client secret assigned to the sidecar. If not provided, must provide a secret containing the respective client secret using `secret_arn`."
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "control_plane" {
@@ -55,10 +57,10 @@ variable "sidecar_id" {
 #
 # 1. In order to automatically create a DNS CNAME in Route53 to the sidecar, assign values to
 #    `dns_hosted_zone_id` and `dns_name`. To update an existing DNS, it is also required
-#    to assign `true` to `sidecar_dns_overwrite`. This DNS name will be shown in the UI instead of the
+#    to assign `true` to `dns_overwrite`. This DNS name will be shown in the UI instead of the
 #    load balancer DNS;
 # 2. In order to associate a DNS CNAME that will be managed manually (case of Snowflake sidecar), use the
-#    variable `dns_name` and leave `dns_hosted_zone_id` and `sidecar_dns_overwrite` with
+#    variable `dns_name` and leave `dns_hosted_zone_id` and `dns_overwrite` with
 #    default values. In this case,the informed DNS name will be shown in the UI instead of the load balancer
 #    DNS.
 #
@@ -74,8 +76,8 @@ variable "dns_name" {
   default     = ""
 }
 
-variable "sidecar_dns_overwrite" {
-  description = "(Optional) Update an existing DNS name informed in 'dns_name' variable"
+variable "dns_overwrite" {
+  description = "(Optional) Update an existing DNS name informed in `dns_name`."
   type        = bool
   default     = false
 }
