@@ -21,6 +21,14 @@ variable "client_id" {
   description = "(Optional) The client id assigned to the sidecar. If not provided, must provide a secret containing the respective client id using `secret_arn`."
   type        = string
   default     = ""
+  validation {
+    condition = (
+      (length(var.client_id) > 0 && length(var.secret_arn) > 0) ||
+      (length(var.client_id) == 0 && length(var.secret_arn) > 0) ||
+      (length(var.client_id) > 0 && length(var.secret_arn) == 0)
+    )
+    error_message = "Must be provided if `secret_arn` is empty and must be empty if `secret_arn` is provided."
+  }
 }
 
 variable "client_secret" {
@@ -28,6 +36,14 @@ variable "client_secret" {
   type        = string
   sensitive   = true
   default     = ""
+  validation {
+    condition = (
+      (length(var.client_secret) > 0 && length(var.secret_arn) > 0) ||
+      (length(var.client_secret) == 0 && length(var.secret_arn) > 0) ||
+      (length(var.client_secret) > 0 && length(var.secret_arn) == 0)
+    )
+    error_message = "Must be provided if `secret_arn` is empty and must be empty if `secret_arn` is provided."
+  }
 }
 
 variable "control_plane" {

@@ -1,6 +1,6 @@
 locals {
-  create_kms_policy              = var.ec2_ebs_kms_arn != "" || var.secrets_kms_arn != ""
-  create_sidecar_role            = var.custom_host_role == ""
+  create_kms_policy   = var.ec2_ebs_kms_arn != "" || var.secrets_kms_arn != ""
+  create_sidecar_role = var.custom_host_role == ""
 }
 
 # Gets the ARN from a resource that is deployed by this module in order to

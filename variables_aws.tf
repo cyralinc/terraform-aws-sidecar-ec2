@@ -11,12 +11,20 @@ variable "asg_min" {
   description = "The minimum number of hosts to create in the auto scaling group"
   type        = number
   default     = 1
+  validation {
+    condition     = var.asg_min == 1 && !var.deploy_load_balancer
+    error_message = "Must be set to `1` in case `deploy_load_balancer` is `false`."
+  }
 }
 
 variable "asg_desired" {
   description = "The desired number of hosts to create in the auto scaling group"
   type        = number
   default     = 1
+  validation {
+    condition     = var.asg_desired == 1 && !var.deploy_load_balancer
+    error_message = "Must be set to `1` in case `deploy_load_balancer` is `false`."
+  }
 }
 
 variable "asg_max" {

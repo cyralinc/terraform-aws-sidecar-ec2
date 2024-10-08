@@ -9,7 +9,7 @@ locals {
   }
 
   deploy_sidecar_secret = length(var.secret_arn) == 0
-  secret_arn    = local.deploy_sidecar_secret ? aws_secretsmanager_secret.sidecar_secrets[0].arn : var.secret_arn
+  secret_arn            = local.deploy_sidecar_secret ? aws_secretsmanager_secret.sidecar_secrets[0].arn : var.secret_arn
 
   self_signed_cert_country               = "US"
   self_signed_cert_province              = "CA"
