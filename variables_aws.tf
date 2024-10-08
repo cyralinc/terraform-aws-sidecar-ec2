@@ -1,7 +1,7 @@
 variable "ami_id" {
   description = <<EOF
-Amazon Linux 2 AMI ID for sidecar EC2 instances. The default behavior is to use the latest version.
-In order to define a new image, provide the desired image id.
+AMI ID that will be used for the EC2 instances. If not provided,
+will use the latest Amazon Linux 2 AMI available.
 EOF
   type        = string
   default     = ""

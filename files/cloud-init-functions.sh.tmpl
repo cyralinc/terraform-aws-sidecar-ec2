@@ -155,9 +155,6 @@ function registry_login () {
     if [[ ${container_registry} == *"aws"* ]]; then
         echo "(login): Logging in to AWS ECR..."
         eval $(aws ecr --no-include-email get-login  --region ${aws_region})
-    elif [ -n "$key" ]; then
-        echo "(login): Logging in to GCR..."
-        echo "$key" | docker login -u ${container_registry_username} --password-stdin https://gcr.io
     else
         echo "(login): Won't log in automatically to any image registry. Image registry set to: ${container_registry}"
     fi
@@ -180,9 +177,9 @@ function containerCheck () {
 function launch () {
     echo "Starting sidecar..."
     cd /home/ec2-user
-    SINGLE_CONTAINER_IMAGE=${container_registry}/cyral-sidecar:$SIDECAR_VERSION
-    retry docker pull -q $SINGLE_CONTAINER_IMAGE
-    retry docker run -d --name sidecar --network=host --log-driver=local --log-opt max-size=500m --restart=unless-stopped --env-file .env $SINGLE_CONTAINER_IMAGE
+    SIDECAR_IMAGE=${container_registry}/cyral-sidecar:$SIDECAR_VERSION
+    retry docker pull -q $SIDECAR_IMAGE
+    retry docker run -d --name sidecar --network=host --log-driver=local --log-opt max-size=500m --restart=unless-stopped --env-file .env $SIDECAR_IMAGE
     if ! containerCheck "sidecar"; then
         echo "--> Problem with sidecar! Inspect the logs to diagnose the issue. <--"
     fi
