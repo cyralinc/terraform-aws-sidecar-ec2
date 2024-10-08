@@ -4,9 +4,12 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 locals {
+  ami_id = length(var.ami_id) > 0 ? var.ami_id : data.aws_ami.amazon_linux_2.id
+
+  aws_account_id = data.aws_caller_identity.current.account_id
   aws_partition  = data.aws_partition.current.partition
   aws_region     = data.aws_region.current.name
-  aws_account_id = data.aws_caller_identity.current.account_id
+
 
   sidecar_endpoint = var.deploy_load_balancer ? (
     (length(aws_route53_record.cyral-sidecar-dns-record) == 0 && length(var.dns_name) > 0) ? (
@@ -23,6 +26,8 @@ locals {
   templatevars = {
     aws_account_id                    = local.aws_account_id
     aws_region                        = local.aws_region
+    ca_certificate_role_arn           = var.ca_certificate_role_arn
+    ca_certificate_secret_arn         = local.ca_certificate_secret_arn
     controlplane_host                 = var.control_plane
     container_registry                = var.container_registry
     container_registry_username       = var.container_registry_username
@@ -38,20 +43,10 @@ locals {
     secret_role_arn                   = var.secret_role_arn
     sidecar_endpoint                  = local.sidecar_endpoint
     sidecar_id                        = var.sidecar_id
-    ca_certificate_role_arn   = var.ca_certificate_role_arn
-    ca_certificate_secret_arn = (
-      var.ca_certificate_secret_arn != "" ?
-      var.ca_certificate_secret_arn :
-      aws_secretsmanager_secret.self_signed_ca.arn
-    )
-    tls_certificate_role_arn = var.tls_certificate_role_arn
-    tls_certificate_secret_arn = (
-      var.tls_certificate_secret_arn != "" ?
-      var.tls_certificate_secret_arn :
-      aws_secretsmanager_secret.self_signed_tls_cert.arn
-    )
-    sidecar_version = var.sidecar_version
-    tls_skip_verify = var.tls_skip_verify ? "tls-skip-verify" : "tls"
+    sidecar_version                   = var.sidecar_version
+    tls_certificate_role_arn          = var.tls_certificate_role_arn
+    tls_certificate_secret_arn        = local.tls_certificate_secret_arn
+    tls_skip_verify                   = var.tls_skip_verify ? "tls-skip-verify" : "tls"
   }
 
   cloud_init_func = templatefile("${path.module}/files/cloud-init-functions.sh.tmpl", local.templatevars)

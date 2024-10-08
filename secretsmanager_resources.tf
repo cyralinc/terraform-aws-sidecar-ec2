@@ -8,8 +8,21 @@ locals {
     idpCertificate              = replace(var.idp_certificate, "\n", "\\n")
   }
 
-  deploy_sidecar_secret = length(var.secret_arn) == 0
-  secret_arn            = local.deploy_sidecar_secret ? aws_secretsmanager_secret.sidecar_secrets[0].arn : var.secret_arn
+  secret_arn = (
+    var.secret_arn != "" ?
+    var.secret_arn :
+    aws_secretsmanager_secret.sidecar_secrets.arn
+  )
+  ca_certificate_secret_arn = (
+    var.ca_certificate_secret_arn != "" ?
+    var.ca_certificate_secret_arn :
+    aws_secretsmanager_secret.self_signed_ca.arn
+  )
+  tls_certificate_secret_arn = (
+    var.tls_certificate_secret_arn != "" ?
+    var.tls_certificate_secret_arn :
+    aws_secretsmanager_secret.self_signed_tls_cert.arn
+  )
 
   self_signed_cert_country               = "US"
   self_signed_cert_province              = "CA"
@@ -19,7 +32,6 @@ locals {
 }
 
 resource "aws_secretsmanager_secret" "sidecar_secrets" {
-  count                   = local.deploy_sidecar_secret ? 1 : 0
   name                    = "/cyral/sidecars/${var.sidecar_id}/secrets"
   recovery_window_in_days = 0
   kms_key_id              = var.secrets_kms_arn
@@ -27,8 +39,7 @@ resource "aws_secretsmanager_secret" "sidecar_secrets" {
 }
 
 resource "aws_secretsmanager_secret_version" "sidecar_secrets" {
-  count         = local.deploy_sidecar_secret ? 1 : 0
-  secret_id     = aws_secretsmanager_secret.sidecar_secrets[0].id
+  secret_id     = aws_secretsmanager_secret.sidecar_secrets.id
   secret_string = jsonencode(local.sidecar_secret)
 }
 

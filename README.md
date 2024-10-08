@@ -227,15 +227,16 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_ami_id"></a> [ami\_id](#output\_ami\_id) | EC2 AMI id |
 | <a name="output_autoscaling_group_arn"></a> [autoscaling\_group\_arn](#output\_autoscaling\_group\_arn) | Auto scaling group ARN |
+| <a name="output_ca_certificate_secret_arn"></a> [ca\_certificate\_secret\_arn](#output\_ca\_certificate\_secret\_arn) | ARN of the CA certificate secret used by the sidecar |
 | <a name="output_cloudwatch_log_group_name"></a> [cloudwatch\_log\_group\_name](#output\_cloudwatch\_log\_group\_name) | Name of the CloudWatch log group where sidecar logs are stored |
 | <a name="output_dns"></a> [dns](#output\_dns) | Sidecar DNS endpoint |
 | <a name="output_iam_role_arn"></a> [iam\_role\_arn](#output\_iam\_role\_arn) | Sidecar IAM role ARN |
 | <a name="output_launch_template_arn"></a> [launch\_template\_arn](#output\_launch\_template\_arn) | Launch template ARN |
 | <a name="output_load_balancer_arn"></a> [load\_balancer\_arn](#output\_load\_balancer\_arn) | Load balancer ARN |
 | <a name="output_load_balancer_dns"></a> [load\_balancer\_dns](#output\_load\_balancer\_dns) | Sidecar load balancer DNS endpoint |
-| <a name="output_secret_arn"></a> [secret\_arn](#output\_secret\_arn) | Sidecar secret ARN |
+| <a name="output_secret_arn"></a> [secret\_arn](#output\_secret\_arn) | ARN of the secret with the credentials used by the sidecar |
 | <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | Sidecar security group id |
-| <a name="output_self_signed_ca_cert_secret_arn"></a> [self\_signed\_ca\_cert\_secret\_arn](#output\_self\_signed\_ca\_cert\_secret\_arn) | Sidecar self signed CA certificate secret ARN |
-| <a name="output_self_signed_tls_cert_secret_arn"></a> [self\_signed\_tls\_cert\_secret\_arn](#output\_self\_signed\_tls\_cert\_secret\_arn) | Sidecar self signed TLS certificate secret ARN |
+| <a name="output_tls_certificate_secret_arn"></a> [tls\_certificate\_secret\_arn](#output\_tls\_certificate\_secret\_arn) | ARN of the TLS certificate secret used by the sidecar |
 <!-- END_TF_DOCS -->

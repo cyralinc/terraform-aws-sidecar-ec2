@@ -12,8 +12,11 @@ variable "asg_min" {
   type        = number
   default     = 1
   validation {
-    condition     = var.asg_min == 1 && !var.deploy_load_balancer
-    error_message = "Must be set to `1` in case `deploy_load_balancer` is `false`."
+    condition     = (
+      (var.asg_min == 1 && !var.deploy_load_balancer) || 
+      var.deploy_load_balancer
+    )
+    error_message = "`asg_min` must be set to `1` in case `deploy_load_balancer` is `false`."
   }
 }
 
@@ -22,8 +25,13 @@ variable "asg_desired" {
   type        = number
   default     = 1
   validation {
-    condition     = var.asg_desired == 1 && !var.deploy_load_balancer
-    error_message = "Must be set to `1` in case `deploy_load_balancer` is `false`."
+    condition     = (
+      ((var.asg_desired == 1 && !var.deploy_load_balancer) || 
+      var.deploy_load_balancer) &&
+      var.asg_desired >= var.asg_min && 
+      var.asg_desired <= var.asg_max
+    )
+    error_message = "`asg_desired` must be `1` if `deploy_load_balancer = false` and `asg_min <= asg_desired <= asg_max`."
   }
 }
 
@@ -38,7 +46,10 @@ variable "asg_min_healthy_percentage" {
   type        = number
   default     = 100
   validation {
-    condition     = (var.asg_min_healthy_percentage >= 0) && (var.asg_min_healthy_percentage <= 100)
+    condition     = (
+      (var.asg_min_healthy_percentage >= 0) && 
+      (var.asg_min_healthy_percentage <= 100)
+    )
     error_message = "The minimum healthy percentage must be between `0` and `100`"
   }
 }

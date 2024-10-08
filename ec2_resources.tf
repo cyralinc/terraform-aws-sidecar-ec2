@@ -12,7 +12,7 @@ data "aws_ami" "amazon_linux_2" {
 resource "aws_launch_template" "lt" {
   # Launch configuration for sidecar instances that will run containers
   name          = "${local.name_prefix}-LT"
-  image_id      = var.ami_id != "" ? var.ami_id : data.aws_ami.amazon_linux_2.id
+  image_id      = local.ami_id
   instance_type = var.instance_type
   key_name      = var.key_name
   tags          = var.custom_tags
