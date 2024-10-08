@@ -62,13 +62,13 @@ EOT
     for_each = var.launch_template_tags_resource_types
     content {
       resource_type = tag_specifications.key
-      tags          = merge(var.custom_tags, {"Name" = "${local.name_prefix}-${tag_specifications.key}"})
+      tags          = merge(var.custom_tags, { "Name" = "${local.name_prefix}-${tag_specifications.key}" })
     }
   }
 }
 
 resource "aws_autoscaling_group" "asg" {
-  name  = "${local.name_prefix}-asg"
+  name = "${local.name_prefix}-asg"
   launch_template {
     id      = aws_launch_template.lt.id
     version = aws_launch_template.lt.latest_version
