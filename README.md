@@ -69,6 +69,14 @@ module "cyral_sidecar" {
 
 ## Upgrade
 
+### Module upgrade
+
+If you are coming from `v4` of this module, read the
+[upgrade notes](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/upgrade-notes.md) for specific
+instructions on how to upgrade this module.
+
+### Sidecar upgrade
+
 This module supports [1-click upgrade](https://cyral.com/docs/sidecars/manage/upgrade#1-click-upgrade).
 
 To enable the 1-click upgrade feature, leave the variable `sidecar_version` empty and upgrade
@@ -79,9 +87,6 @@ the desired sidecar version to `sidecar_version`. To upgrade your sidecar, updat
 with the target version and run `terraform apply`.
 
 Learn more in the [sidecar upgrade procedures](https://cyral.com/docs/sidecars/manage/upgrade) page.
-
-See also the module's [upgrade notes](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/upgrade-notes.md) for specific
-instructions on how to upgrade this module from previous major versions.
 
 ## Advanced
 
