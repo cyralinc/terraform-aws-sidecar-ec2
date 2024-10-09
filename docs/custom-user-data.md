@@ -7,7 +7,6 @@ This module supports custom user-data injection through the `custom_user_data` v
 As an example, one could set the variable as follows to inject custom commands for installing the sidecar on a Red Hat Enterprise Linux 9 image, where the sidecar will be installed using Podman instead of Docker.
 
 ```
-  use_single_container = true
   custom_user_data = {
     "pre"               = <<-EOT
       systemctl stop nftables || echo 'cannot stop nftables'

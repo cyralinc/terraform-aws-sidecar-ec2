@@ -1,12 +1,6 @@
 repos:
   - repo: local
     hooks:
-      - id: zip-lambda
-        name: "Zip self signed certificate lambda"
-        entry: ./hooks/zip-lambda.sh
-        language: script
-        stages: [pre-commit]
-        files: files/self-signed-certificate-lambda/index.py
       - id: terraform-docs
         name: terraform-docs
         language: docker_image

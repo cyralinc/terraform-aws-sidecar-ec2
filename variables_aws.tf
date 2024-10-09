@@ -1,28 +1,38 @@
 variable "ami_id" {
   description = <<EOF
-Amazon Linux 2 AMI ID for sidecar EC2 instances. The default behavior is to use the latest version.
-In order to define a new image, provide the desired image id.
+AMI ID that will be used for the EC2 instances. If not provided,
+will use the latest Amazon Linux 2 AMI available.
 EOF
   type        = string
   default     = ""
-}
-
-variable "asg_count" {
-  description = "(Deprecated) Set to 1 to enable the ASG, 0 to disable. Only for debugging."
-  type        = number
-  default     = 1
 }
 
 variable "asg_min" {
   description = "The minimum number of hosts to create in the auto scaling group"
   type        = number
   default     = 1
+  validation {
+    condition = (
+      (var.asg_min == 1 && !var.deploy_load_balancer) ||
+      var.deploy_load_balancer
+    )
+    error_message = "`asg_min` must be set to `1` in case `deploy_load_balancer` is `false`."
+  }
 }
 
 variable "asg_desired" {
   description = "The desired number of hosts to create in the auto scaling group"
   type        = number
   default     = 1
+  validation {
+    condition = (
+      ((var.asg_desired == 1 && !var.deploy_load_balancer) ||
+      var.deploy_load_balancer) &&
+      var.asg_desired >= var.asg_min &&
+      var.asg_desired <= var.asg_max
+    )
+    error_message = "`asg_desired` must be `1` if `deploy_load_balancer = false` and `asg_min <= asg_desired <= asg_max`."
+  }
 }
 
 variable "asg_max" {
@@ -36,7 +46,10 @@ variable "asg_min_healthy_percentage" {
   type        = number
   default     = 100
   validation {
-    condition     = (var.asg_min_healthy_percentage >= 0) && (var.asg_min_healthy_percentage <= 100)
+    condition = (
+      (var.asg_min_healthy_percentage >= 0) &&
+      (var.asg_min_healthy_percentage <= 100)
+    )
     error_message = "The minimum healthy percentage must be between `0` and `100`"
   }
 }
@@ -54,9 +67,9 @@ variable "enable_cross_zone_load_balancing" {
 }
 
 variable "health_check_grace_period" {
-  description = "The grace period in seconds before the health check will terminate the instance"
+  description = "The minimum amount of time (in seconds) to keep a new instance in service before terminating it if it's found to be unhealthy"
   type        = number
-  default     = 600
+  default     = 300
 }
 
 variable "instance_type" {
@@ -154,8 +167,7 @@ variable "volume_size" {
 variable "volume_type" {
   description = "Type of the sidecar disk"
   type        = string
-  // TODO Change to "gp3" in the next major
-  default     = "gp2"
+  default     = "gp3"
 }
 
 variable "ssh_inbound_cidr" {
@@ -197,14 +209,14 @@ variable "deploy_load_balancer" {
   default     = true
 }
 
-variable "deploy_secrets" {
-  description = "Create the AWS Secrets Manager resource at `secret_location` storing `client_id`, `client_secret` and `container_registry_key`."
-  type        = bool
-  default     = true
+variable "secret_arn" {
+  description = "Full ARN of the AWS Secrets Manager secret used to store the sidecar secrets. If unset, sidecar will manage its own secret. See the topic `Bring Your Own Secret` in the `Advanced` documentation section."
+  type        = string
+  default     = ""
 }
 
-variable "secrets_location" {
-  description = "Location in AWS Secrets Manager to store `client_id`, `client_secret` and `container_registry_key`. If unset, will assume `/cyral/sidecars/<SIDECAR_ID>/secrets`."
+variable "secret_role_arn" {
+  description = "(Optional) ARN of an AWS IAM Role to assume when reading the secret informed in `secret_arn`."
   type        = string
   default     = ""
 }

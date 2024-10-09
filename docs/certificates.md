@@ -26,9 +26,9 @@ that the following requirements are met by your private key / certificate pair:
 
 If you have a scenario in which you have two different accounts: one where you
 deploy the sidecar and another where you manage the sidecar secrets, then you
-can use the module inputs `sidecar_custom_host_role`,
-`sidecar_tls_certificate_role_arn` (for TLS certificate) or
-`sidecar_ca_certificate_role_arn` (for CA certificate) to the sidecar
+can use the module inputs `custom_host_role`,
+`tls_certificate_role_arn` (for TLS certificate) or
+`ca_certificate_role_arn` (for CA certificate) to the sidecar
 module. Suppose you have the following configuration:
 
    - Account `111111111111` used to manage secrets
@@ -45,10 +45,10 @@ module. Suppose you have the following configuration:
    documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html)
    for further information.
 
-1. Provide the ARN of `role1` to `sidecar_tls_certificate_role_arn` (for the TLS
-   certificate) or `sidecar_ca_certificate_role_arn` (for the CA certificate) of
+1. Provide the ARN of `role1` to `tls_certificate_role_arn` (for the TLS
+   certificate) or `ca_certificate_role_arn` (for the CA certificate) of
    the sidecar module. If you created role `role2`, provide the ARN of `role2`
-   to the parameter `sidecar_custom_host_role`.
+   to the parameter `custom_host_role`.
 
 1. Provide the ARNs of the certificate secrets to the sidecar module, as
    instructed in the next section.
@@ -58,10 +58,10 @@ module. Suppose you have the following configuration:
 There are two parameters in the sidecar module you can use to provide the ARN of
 a secret containing a custom certificate:
 
-1. `sidecar_tls_certificate_secret_arn` (Optional) ARN of secret in AWS Secrets
+1. `tls_certificate_secret_arn` (Optional) ARN of secret in AWS Secrets
    Manager that contains a certificate to terminate TLS connections.
 
-1. `sidecar_ca_certificate_secret_arn` (Optional) ARN of secret in AWS Secrets
+1. `ca_certificate_secret_arn` (Optional) ARN of secret in AWS Secrets
    Manager that contains a CA certificate to sign sidecar-generated certs.
 
 The secrets must follow the following JSON format.
