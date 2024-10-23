@@ -1,3 +1,54 @@
+## 5.0.0 (October 22, 2024)
+
+Minimum required **control plane** version: `v4.16.0`. Minimum required **sidecar version**: `v4.16.0`. This whole module will not work with previous sidecar or control plane versions.
+
+Changes in default values:
+
+- `health_check_grace_period` -- Default value change from `600` (10 minutes) to `300` (5 minutes) to speed up deployment and upgrades.
+- `volume_type` -- Default value change from `gp2` to `gp3`.
+
+Removed input variables:
+
+- `asg_count` -- No longer used.
+- `dd_api_key` -- No longer used.
+- `deploy_certificate_lambda` -- No longer used. Lambda got removed in favour
+of the Terraform TLS provider for self-signed certificate creation.
+- `deploy_secrets` -- No longer used. The secret will be created by the module
+automatically if `secret_name` is empty. If `secret_name` assumes
+any value, it means the user created the secret externally to the module and
+it should not be responsible for managing it.
+- `hc_vault_integration_id` -- No longer used. Retrieved from the control plane
+when sidecar is running.
+- `log_integration` -- No longer used. Retrieved from the control plane when
+sidecar is running.
+- `metrics_integration` -- No longer used.
+- `sidecar_custom_certificate_account_id` -- No longer used. Corresponding
+feature no longer exists. See the [Sidecar certificates](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/certificates.md)
+page to get more information on how to use custom certificates with your
+sidecar.
+- `use_single_container` -- No longer used.
+
+Renamed output variables:
+
+- `aws_cloudwatch_log_group_name` -> `cloudwatch_log_group_name`
+- `aws_iam_role_arn` -> `iam_role_arn`
+- `aws_security_group_id` -> `security_group_id`
+- `sidecar_ca_certificate_role_arn` -> `ca_certificate_role_arn`
+- `sidecar_ca_certificate_secret_arn` -> `ca_certificate_secret_arn`
+- `sidecar_credentials_secret_arn` -> `secret_arn`
+- `sidecar_custom_host_role` -> `custom_host_role`
+- `sidecar_dns_hosted_zone_id` -> `dns_hosted_zone_id`
+- `sidecar_dns` -> `dns`
+- `sidecar_dns_name` -> `dns_name`
+- `sidecar_load_balancer_dns` -> `load_balancer_dns`
+- `sidecar_tls_certificate_role_arn` -> `tls_certificate_role_arn`
+- `sidecar_tls_certificate_secret_arn` -> `tls_certificate_secret_arn`
+
+### Breaking changes:
+
+Due to the removal of the certificate lambda (see [Upgrade Notes](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/upgrade-notes.md#upgrading-from-module-v4-to-v5)),
+the self-signed certificates will be recreated when upgrading from module `v4` to `v5`.
+
 ## 4.10.2 (October 3, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
