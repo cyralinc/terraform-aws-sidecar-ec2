@@ -1,3 +1,13 @@
+## 4.10.3 (Nov 1, 2024)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Bug fixes:
+
+* Avoid LB recreation in upgrades from v4.4 or previous ([#122](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/122))
+
 ## 4.10.2 (October 3, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
@@ -38,6 +48,16 @@ See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2
 * Add custom tags to resources created by launch template ([#115](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/115))
 * Add Name tag to launch template tag_specifications ([#165](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/116))
 
+## 4.9.3 (Nov 1, 2024)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Bug fixes:
+
+* Avoid LB recreation in upgrades from v4.4 or previous ([#122](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/122))
+
 ## 4.9.1 (August 23, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
@@ -62,6 +82,16 @@ See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2
 
 * Provide Variable to decide how TLS certs are generated (lamba or provider) ([#112](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/112))
 
+## 4.8.1 (Nov 1, 2024)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Bug fixes:
+
+* Avoid LB recreation in upgrades from v4.4 or previous ([#122](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/122))
+
 ## 4.8.0 (July 26, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
@@ -71,6 +101,16 @@ See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2
 ### Features:
 
 * Add variable volume_type ([#110](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/110))
+
+## 4.7.2 (Nov 1, 2024)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Bug fixes:
+
+* Avoid LB recreation in upgrades from v4.4 or previous ([#122](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/122))
 
 ## 4.7.1 (July 25, 2024)
 
@@ -91,6 +131,16 @@ See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2
 ### Features:
 
 * ENG-12761: Add variable to control custom tags ([#108](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/108))
+
+## 4.6.1 (Nov 1, 2024)
+
+Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2023) release documentation below.
+
+### Bug fixes:
+
+* Avoid LB recreation in upgrades from v4.4 or previous ([#122](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/122))pull/108))
 
 ## 4.6.0 (July 9, 2024)
 
