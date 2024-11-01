@@ -197,6 +197,10 @@ moved {
   from = aws_lb.cyral-lb
   to   = aws_lb.lb
 }
+moved {
+  from = aws_lb.lb
+  to   = aws_lb.lb[0]
+}
 resource "aws_lb" "lb" {
   count = var.deploy_load_balancer ? 1 : 0
   # If the LB already exists, use the name `<name_prefix>-lb`, otherwise use
