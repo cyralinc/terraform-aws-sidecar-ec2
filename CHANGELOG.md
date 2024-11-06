@@ -1,3 +1,13 @@
+## 5.0.1 (November 5, 2024)
+
+Minimum required **control plane** version: `v4.16.0`. Minimum required **sidecar version**: `v4.16.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes from `v4` to `v5` of this module in the [`5.0.0`](#500-october-22-2024) release documentation below.
+
+### Documentation:
+
+* Update minimum required TF version ([#123](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/123))
+
 ## 5.0.0 (October 22, 2024)
 
 Minimum required **control plane** version: `v4.16.0`. Minimum required **sidecar version**: `v4.16.0`. This whole module will not work with previous sidecar or control plane versions.
@@ -49,7 +59,7 @@ Renamed output variables:
 Due to the removal of the certificate lambda (see [Upgrade Notes](https://github.com/cyralinc/terraform-aws-sidecar-ec2/blob/main/docs/upgrade-notes.md#upgrading-from-module-v4-to-v5)),
 the self-signed certificates will be recreated when upgrading from module `v4` to `v5`.
 
-## 4.10.3 (Nov 1, 2024)
+## 4.10.3 (November 1, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
 
@@ -99,7 +109,7 @@ See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2
 * Add custom tags to resources created by launch template ([#115](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/115))
 * Add Name tag to launch template tag_specifications ([#165](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/116))
 
-## 4.9.3 (Nov 1, 2024)
+## 4.9.3 (November 1, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
 
@@ -133,7 +143,7 @@ See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2
 
 * Provide Variable to decide how TLS certs are generated (lamba or provider) ([#112](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/112))
 
-## 4.8.1 (Nov 1, 2024)
+## 4.8.1 (November 1, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
 
@@ -153,7 +163,7 @@ See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2
 
 * Add variable volume_type ([#110](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/110))
 
-## 4.7.2 (Nov 1, 2024)
+## 4.7.2 (November 1, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
 
@@ -183,7 +193,7 @@ See the list of changes since `v3` of this module in the [`4.0.0`](#400-june-6-2
 
 * ENG-12761: Add variable to control custom tags ([#108](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/108))
 
-## 4.6.1 (Nov 1, 2024)
+## 4.6.1 (November 1, 2024)
 
 Minimum required **control plane** version: `v4.7.0`. Minimum required **sidecar version**: `v4.7.0`. This whole module will not work with previous sidecar or control plane versions.
 
