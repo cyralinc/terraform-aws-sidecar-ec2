@@ -105,7 +105,7 @@ Instructions for advanced deployment configurations are available for the follow
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.1 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.73.0, < 6.0.0 |
 | <a name="requirement_tls"></a> [tls](#requirement\_tls) | ~> 4.0.0 |
 
