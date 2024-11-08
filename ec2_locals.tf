@@ -30,7 +30,6 @@ locals {
     ca_certificate_secret_arn         = local.ca_certificate_secret_arn
     controlplane_host                 = var.control_plane
     container_registry                = var.container_registry
-    container_registry_username       = var.container_registry_username
     cloudwatch_log_group_name         = local.cloudwatch_log_group_name
     curl                              = local.curl
     idp_sso_login_url                 = var.idp_sso_login_url

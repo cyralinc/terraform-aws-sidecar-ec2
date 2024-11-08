@@ -2,7 +2,6 @@ locals {
   sidecar_secret = {
     clientId                    = var.client_id
     clientSecret                = var.client_secret
-    containerRegistryKey        = var.container_registry_key
     sidecarPublicIdpCertificate = replace(var.sidecar_public_idp_certificate, "\n", "\\n")
     sidecarPrivateIdpKey        = replace(var.sidecar_private_idp_key, "\n", "\\n")
     idpCertificate              = replace(var.idp_certificate, "\n", "\\n")

@@ -13,7 +13,6 @@ with the following format:
 {
     "clientId":"",
     "clientSecret":"",
-    "containerRegistryKey":"",
     "idpCertificate":"",
     "sidecarPrivateIdpKey":"",
     "sidecarPublicIdpCertificate":""
@@ -24,7 +23,6 @@ with the following format:
 | :---------------------------- | :------: | ------ |
 | `clientId`                    | Yes      | String |
 | `clientSecret`                | Yes      | String |
-| `containerRegistryKey`        | No       | String - Base64 encoded |
 | `idpCertificate`              | No       | String - new lines escaped (`replace(var.yourCertificate, "\n", "\\n")`) |
 | `sidecarPrivateIdpKey`        | No       | String - new lines escaped (`replace(var.yourCertificate, "\n", "\\n")`) |
 | `sidecarPublicIdpCertificate` | No       | String - new lines escaped (`replace(var.yourCertificate, "\n", "\\n")`) |

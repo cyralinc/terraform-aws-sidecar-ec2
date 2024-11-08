@@ -4,19 +4,6 @@ variable "container_registry" {
   default     = "public.ecr.aws/cyral"
 }
 
-variable "container_registry_username" {
-  description = "Username to authenticate to the container registry."
-  type        = string
-  default     = ""
-}
-
-variable "container_registry_key" {
-  description = "Corresponding key for the user name provided to authenticate to the container registry."
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
 variable "client_id" {
   description = "(Optional) The client id assigned to the sidecar. If not provided, must provide a secret containing the respective client id using `secret_arn`."
   type        = string
