@@ -177,8 +177,6 @@ No modules.
 | <a name="input_cloudwatch_log_group_name"></a> [cloudwatch\_log\_group\_name](#input\_cloudwatch\_log\_group\_name) | (Optional) Cloudwatch log group name. | `string` | `""` | no |
 | <a name="input_cloudwatch_logs_retention"></a> [cloudwatch\_logs\_retention](#input\_cloudwatch\_logs\_retention) | Cloudwatch logs retention in days | `number` | `14` | no |
 | <a name="input_container_registry"></a> [container\_registry](#input\_container\_registry) | Address of the container registry where Cyral images are stored. | `string` | `"public.ecr.aws/cyral"` | no |
-| <a name="input_container_registry_key"></a> [container\_registry\_key](#input\_container\_registry\_key) | Corresponding key for the user name provided to authenticate to the container registry. | `string` | `""` | no |
-| <a name="input_container_registry_username"></a> [container\_registry\_username](#input\_container\_registry\_username) | Username to authenticate to the container registry. | `string` | `""` | no |
 | <a name="input_control_plane"></a> [control\_plane](#input\_control\_plane) | Address of the control plane - <tenant>.cyral.com | `string` | n/a | yes |
 | <a name="input_custom_host_role"></a> [custom\_host\_role](#input\_custom\_host\_role) | (Optional) Name of an AWS IAM Role to attach to the EC2 instance profile. | `string` | `""` | no |
 | <a name="input_custom_tags"></a> [custom\_tags](#input\_custom\_tags) | Custom tags to be added to all AWS resources created | `map(any)` | `{}` | no |
