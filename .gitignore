@@ -12,3 +12,7 @@ terraform.tfstate*
 
 # VSCode
 **/.DS_Store
+.vscode/
+
+# Temp
+temp/

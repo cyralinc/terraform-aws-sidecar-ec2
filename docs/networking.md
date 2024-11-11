@@ -23,16 +23,6 @@ and have a route to an internet gateway to enable internet access.
 * `load_balancer_scheme`: set to `"internet-facing"`.
 * `associate_public_ip_address` set to `true`.
 
-## Private load balancer and private EC2 instances
-
-To deploy an entirely private sidecar, use the following parameters:
-
-* `subnets`: provide private subnets in the same VPC. These subnets will be used for both the EC2
-instances and the load balancer. All the provided subnets must have a route to the internet
-through a NAT gateway.
-* `load_balancer_scheme`: set to `"internal"` (this is the default value).
-* `associate_public_ip_address` set to `false` (this is the default value).
-
 ## Public load balancer and private EC2 instances
 
 To deploy a public load balancer and private EC2 instances, use the following parameters:
@@ -48,3 +38,30 @@ public subnets in the same AZs for this parameter. Failing to provide matching s
 cause the target group to not be able to route the traffic to the EC2 instances.
 * `load_balancer_scheme`: set to `"internet-facing"`.
 * `associate_public_ip_address` set to `false` (this is the default value).
+
+## Private load balancer and private EC2 instances
+
+To deploy an entirely private sidecar, use the following parameters:
+
+* `subnets`: provide private subnets in the same VPC. These subnets will be used for both the EC2
+instances and the load balancer. All the provided subnets must have a route to the internet
+through a NAT gateway.
+* `load_balancer_scheme`: set to `"internal"` (this is the default value).
+* `associate_public_ip_address` set to `false` (this is the default value).
+
+## Restricted outbound traffic
+
+For environments with restrictions on outbound traffic (e.g. using an outbound web proxy), the following network requirements must be met:
+
+### Required VPC Endpoints
+The following VPC endpoints must be configured:
+* Amazon S3 Gateway endpoint
+* AWS Secrets Manager Interface endpoint
+
+### Required outbound HTTPS connectivity
+The following outbound HTTPS (TCP/443) connectivity is required:
+* Cyral Control Plane URL (provided during deployment)
+* public.ecr.aws
+* *.public.ecr.aws
+
+These outbound connections can be routed through a web proxy if required by your security policies.
