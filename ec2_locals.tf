@@ -4,7 +4,7 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 locals {
-  ami_id = length(var.ami_id) > 0 ? var.ami_id : data.aws_ami.amazon_linux_2.id
+  ami_id = length(var.ami_id) > 0 ? var.ami_id : data.aws_ami.amazon_linux.id
 
   aws_account_id = data.aws_caller_identity.current.account_id
   aws_partition  = data.aws_partition.current.partition
