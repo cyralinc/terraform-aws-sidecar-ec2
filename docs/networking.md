@@ -61,7 +61,7 @@ The following VPC endpoints must be configured:
 ### Required outbound HTTPS connectivity
 The following outbound HTTPS (TCP/443) connectivity is required:
 * Cyral Control Plane URL (provided during deployment)
-* public.ecr.aws
-* *.public.ecr.aws
+* `public.ecr.aws`
+* `*.public.ecr.aws`
 
 These outbound connections can be routed through a web proxy if required by your security policies.
