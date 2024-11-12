@@ -1,10 +1,10 @@
 data "aws_availability_zones" "all" {}
 
-data "aws_ami" "amazon_linux_2" {
+data "aws_ami" "amazon_linux" {
   most_recent = true
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm-2.0.*-x86_64-gp2"]
+    values = ["al2023-ami-2023.*kernel-6.*-x86_64"]
   }
   owners = ["amazon"]
 }
