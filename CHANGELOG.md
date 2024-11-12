@@ -1,3 +1,14 @@
+## 5.0.2 (November 12, 2024)
+
+Minimum required **control plane** version: `v4.16.0`. Minimum required **sidecar version**: `v4.16.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes from `v4` to `v5` of this module in the [`5.0.0`](#500-october-22-2024) release documentation below.
+
+### Features:
+
+* Remove unused variables ([#124](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/124))
+* Use lastest version of Amazon Linux 2023 ([#126](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/126))
+
 ## 5.0.1 (November 5, 2024)
 
 Minimum required **control plane** version: `v4.16.0`. Minimum required **sidecar version**: `v4.16.0`. This whole module will not work with previous sidecar or control plane versions.
