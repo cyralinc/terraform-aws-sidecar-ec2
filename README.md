@@ -178,7 +178,7 @@ No modules.
 | <a name="input_cloudwatch_logs_retention"></a> [cloudwatch\_logs\_retention](#input\_cloudwatch\_logs\_retention) | Cloudwatch logs retention in days | `number` | `14` | no |
 | <a name="input_container_registry"></a> [container\_registry](#input\_container\_registry) | Address of the container registry where Cyral images are stored. | `string` | `"public.ecr.aws/cyral"` | no |
 | <a name="input_control_plane"></a> [control\_plane](#input\_control\_plane) | Address of the control plane - <tenant>.cyral.com | `string` | n/a | yes |
-| <a name="input_curl_connect_timeout"></a> [curl\_connect\_timeout](#input\_curl\_connect\_timeout) | (Optional) Timeout for the curl command to establish a connection. | `number` | `60` | no |
+| <a name="input_curl_connect_timeout"></a> [curl\_connect\_timeout](#input\_curl\_connect\_timeout) | (Optional) The maximum time in seconds that curl connections are allowed to take. | `number` | `60` | no |
 | <a name="input_custom_host_role"></a> [custom\_host\_role](#input\_custom\_host\_role) | (Optional) Name of an AWS IAM Role to attach to the EC2 instance profile. | `string` | `""` | no |
 | <a name="input_custom_tags"></a> [custom\_tags](#input\_custom\_tags) | Custom tags to be added to all AWS resources created | `map(any)` | `{}` | no |
 | <a name="input_custom_user_data"></a> [custom\_user\_data](#input\_custom\_user\_data) | Ancillary consumer supplied user-data script. Bash scripts must be added to a map as a value of the key `pre`, `pre_sidecar_start`, `post` denoting execution order with respect to sidecar installation. (Approx Input Size = 19KB) | `map(any)` | <pre>{<br/>  "post": "",<br/>  "pre": "",<br/>  "pre_sidecar_start": ""<br/>}</pre> | no |

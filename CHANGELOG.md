@@ -1,3 +1,13 @@
+## 5.1.0 (November 13, 2024)
+
+Minimum required **control plane** version: `v4.16.0`. Minimum required **sidecar version**: `v4.16.0`. This whole module will not work with previous sidecar or control plane versions.
+
+See the list of changes from `v4` to `v5` of this module in the [`5.0.0`](#500-october-22-2024) release documentation below.
+
+### Features:
+
+* Added support for private networking ([#125](https://github.com/cyralinc/terraform-aws-sidecar-ec2/pull/125))
+
 ## 5.0.2 (November 12, 2024)
 
 Minimum required **control plane** version: `v4.16.0`. Minimum required **sidecar version**: `v4.16.0`. This whole module will not work with previous sidecar or control plane versions.

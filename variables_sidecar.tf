@@ -158,7 +158,7 @@ variable "recycle_health_check_interval_sec" {
 }
 
 variable "curl_connect_timeout" {
-  description = "(Optional) The maximum time in seconds that you allow connections to take."
+  description = "(Optional) The maximum time in seconds that curl connections are allowed to take."
   type        = number
   default     = 60
 }
