@@ -123,8 +123,11 @@ function update_nginx_resolver(){
 function get_token () {
     echo "Getting Control Plane Token using port $1..."
     local url_token="https://${controlplane_host}:$1/v1/users/oidc/token"
+    local e_state=$(set +o | grep errexit) # Store the current errexit state
+    set +e
     token=$(${curl} --no-progress-meter --fail-with-body --request POST "$url_token" -d grant_type=client_credentials -d client_id="$${SIDECAR_CLIENT_ID}" -d client_secret="$${SIDECAR_CLIENT_SECRET}" 2>&1)
     token_error=$(echo $?)
+    eval "$e_state" # Restore the errexit state
 }
 
 function get_sidecar_version () {
@@ -151,7 +154,7 @@ function get_sidecar_version () {
 
 function registry_login () {
     echo "Container Registry Login..."
-    if [[ ${container_registry} == *"aws"* ]]; then
+    if [[ ${container_registry} == *"aws"* ]] && [[ ${container_registry} != *"public.ecr.aws"* ]]; then
         echo "(login): Logging in to AWS ECR..."
         eval $(aws ecr --no-include-email get-login  --region ${aws_region})
     else

@@ -31,7 +31,7 @@ locals {
     controlplane_host                 = var.control_plane
     container_registry                = var.container_registry
     cloudwatch_log_group_name         = local.cloudwatch_log_group_name
-    curl                              = local.curl
+    curl                              = "${local.curl} --connect-timeout ${var.curl_connect_timeout}"
     idp_sso_login_url                 = var.idp_sso_login_url
     load_balancer_tls_ports           = join(",", var.load_balancer_tls_ports)
     log_group_name                    = aws_cloudwatch_log_group.lg.name
