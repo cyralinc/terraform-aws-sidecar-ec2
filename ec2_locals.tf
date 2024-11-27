@@ -45,7 +45,7 @@ locals {
     sidecar_version                   = var.sidecar_version
     tls_certificate_role_arn          = var.tls_certificate_role_arn
     tls_certificate_secret_arn        = local.tls_certificate_secret_arn
-    tls_skip_verify                   = var.tls_skip_verify ? "tls-skip-verify" : "tls"
+    tls_type                          = var.tls_skip_verify ? "tls-skip-verify" : "tls"
   }
 
   cloud_init_func = templatefile("${path.module}/files/cloud-init-functions.sh.tmpl", local.templatevars)
